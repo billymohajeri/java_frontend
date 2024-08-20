@@ -30,9 +30,8 @@ export function Home() {
   })
 
   return (
-    // <div className="p-10">
-    <div className="bg-zinc-950 dark:bg-white" >
-
+    <div className="p-10">
+      
       <div className="grid grid-cols-3 gap-10">
         {isLoading && <p>Loading...</p>}
         {isError && <p>{error.message}</p>}
