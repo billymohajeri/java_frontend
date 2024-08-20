@@ -1,25 +1,35 @@
-import { useState } from "react"
-import { Button } from "../components/ui/button"
+import api from "@/api"
+import { Product } from "@/types"
+import { useQuery } from "@tanstack/react-query"
 
 export function Home() {
-  const [message, setMessage] = useState("")
+  const handleFetchProducts = async () => {
+    const res = await api.get("/products")
+    if (res.status !== 200) {
+      throw Error("Something went wrong!")
+    }
+    return res.data.data
+  }
 
-  const handleWelcome = () => {
-    setMessage("Why did you?")
-  }
-  const handleCleanState = () => {
-    setMessage("")
-  }
+  const {
+    data: products,
+    isLoading,
+    isError,
+    error
+  } = useQuery<Product[]>({
+    queryKey: ["products"],
+    queryFn: handleFetchProducts
+  })
 
   return (
     <div className="flex flex-col justify-center items-center gap-10 h-screen">
-      <h1 className="text-2xl">Welcome!</h1>
-      {message && <p>{message}</p>}
-      {!message ? (
-        <Button onClick={handleWelcome}>Do not click me</Button>
-      ) : (
-        <Button onClick={handleCleanState}>Undo the damage</Button>
-      )}
+      {isLoading && <p>Loading...</p>}
+      {isError && <p>{error.message}</p>}
+      {products?.map((product) => (
+        <div key={product.id}>
+          <h3>{product.name}</h3>
+        </div>
+      ))}
     </div>
   )
 }
