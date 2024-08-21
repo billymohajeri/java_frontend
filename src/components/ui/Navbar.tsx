@@ -26,7 +26,9 @@ const Navbar = () => {
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
+                <Link to="/dashboard">
                 <NavigationMenuTrigger>Dashboard</NavigationMenuTrigger>
+                </Link>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
