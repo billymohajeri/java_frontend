@@ -61,10 +61,19 @@ const ProductDetails = () => {
               )}
               <div className="md:w-2/3 mt-4 md:mt-0 md:ml-4">
                 <div className="p-4">
-                  <h5 className="text-xl font-semibold mb-2">{product.name}</h5>
+                  <h5 className="text-xl font-semibold mb-2 text-gray-900">{product.name}</h5>
                   <p className="text-gray-700 mb-2">
                     <strong>Price:</strong> ${product.price}
                   </p>
+                  <p className="text-gray-700 mb-2">{product.description}</p>
+                  <p className="text-gray-700 mb-2">{product.color}</p>
+                  <div className="text-gray-700 mb-2">
+                    {product.stock > 0 ? (
+                      <p>{product.stock} left</p>
+                    ) : (
+                      <p className="text-red-500">Out of stock</p>
+                    )}
+                  </div>
                   <p className="text-gray-500 text-sm">
                     <small>Product ID: {product.id}</small>
                   </p>
