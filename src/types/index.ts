@@ -2,7 +2,7 @@ export type Product = {
   id: string
   color: string
   name: string
-  image: string[]
+  images: string[]
   meta: string
   price: number
   rating: number
