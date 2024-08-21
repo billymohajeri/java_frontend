@@ -5,7 +5,7 @@ import { Home } from "./pages/home"
 function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <ModeToggle/>
+      
       <div className="App">
         <Home />
       </div>
