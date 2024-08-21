@@ -1,4 +1,5 @@
 import api from "@/api"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -71,8 +72,8 @@ const ProductList = () => {
           </div>
         )}
         {filteredProducts?.map((product) => (
-          <Link key={product.id} to={`/products/${product.id}`}>
-            <Card key={product.id}>
+          <Card key={product.id}>
+            <Link key={product.id} to={`/products/${product.id}`}>
               <CardHeader>
                 <CardTitle>{product.name}</CardTitle>
                 <CardDescription>${product.price.toFixed(2)}</CardDescription>
@@ -80,15 +81,11 @@ const ProductList = () => {
               <CardContent>
                 <p>Rating: {product.rating}</p>
               </CardContent>
-              <CardFooter>
-                {product.stock > 0 ? (
-                  <p>{product.stock} left</p>
-                ) : (
-                  <p className="text-red-500">Out of stock</p>
-                )}
-              </CardFooter>
-            </Card>
-          </Link>
+            </Link>
+            <CardFooter>
+              <Button>Add to cart</Button>
+            </CardFooter>
+          </Card>
         ))}
       </div>
     </div>

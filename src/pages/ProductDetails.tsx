@@ -1,4 +1,5 @@
 import api from "@/api"
+import { Can } from "@/components/Can"
 import { Button } from "@/components/ui/button"
 import { Product } from "@/types"
 import { useQuery } from "@tanstack/react-query"
@@ -81,10 +82,19 @@ const ProductDetails = () => {
               </div>
             </div>
           </div>
-          <div className="text-center mt-4">
+          <div className="flex justify-center gap-4 mt-4">
             <Button asChild>
               <Link to="/">Back to Home</Link>
             </Button>
+            <Can
+              permission="PRODUCT:EDIT"
+              permissionType="actions"
+              yes={() => (
+                <Button asChild>
+                  <Link to={`/products/${product.id}`}>Edit Product</Link>
+                </Button>
+              )}
+            ></Can>
           </div>
         </div>
       )}

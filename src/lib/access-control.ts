@@ -19,7 +19,7 @@ export type PagePermission = `${Page}:VIEW`
 export const RBAC_ROLES: RoleControl = {
   ADMIN: {
     views: ["HOME:VIEW", "DASHBOARD:VIEW"],
-    actions: ["PRODUCT:GET", "PRODUCT:REMOVE", "PRODUCT:ADD"]
+    actions: ["PRODUCT:GET", "PRODUCT:REMOVE", "PRODUCT:ADD", "PRODUCT:EDIT"]
   },
   USER: {
     views: ["HOME:VIEW"],
