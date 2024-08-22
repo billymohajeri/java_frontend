@@ -59,7 +59,8 @@ type CanProp = {
 
 export const Can = ({ permission, permissionType, yes, no = () => null }: CanProp) => {
   // change this to be dynamic based on what the token has
-  const USER_ROLE = "ADMIN"
+  // const USER_ROLE = "ADMIN"
+  const USER_ROLE = "USER"
 
   return checkPermission(USER_ROLE, permission, permissionType) ? yes() : no()
 }

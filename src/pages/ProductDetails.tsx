@@ -91,10 +91,20 @@ const ProductDetails = () => {
               permissionType="actions"
               yes={() => (
                 <Button asChild>
-                  <Link to={`/products/${product.id}`}>Edit Product</Link>
+                  <Link to={`/products/${product.id}`}>Edit</Link>
                 </Button>
               )}
             ></Can>
+            <Can
+              permission="PRODUCT:REMOVE"
+              permissionType="actions"
+              yes={() => (
+                <Button asChild>
+                  <Link to={`/products/${product.id}`}>Delete</Link>
+                </Button>
+              )}
+            ></Can>
+
           </div>
         </div>
       )}

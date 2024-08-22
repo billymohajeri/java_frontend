@@ -7,6 +7,7 @@ import {
 import { Link, Outlet } from "react-router-dom"
 import { ModeToggle } from "./mode-toggle"
 import { ThemeProvider } from "./theme-provider"
+import { Can } from "../Can"
 
 const Navbar = () => {
   return (
@@ -17,7 +18,7 @@ const Navbar = () => {
             <NavigationMenuList className="flex flex-row space-x-4">
               <NavigationMenuItem>
                 <NavigationMenuTrigger>
-                  <i>Billy&apos;s Movie Shop</i>
+                  <i>Socks Shop</i>
                 </NavigationMenuTrigger>
               </NavigationMenuItem>
               <NavigationMenuItem>
@@ -25,11 +26,17 @@ const Navbar = () => {
                   <NavigationMenuTrigger>Home</NavigationMenuTrigger>
                 </Link>
               </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link to="/dashboard">
-                <NavigationMenuTrigger>Dashboard</NavigationMenuTrigger>
-                </Link>
-              </NavigationMenuItem>
+              <Can
+                permission="DASHBOARD:VIEW"
+                permissionType="views"
+                yes={() => (
+                  <NavigationMenuItem>
+                    <Link to="/dashboard">
+                      <NavigationMenuTrigger>Dashboard</NavigationMenuTrigger>
+                    </Link>
+                  </NavigationMenuItem>
+                )}
+              ></Can>
             </NavigationMenuList>
           </NavigationMenu>
           <ModeToggle />
