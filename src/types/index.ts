@@ -9,3 +9,9 @@ export type Product = {
   rating: number
   stock: number
 }
+
+export type PaginationProps = {
+  totalPages: number
+  currentPage: number
+  handleCurrentPageChange: (page: number) => void
+}

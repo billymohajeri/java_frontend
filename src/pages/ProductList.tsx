@@ -1,4 +1,5 @@
 import api from "@/api"
+import PaginationComponent from "@/components/PaginationComponent"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -20,7 +21,7 @@ const ProductList = () => {
   const productsPerPage = 10
 
   const handleFetchProducts = async () => {
-    const res = await api.get("/products")
+    const res = await api.get("/products", { params: { search: searchValue } })
     if (res.status !== 200) {
       throw new Error("Something went wrong!")
     }
@@ -33,7 +34,7 @@ const ProductList = () => {
     isError,
     error
   } = useQuery<Product[]>({
-    queryKey: ["products"],
+    queryKey: ["products", searchValue],
     queryFn: handleFetchProducts
   })
 
@@ -42,9 +43,9 @@ const ProductList = () => {
     setCurrentPage(1)
   }
 
-  const filteredProducts = products?.filter((product) =>
-    product.name.toLowerCase().includes(searchValue.toLowerCase())
-  )
+  const handleCurrentPageChange = (page: number) => {
+    setCurrentPage(page)
+  }
 
   return (
     <div className="p-10">
@@ -71,7 +72,7 @@ const ProductList = () => {
             <p>Error: {error instanceof Error ? error.message : "An error occurred"}</p>
           </div>
         )}
-        {filteredProducts?.map((product) => (
+        {products?.map((product) => (
           <Card key={product.id}>
             <Link key={product.id} to={`/products/${product.id}`}>
               <CardHeader>
@@ -88,6 +89,11 @@ const ProductList = () => {
           </Card>
         ))}
       </div>
+      <PaginationComponent
+        totalPages={5}
+        currentPage={currentPage}
+        handleCurrentPageChange={handleCurrentPageChange}
+      />
     </div>
   )
 }
