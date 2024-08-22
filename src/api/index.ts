@@ -1,25 +1,27 @@
-import axios from 'axios'
+import axios from "axios"
 
-const isDevelopment = import.meta.env.MODE === 'development'
-let baseURL = 'http://localhost:8080/api/v1'
+const isDevelopment = import.meta.env.MODE === "development"
+let baseURL = "http://localhost:8080/api/v1"
 
 if (!isDevelopment) {
-  // Update this later when you have a working backend server
-  baseURL = 'http://localhost:8080/api/v1'
+  baseURL = "http://localhost:8080/api/v1"
 }
 
 const api = axios.create({
   baseURL
 })
 
-// use this to handle errors gracefully
-// api.interceptors.response.use(
-//   (response) => response,
-//   (error) => {
-//     if (error.response.status === 500) {
-//       throw new Error(error.response.data)
-//     }
-//   }
-// )
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("authToken")
+    if (token && config.method !== "get") {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
 
 export default api
