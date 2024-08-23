@@ -1,16 +1,25 @@
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuList,
-  NavigationMenuTrigger
-} from "@radix-ui/react-navigation-menu"
 import { Link, Outlet } from "react-router-dom"
 import { ModeToggle } from "./ui/mode-toggle"
 import { ThemeProvider } from "./ui/theme-provider"
 import { Can } from "./Can"
 import { LogIn, LogOut } from "lucide-react"
+import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "./ui/navigation-menu"
+import { useEffect, useState } from "react"
 
 const Navbar = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  useEffect(() => {
+    const token = localStorage.getItem("userToken")
+    setIsLoggedIn(!!token)
+  }, [])
+
+  const handleLogout = () => {
+    localStorage.removeItem("userToken")
+    setIsLoggedIn(false)
+    
+  }
+
   return (
     <>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
@@ -19,35 +28,29 @@ const Navbar = () => {
           <NavigationMenu className="p-2 flex">
             <NavigationMenuList className="flex flex-row space-x-4">
               <NavigationMenuItem>
-                <Link to="/">
-                  <NavigationMenuTrigger>Home</NavigationMenuTrigger>
-                </Link>
+                <Link to="/">Home</Link>
               </NavigationMenuItem>
               <Can
                 permission="DASHBOARD:VIEW"
                 permissionType="views"
                 yes={() => (
                   <NavigationMenuItem>
-                    <Link to="/dashboard">
-                      <NavigationMenuTrigger>Dashboard</NavigationMenuTrigger>
-                    </Link>
+                    <Link to="/dashboard">Dashboard</Link>
                   </NavigationMenuItem>
                 )}
               ></Can>
               <NavigationMenuItem>
-                <Link to="/login">
-                  <NavigationMenuTrigger>
-                    <LogIn />
-                  </NavigationMenuTrigger>
-                </Link>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link to="/logout">
-                  <NavigationMenuTrigger>
+                {isLoggedIn ? (
+                  <Link to="/logout" onClick={handleLogout}>
                     <LogOut />
-                  </NavigationMenuTrigger>
-                </Link>
+                  </Link>
+                ) : (
+                  <Link to="/login">
+                    <LogIn />
+                  </Link>
+                )}
               </NavigationMenuItem>
+              <NavigationMenuItem></NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
         </div>

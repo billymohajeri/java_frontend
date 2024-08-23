@@ -5,7 +5,6 @@ import ProductList from "@/pages/ProductList.js"
 import Navbar from "@/components/Navbar"
 import ProductDetails from "@/pages/ProductDetails"
 import Dashboard from "@/pages/Dashboard"
-import { LogIn } from "lucide-react"
 import Login from "@/pages/Login"
 
 const router = createBrowserRouter([
