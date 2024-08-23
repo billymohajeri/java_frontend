@@ -74,7 +74,7 @@ const ProductList = () => {
         )}
         {products?.map((product) => (
           <Card key={product.id}>
-            <Link key={product.id} to={`/products/${product.id}`}>
+            <Link to={`/products/${product.id}`}>
               <CardHeader>
                 <CardTitle>{product.name}</CardTitle>
                 <CardDescription>${product.price.toFixed(2)}</CardDescription>

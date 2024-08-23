@@ -19,9 +19,12 @@ export type PaginationProps = {
 
 export type User = {
   id: string;
-  fullName: string;
-  phone: number;
+  firstName: string;
+  lastName: string;
+  address: string;
   email: string;
+  phoneNumber: number;
+  birthDate: string;
   role: string;
 };
 

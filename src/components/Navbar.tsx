@@ -17,7 +17,6 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem("userToken")
     setIsLoggedIn(false)
-    
   }
 
   return (
@@ -36,6 +35,15 @@ const Navbar = () => {
                 yes={() => (
                   <NavigationMenuItem>
                     <Link to="/dashboard">Dashboard</Link>
+                  </NavigationMenuItem>
+                )}
+              ></Can>
+              <Can
+                permission="USER:VIEW"
+                permissionType="views"
+                yes={() => (
+                  <NavigationMenuItem>
+                    <Link to="/users">Users</Link>
                   </NavigationMenuItem>
                 )}
               ></Can>

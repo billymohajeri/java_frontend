@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar"
 import ProductDetails from "@/pages/ProductDetails"
 import Dashboard from "@/pages/Dashboard"
 import Login from "@/pages/Login"
+import Users from "@/pages/UserList"
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,7 @@ const router = createBrowserRouter([
       { path: "/", element: <ProductList /> },
       { path: "/products/:id", element: <ProductDetails /> },
       { path: "/dashboard", element: <Dashboard /> },
+      { path: "/users", element: <Users /> },
       { path: "/login", element: <Login /> },
     ]
   }
