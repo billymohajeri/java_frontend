@@ -4,18 +4,27 @@ import { ThemeProvider } from "./ui/theme-provider"
 import { Can } from "./Can"
 import { LogIn, LogOut } from "lucide-react"
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "./ui/navigation-menu"
-import { useEffect, useState } from "react"
+import { createContext, useEffect, useState } from "react"
+
+export const AuthContext = createContext(null);
+
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   useEffect(() => {
-    const token = localStorage.getItem("userToken")
-    setIsLoggedIn(!!token)
+    const user = localStorage.getItem("currentUserData")
+    if (user) {
+      const userObject = JSON.parse(user)
+      if (userObject && userObject.user && userObject.user.token) {
+        const token = userObject.user.token
+        setIsLoggedIn(!!token)
+      }
+    }
   }, [])
 
   const handleLogout = () => {
-    localStorage.removeItem("userToken")
+    localStorage.removeItem("currentUserData")
     setIsLoggedIn(false)
   }
 

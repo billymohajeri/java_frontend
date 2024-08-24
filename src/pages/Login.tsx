@@ -115,7 +115,9 @@ const Login = () => {
           description: `Welcome ${response.data.data.user.firstName}`
         })
         const userData = response.data.data
-        saveDataToLocalStorage("userToken", userData.token)
+        saveDataToLocalStorage("currentUserData", userData)
+        // saveDataToLocalStorage("user", userData.token)
+        // localStorage.setItem("user", JSON.stringify(userData));
         return userData
       } else {
         toast({

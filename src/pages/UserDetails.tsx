@@ -10,8 +10,17 @@ const UserDetails = () => {
   const { id } = useParams<{ id: string }>()
 
   const handleFetchUser = async () => {
-    const tokenWithQuotes = localStorage.getItem("userToken")
-    const token = tokenWithQuotes?.replace(/"/g, "")
+    let token = ""
+      const user = localStorage.getItem("currentUserData")
+      if (user) {
+        try {
+          const objUser = JSON.parse(user)
+          const tokenWithQuotes = objUser?.token || null
+          token = tokenWithQuotes?.replace(/"/g, "")
+        } catch (error) {
+          console.error("Failed to parse user data:", error)
+        }
+      }
     const res = await api.get(`/users/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`

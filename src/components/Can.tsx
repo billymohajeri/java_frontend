@@ -58,9 +58,18 @@ type CanProp = {
 }
 
 export const Can = ({ permission, permissionType, yes, no = () => null }: CanProp) => {
-  // change this to be dynamic based on what the token has
-  const USER_ROLE = "ADMIN"
-  // const USER_ROLE = "USER"
+  const user = localStorage.getItem("currentUserData")
+
+  let USER_ROLE = null
+
+  if (user) {
+    try {
+      const objUser = JSON.parse(user)
+      USER_ROLE = objUser?.user?.role || null
+    } catch (error) {
+      console.error("Failed to parse user data:", error)
+    }
+  }
 
   return checkPermission(USER_ROLE, permission, permissionType) ? yes() : no()
 }
