@@ -6,22 +6,26 @@ import { LogIn, LogOut } from "lucide-react"
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "./ui/navigation-menu"
 import { createContext, useEffect, useState } from "react"
 
-export const AuthContext = createContext(null);
-
+export const AuthContext = createContext(null)
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   useEffect(() => {
     const user = localStorage.getItem("currentUserData")
+    // console.log(user);
     if (user) {
       const userObject = JSON.parse(user)
-      if (userObject && userObject.user && userObject.user.token) {
-        const token = userObject.user.token
+      // console.log(userObject , userObject.user , userObject.token);
+      if (userObject && userObject.user && userObject.token) {
+        const token = userObject.token
+        // console.log(!!token);
         setIsLoggedIn(!!token)
+        // console.log(isLoggedIn);
+        // console.log(!!token);
       }
     }
-  }, [])
+  }, [isLoggedIn])
 
   const handleLogout = () => {
     localStorage.removeItem("currentUserData")

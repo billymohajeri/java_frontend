@@ -110,12 +110,14 @@ const Login = () => {
         setEmail("")
         setPassword("")
         navigate("/")
+        
         toast({
           title: "✅ Login successful!",
           description: `Welcome ${response.data.data.user.firstName}`
         })
         const userData = response.data.data
         saveDataToLocalStorage("currentUserData", userData)
+        
         // saveDataToLocalStorage("user", userData.token)
         // localStorage.setItem("user", JSON.stringify(userData));
         return userData

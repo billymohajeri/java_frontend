@@ -2,25 +2,45 @@ import api from "@/api"
 import { Can } from "@/components/Can"
 import Loading from "@/components/Loading"
 import { Button } from "@/components/ui/button"
+import { toast } from "@/components/ui/use-toast"
 import { User } from "@/types"
 import { useQuery } from "@tanstack/react-query"
-import { Link, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 
 const UserDetails = () => {
+  const navigate = useNavigate()
   const { id } = useParams<{ id: string }>()
+  let token = ""
+  const loggedInUser = localStorage.getItem("currentUserData")
+  if (loggedInUser) {
+    try {
+      const objUser = JSON.parse(loggedInUser)
+      const tokenWithQuotes = objUser?.token || null
+      token = tokenWithQuotes?.replace(/"/g, "")
+    } catch (error) {
+      console.error("Failed to parse user data:", error)
+    }
+  }
+
+  const handleDeleteUser = async () => {
+    const res = await api.delete(`/users/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    if (res.status !== 200) {
+      throw new Error("Something went wrong!")
+    }
+      console.log(res.data.data.firstName)
+    toast({
+        title: "✅ Deleted!",
+        description: `User "${res.data.data.firstName}" deleted successfully.`
+      })
+    navigate("/users")
+    return res.data.data
+  }
 
   const handleFetchUser = async () => {
-    let token = ""
-      const user = localStorage.getItem("currentUserData")
-      if (user) {
-        try {
-          const objUser = JSON.parse(user)
-          const tokenWithQuotes = objUser?.token || null
-          token = tokenWithQuotes?.replace(/"/g, "")
-        } catch (error) {
-          console.error("Failed to parse user data:", error)
-        }
-      }
     const res = await api.get(`/users/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`
@@ -29,7 +49,8 @@ const UserDetails = () => {
     if (res.status !== 200) {
       throw new Error("Something went wrong!")
     }
-    console.log(res)
+    // console.log(res)
+
     return res.data.data
   }
 
@@ -109,8 +130,9 @@ const UserDetails = () => {
               permission="USER:REMOVE"
               permissionType="actions"
               yes={() => (
-                <Button asChild>
-                  <Link to={`/users/${user.id}/delete`}>Delete</Link>
+                <Button onClick={handleDeleteUser}>
+                  Delete
+                  {/* <Link to={`/users/${user.id}/delete`}>Delete</Link> */}
                 </Button>
               )}
             ></Can>
