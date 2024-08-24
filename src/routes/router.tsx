@@ -7,6 +7,7 @@ import ProductDetails from "@/pages/ProductDetails"
 import Dashboard from "@/pages/Dashboard"
 import Login from "@/pages/Login"
 import Users from "@/pages/UserList"
+import UserDetails from "@/pages/UserDetails"
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
       { path: "/products/:id", element: <ProductDetails /> },
       { path: "/dashboard", element: <Dashboard /> },
       { path: "/users", element: <Users /> },
+      { path: "/users/:id", element: <UserDetails /> },
       { path: "/login", element: <Login /> },
     ]
   }

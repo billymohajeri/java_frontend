@@ -1,5 +1,6 @@
 import api from "@/api"
 import { Can } from "@/components/Can"
+import Loading from "@/components/Loading"
 import NoAccess from "@/components/NoAccess"
 import {
   Table,
@@ -12,7 +13,7 @@ import {
 } from "@/components/ui/table"
 import { User } from "@/types"
 import { useQuery } from "@tanstack/react-query"
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 const UserList = () => {
   const navigate = useNavigate()
@@ -54,12 +55,8 @@ const UserList = () => {
         <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 text-center mb-5">
           List of all users
         </h2>
-        {isLoading && (
-          <div className="col-span-3 flex justify-center items-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-500"></div>
-            <p className="ml-4 text-blue-500 font-semibold">Loading users...</p>
-          </div>
-        )}
+
+        {isLoading && <Loading item="users" />}
 
         <Table className="">
           <TableCaption>Click on each item to see details and more actions.</TableCaption>
