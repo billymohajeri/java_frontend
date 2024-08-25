@@ -5,11 +5,15 @@ import { Can } from "./Can"
 import { LogIn, LogOut } from "lucide-react"
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "./ui/navigation-menu"
 import { createContext, useEffect, useState } from "react"
+import { Badge } from "./ui/badge"
+import { userInfo } from "os"
 
 export const AuthContext = createContext(null)
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [role, setRole] = useState("USER")
+  const [name, setName] = useState("")
 
   useEffect(() => {
     const user = localStorage.getItem("currentUserData")
@@ -18,6 +22,8 @@ const Navbar = () => {
       if (userObject && userObject.user && userObject.token) {
         const token = userObject.token
         setIsLoggedIn(!!token)
+        setName(userObject.user.firstName)
+        setRole(userObject.user.role)
       }
     }
   }, [isLoggedIn])
@@ -32,43 +38,46 @@ const Navbar = () => {
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <div className="p-2 flex justify-between items-center">
           <ModeToggle />
-          <NavigationMenu className="p-2 flex">
-            <NavigationMenuList className="flex flex-row space-x-4">
-              <NavigationMenuItem>
-                <Link to="/">Home</Link>
-              </NavigationMenuItem>
-              <Can
-                permission="USER:VIEW"
-                permissionType="views"
-                yes={() => (
-                  <NavigationMenuItem>
-                    <Link to="/users">Users</Link>
-                  </NavigationMenuItem>
-                )}
-              ></Can>
-              <Can
-                permission="PRODUCT:ADD"
-                permissionType="actions"
-                yes={() => (
-                  <NavigationMenuItem>
-                    <Link to="/products">Products</Link>
-                  </NavigationMenuItem>
-                )}
-              ></Can>
-              <NavigationMenuItem>
-                {isLoggedIn ? (
-                  <Link to="/logout" onClick={handleLogout}>
-                    <LogOut />
-                  </Link>
-                ) : (
-                  <Link to="/login">
-                    <LogIn />
-                  </Link>
-                )}
-              </NavigationMenuItem>
-              <NavigationMenuItem></NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
+          <div className="flex  items-center">
+            {isLoggedIn && <Badge variant="destructive">{name+" ("+ role+")"}</Badge>}
+            <NavigationMenu className="p-2 flex">
+              <NavigationMenuList className="flex flex-row space-x-4">
+                <NavigationMenuItem>
+                  <Link to="/">Home</Link>
+                </NavigationMenuItem>
+                <Can
+                  permission="USER:VIEW"
+                  permissionType="views"
+                  yes={() => (
+                    <NavigationMenuItem>
+                      <Link to="/users">Users</Link>
+                    </NavigationMenuItem>
+                  )}
+                ></Can>
+                <Can
+                  permission="PRODUCT:ADD"
+                  permissionType="actions"
+                  yes={() => (
+                    <NavigationMenuItem>
+                      <Link to="/products">Products</Link>
+                    </NavigationMenuItem>
+                  )}
+                ></Can>
+                <NavigationMenuItem>
+                  {isLoggedIn ? (
+                    <Link to="/logout" onClick={handleLogout}>
+                      <LogOut />
+                    </Link>
+                  ) : (
+                    <Link to="/login">
+                      <LogIn />
+                    </Link>
+                  )}
+                </NavigationMenuItem>
+                <NavigationMenuItem></NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+          </div>
         </div>
         <Outlet />
       </ThemeProvider>

@@ -186,7 +186,7 @@ const UserDetails = () => {
           </div>
           <div className="flex justify-center gap-4 mt-4">
             <Button asChild>
-              <Link to="/">Back to Home</Link>
+              <Link to="/users">Back to User List</Link>
             </Button>
             <Can
               permission="USER:EDIT"

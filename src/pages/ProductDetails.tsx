@@ -3,10 +3,56 @@ import { Can } from "@/components/Can"
 import { Button } from "@/components/ui/button"
 import { Product } from "@/types"
 import { useQuery } from "@tanstack/react-query"
-import { Link, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger
+} from "@/components/ui/alert-dialog"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from "@/components/ui/dialog"
+import { toast } from "@/components/ui/use-toast"
+import { useEffect, useState } from "react"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
 
 const ProductDetails = () => {
+  const [name, setName] = useState("")
+  const [price, setPrice] = useState(0)
+  const [description, setDescription] = useState("")
+  const [images, setImages] = useState<string[]>([])
+  const [color, setColor] = useState("")
+  const [rating, setRating] = useState(0)
+  const [stock, setStock] = useState(0)
+  const [meta, setMeta] = useState("")
   const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
+
+  let token = ""
+  const loggedInUser = localStorage.getItem("currentUserData")
+  if (loggedInUser) {
+    try {
+      const objUser = JSON.parse(loggedInUser)
+      const tokenWithQuotes = objUser?.token || null
+      token = tokenWithQuotes?.replace(/"/g, "")
+    } catch (error) {
+      console.error("Failed to parse user data:", error)
+    }
+  }
 
   const handleFetchProduct = async () => {
     const res = await api.get(`/products/${id}`)
@@ -25,6 +71,62 @@ const ProductDetails = () => {
     queryKey: ["product", id],
     queryFn: handleFetchProduct
   })
+
+  const handleDeleteProduct = async () => {
+    const res = await api.delete(`/products/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    if (res.status !== 200) {
+      throw new Error("Something went wrong!")
+    }
+    toast({
+      title: "✅ Deleted!",
+      description: `Product "${res.data.data.name}" deleted successfully.`
+    })
+    navigate("/products")
+    return res.data.data
+  }
+
+  const handleEditProduct = async (editedProduct: Product) => {
+    const payload = {
+      id: id,
+      name: name,
+      price: price,
+      description: description,
+      images: images,
+      color: color,
+      rating: rating,
+      stock: stock
+    }
+    const res = await api.put(`/products`, payload, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    if (res.status !== 200) {
+      throw new Error("Something went wrong!")
+    }
+    toast({
+      title: "✅ Edited!",
+      description: `Product "${res.data.data.name}" edited successfully.`
+    })
+    navigate("/products")
+    return res.data.data
+  }
+
+  useEffect(() => {
+    if (product) {
+      setName(product.name)
+      setPrice(product.price)
+      setDescription(product.description)
+      setImages(product.images)
+      setColor(product.color)
+      setRating(product.rating)
+      setStock(product.stock)
+    }
+  }, [product])
 
   if (isLoading) {
     return (
@@ -84,27 +186,168 @@ const ProductDetails = () => {
           </div>
           <div className="flex justify-center gap-4 mt-4">
             <Button asChild>
-              <Link to="/">Back to Home</Link>
+              <Link to="/products">Back to Product List</Link>
             </Button>
             <Can
               permission="PRODUCT:EDIT"
               permissionType="actions"
               yes={() => (
-                <Button asChild>
-                  <Link to={`/products/${product.id}`}>Edit</Link>
-                </Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button>Edit</Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Edit product</DialogTitle>
+                      <DialogDescription>
+                        Make changes to this product here. Click save when you&apos;re done.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="name" className="text-right">
+                          Name
+                        </Label>
+                        <Input
+                          id="Name"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          className="col-span-3"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="price" className="text-right">
+                          Price
+                        </Label>
+                        <Input
+                          id="price"
+                          value={price}
+                          onChange={(e) => setPrice(parseFloat(e.target.value))}
+                          className="col-span-3"
+                          type="number"
+                          min="0"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="description" className="text-right">
+                          Description
+                        </Label>
+                        <Input
+                          id="description"
+                          value={description}
+                          onChange={(e) => setDescription(e.target.value)}
+                          className="col-span-3"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="images" className="text-right">
+                        Images
+                      </Label>
+                      <Input
+                        id="images"
+                        value={images.join(",")}
+                        onChange={(e) => setImages(e.target.value.split(","))}
+                        className="col-span-3"
+                        type="url"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="color" className="text-right">
+                        Color
+                      </Label>
+                      <Input
+                        id="color"
+                        value={color}
+                        onChange={(e) => setColor(e.target.value)}
+                        className="col-span-3"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="rating" className="text-right">
+                        Rating
+                      </Label>
+                      <Input
+                        id="rating"
+                        value={rating}
+                        onChange={(e) => setRating(parseFloat(e.target.value))}
+                        className="col-span-3"
+                        type="number"
+                        min="0"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="stock" className="text-right">
+                        Stock
+                      </Label>
+                      <Input
+                        id="stock"
+                        value={stock}
+                        onChange={(e) => setStock(parseInt(e.target.value))}
+                        className="col-span-3"
+                        type="number"
+                        min="0"
+                      />
+                    </div>
+
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button type="button" variant="secondary">
+                          Cancel
+                        </Button>
+                      </DialogClose>
+                      <Button
+                        onClick={() => {
+                          if (id) {
+                            handleEditProduct({
+                              id,
+                              name,
+                              price,
+                              description,
+                              images,
+                              meta,
+                              color,
+                              rating,
+                              stock
+                            })
+                          }
+                        }}
+                      >
+                        Save changes
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               )}
             ></Can>
             <Can
               permission="PRODUCT:REMOVE"
               permissionType="actions"
               yes={() => (
-                <Button asChild>
-                  <Link to={`/products/${product.id}`}>Delete</Link>
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive">Delete</Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently delete the selected
+                        product and remove its data from our servers.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDeleteProduct}>Continue</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               )}
             ></Can>
-
           </div>
         </div>
       )}
