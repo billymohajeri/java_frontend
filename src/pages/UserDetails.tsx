@@ -1,14 +1,49 @@
+import { useEffect, useState } from "react"
 import api from "@/api"
+
 import { Can } from "@/components/Can"
 import Loading from "@/components/Loading"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger
+} from "@/components/ui/alert-dialog"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from "@/components/ui/dialog"
+
 import { Button } from "@/components/ui/button"
 import { toast } from "@/components/ui/use-toast"
 import { User } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 import { Link, useNavigate, useParams } from "react-router-dom"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
 
 const UserDetails = () => {
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [email, setEmail] = useState("")
+  const [address, setAddress] = useState("")
+  const [phoneNumber, setPhoneNumber] = useState("")
+  const [birthDate, setBirthDate] = useState("")
+  const [role, setRole] = useState("")
+
   const navigate = useNavigate()
+
   const { id } = useParams<{ id: string }>()
   let token = ""
   const loggedInUser = localStorage.getItem("currentUserData")
@@ -31,11 +66,37 @@ const UserDetails = () => {
     if (res.status !== 200) {
       throw new Error("Something went wrong!")
     }
-      console.log(res.data.data.firstName)
     toast({
-        title: "✅ Deleted!",
-        description: `User "${res.data.data.firstName}" deleted successfully.`
-      })
+      title: "✅ Deleted!",
+      description: `User "${res.data.data.firstName}" deleted successfully.`
+    })
+    navigate("/users")
+    return res.data.data
+  }
+
+  const handleEditUser = async (editedUser: User) => {
+    const payload = {
+      id: id,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      address: address,
+      phoneNumber: phoneNumber,
+      birthDate: birthDate,
+      role: role
+    }
+    const res = await api.put(`/users`, payload, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    if (res.status !== 200) {
+      throw new Error("Something went wrong!")
+    }
+    toast({
+      title: "✅ Edited!",
+      description: `User "${res.data.data.firstName}" edited successfully.`
+    })
     navigate("/users")
     return res.data.data
   }
@@ -49,8 +110,6 @@ const UserDetails = () => {
     if (res.status !== 200) {
       throw new Error("Something went wrong!")
     }
-    // console.log(res)
-
     return res.data.data
   }
 
@@ -63,6 +122,17 @@ const UserDetails = () => {
     queryKey: ["user", id],
     queryFn: handleFetchUser
   })
+
+  useEffect(() => {
+    if (user) {
+      setFirstName(user.firstName)
+      setLastName(user.lastName)
+      setEmail(user.email)
+      setAddress(user.address)
+      setPhoneNumber(user.phoneNumber.toString())
+      setBirthDate(user.birthDate)
+    }
+  }, [user])
 
   if (isError) {
     return (
@@ -121,19 +191,148 @@ const UserDetails = () => {
               permission="USER:EDIT"
               permissionType="actions"
               yes={() => (
-                <Button asChild>
-                  <Link to={`/users/${user.id}/edit`}>Edit</Link>
-                </Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button>Edit</Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Edit user</DialogTitle>
+                      <DialogDescription>
+                        Make changes to this profile here. Click save when you&apos;re done.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="firstName" className="text-right">
+                          First Name
+                        </Label>
+                        <Input
+                          id="firstName"
+                          value={firstName}
+                          onChange={(e) => setFirstName(e.target.value)}
+                          className="col-span-3"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="lastName" className="text-right">
+                          Last Name
+                        </Label>
+                        <Input
+                          id="lastName"
+                          value={lastName}
+                          onChange={(e) => setLastName(e.target.value)}
+                          className="col-span-3"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="email" className="text-right">
+                          Email
+                        </Label>
+                        <Input
+                          id="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="col-span-3"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="address" className="text-right">
+                        Address
+                      </Label>
+                      <Input
+                        id="address"
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                        className="col-span-3"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="phoneNumber" className="text-right">
+                        Phone Number
+                      </Label>
+                      <Input
+                        id="phoneNumber"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        className="col-span-3"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="birthDate" className="text-right">
+                        Birth Date
+                      </Label>
+                      <Input
+                        id="birthDate"
+                        value={birthDate}
+                        onChange={(e) => setBirthDate(e.target.value)}
+                        className="col-span-3"
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="role" className="text-right">
+                        Role
+                      </Label>
+                      <Input
+                        id="role"
+                        value={role}
+                        onChange={(e) => setRole(e.target.value)}
+                        className="col-span-3"
+                      />
+                    </div>
+
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button type="button" variant="secondary">
+                          Cancel
+                        </Button>
+                      </DialogClose>
+                      <Button
+                        onClick={() =>
+                          handleEditUser({
+                            id,
+                            firstName,
+                            lastName,
+                            address,
+                            phoneNumber: parseInt(phoneNumber),
+                            birthDate,
+                            role
+                          })
+                        }
+                      >
+                        Save changes
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               )}
             ></Can>
             <Can
               permission="USER:REMOVE"
               permissionType="actions"
               yes={() => (
-                <Button onClick={handleDeleteUser}>
-                  Delete
-                  {/* <Link to={`/users/${user.id}/delete`}>Delete</Link> */}
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive">Delete</Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently delete the selected
+                        account and remove its data from our servers.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDeleteUser}>Continue</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               )}
             ></Can>
           </div>
