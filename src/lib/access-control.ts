@@ -9,7 +9,7 @@ export type RoleControl = {
 
 export type PermissionCategory = keyof RoleControl[Role]
 
-type Page = "HOME" | "DASHBOARD" | "USER"
+type Page = "HOME" | "DASHBOARD" | "USER" 
 type Resource = "PRODUCT" | "USER"
 type Method = "GET" | "ADD" | "EDIT" | "REMOVE"
 

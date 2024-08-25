@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom"
 
 import NotFound from "@/pages/NotFound.js"
-import ProductList from "@/pages/ProductList.js"
+import ProductListCards from "@/pages/ProductListCards.js"
 import Navbar from "@/components/Navbar"
 import ProductDetails from "@/pages/ProductDetails"
 import Dashboard from "@/pages/Dashboard"
@@ -9,6 +9,7 @@ import Login from "@/pages/Login"
 import Users from "@/pages/UserList"
 import UserDetails from "@/pages/UserDetails"
 import { Can } from "@/components/Can"
+import ProductList from "@/pages/ProductList"
 
 const router = createBrowserRouter([
   {
@@ -23,7 +24,7 @@ const router = createBrowserRouter([
             permission="DASHBOARD:VIEW"
             permissionType="views"
             yes={() => <Dashboard />}
-            no={() => <ProductList />}
+            no={() => <ProductListCards />}
           />
         )
       },
@@ -31,6 +32,17 @@ const router = createBrowserRouter([
       { path: "/dashboard", element: <Dashboard /> },
       { path: "/users", element: <Users /> },
       { path: "/users/:id", element: <UserDetails /> },
+      {
+        path: "/products",
+        element: (
+          <Can
+            permission="PRODUCT:ADD"
+            permissionType="actions"
+            yes={() => <ProductList />}
+            no={() => <ProductListCards />}
+          />
+        )
+      },
       { path: "/login", element: <Login /> }
     ]
   }

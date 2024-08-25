@@ -38,20 +38,20 @@ const Navbar = () => {
                 <Link to="/">Home</Link>
               </NavigationMenuItem>
               <Can
-                permission="DASHBOARD:VIEW"
-                permissionType="views"
-                yes={() => (
-                  <NavigationMenuItem>
-                    <Link to="/dashboard">Dashboard</Link>
-                  </NavigationMenuItem>
-                )}
-              ></Can>
-              <Can
                 permission="USER:VIEW"
                 permissionType="views"
                 yes={() => (
                   <NavigationMenuItem>
                     <Link to="/users">Users</Link>
+                  </NavigationMenuItem>
+                )}
+              ></Can>
+              <Can
+                permission="PRODUCT:ADD"
+                permissionType="actions"
+                yes={() => (
+                  <NavigationMenuItem>
+                    <Link to="/products">Products</Link>
                   </NavigationMenuItem>
                 )}
               ></Can>

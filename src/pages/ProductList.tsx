@@ -1,100 +1,111 @@
 import api from "@/api"
-import PaginationComponent from "@/components/PaginationComponent"
-import { Button } from "@/components/ui/button"
+import { Can } from "@/components/Can"
+import Loading from "@/components/Loading"
+import NoAccess from "@/components/NoAccess"
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from "@/components/ui/table"
 import { Product } from "@/types"
 import { useQuery } from "@tanstack/react-query"
-import { ChangeEvent, useState } from "react"
-import { Link } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 const ProductList = () => {
-  const [searchValue, setSearchValue] = useState("")
-  const [currentPage, setCurrentPage] = useState(1)
-  const productsPerPage = 10
-
-  const handleFetchProducts = async () => {
-    const res = await api.get("/products", { params: { search: searchValue } })
-    if (res.status !== 200) {
-      throw new Error("Something went wrong!")
+  const navigate = useNavigate()
+  const handleProductPageRender = () => {
+    const handleFetchProducts = async () => {
+      let token = ""
+      const user = localStorage.getItem("currentUserData")
+      if (user) {
+        try {
+          const objUser = JSON.parse(user)
+          const tokenWithQuotes = objUser?.token || null
+          token = tokenWithQuotes?.replace(/"/g, "")
+        } catch (error) {
+          console.error("Failed to parse user data:", error)
+        }
+      }
+      const res = await api.get("/products", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      if (res.status !== 200) {
+        throw new Error("Something went wrong!")
+      }
+      return res.data.data
     }
-    return res.data.data
-  }
 
-  const {
-    data: products,
-    isLoading,
-    isError,
-    error
-  } = useQuery<Product[]>({
-    queryKey: ["products", searchValue],
-    queryFn: handleFetchProducts
-  })
+    const {
+      data: products,
+      isLoading,
+      isError,
+      error
+    } = useQuery<Product[]>({
+      queryKey: ["users"],
+      queryFn: handleFetchProducts
+    })
 
-  const handleSearchValueChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(event.target.value)
-    setCurrentPage(1)
-  }
+    {
+      isError && (
+        <div className="col-span-3 text-center text-red-500 font-semibold">
+          <p>Error: {error instanceof Error ? error.message : "An error occurred"}</p>
+        </div>
+      )
+    }
 
-  const handleCurrentPageChange = (page: number) => {
-    setCurrentPage(page)
-  }
-
-  return (
-    <div className="p-10">
-      <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 text-center mb-5">
-        List of all products
-      </h2>
-      <Input
-        type="text"
-        name="searchInput"
-        value={searchValue}
-        onChange={handleSearchValueChange}
-        className="mb-3"
-        placeholder="Search for products..."
-      />
-      <div className="grid grid-cols-3 gap-10">
-        {isLoading && (
-          <div className="col-span-3 flex justify-center items-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-500"></div>
-            <p className="ml-4 text-blue-500 font-semibold">Loading products...</p>
-          </div>
-        )}
-        {isError && (
-          <div className="col-span-3 text-center text-red-500 font-semibold">
-            <p>Error: {error instanceof Error ? error.message : "An error occurred"}</p>
-          </div>
-        )}
-        {products?.map((product) => (
-          <Card key={product.id}>
-            <Link to={`/products/${product.id}`}>
-              <CardHeader>
-                <CardTitle>{product.name}</CardTitle>
-                <CardDescription>${product.price.toFixed(2)}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p>Rating: {product.rating}</p>
-              </CardContent>
-            </Link>
-            <CardFooter>
-              <Button>Add to cart</Button>
-            </CardFooter>
-          </Card>
-        ))}
+    return (
+      <div className="grid items-center justify-center">
+        <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 text-center mb-5">
+          List of all products
+        </h2>
+        {isLoading && <Loading item="products" />}
+        <Table className="">
+          <TableCaption>Click on each item to see details and more actions.</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead>ID</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Price</TableHead>
+              <TableHead>Stock</TableHead>
+              <TableHead>Color</TableHead>
+              <TableHead>Rating</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {products?.map((product) => (
+              <TableRow
+                key={product.id}
+                onClick={() => navigate(`/products/${product.id}`)}
+                className="cursor-pointer"
+              >
+                <TableCell>{product.id}</TableCell>
+                <TableCell>{product.name}</TableCell>
+                <TableCell>{product.price}</TableCell>
+                <TableCell>{product.stock}</TableCell>
+                <TableCell>{product.color}</TableCell>
+                <TableCell>{product.rating}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
-      <PaginationComponent
-        totalPages={5}
-        currentPage={currentPage}
-        handleCurrentPageChange={handleCurrentPageChange}
-      />
-    </div>
+    )
+  }
+  return (
+    <>
+      <Can
+        permission="PRODUCT:GET"
+        permissionType="actions"
+        yes={() => handleProductPageRender()}
+        no={() => <NoAccess />}
+      ></Can>
+    </>
   )
 }
 
