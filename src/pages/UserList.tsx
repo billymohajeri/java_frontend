@@ -74,16 +74,12 @@ const UserList = () => {
               <TableHead>ID</TableHead>
               <TableHead>First Name</TableHead>
               <TableHead>Last Name</TableHead>
-              {/* <TableHead>Address</TableHead> */}
               <TableHead>Email</TableHead>
-              {/* <TableHead>Phone Number</TableHead> */}
-              {/* <TableHead>Birth Date</TableHead> */}
               <TableHead>Role</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {users?.map((user) => (
-              // <Link key={user.id} to={`/users/${user.id}`} className="contents">
               <TableRow
                 key={user.id}
                 onClick={() => navigate(`/users/${user.id}`)}
@@ -92,13 +88,9 @@ const UserList = () => {
                 <TableCell>{user.id}</TableCell>
                 <TableCell>{user.firstName}</TableCell>
                 <TableCell>{user.lastName}</TableCell>
-                {/* <TableCell>{user.address}</TableCell> */}
                 <TableCell>{user.email}</TableCell>
-                {/* <TableCell>{user.phoneNumber}</TableCell> */}
-                {/* <TableCell>{user.birthDate}</TableCell> */}
                 <TableCell>{user.role}</TableCell>
               </TableRow>
-              // </Link>
             ))}
           </TableBody>
         </Table>

@@ -97,6 +97,7 @@ const renderRegister = () => {
 const Login = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const navigate = useNavigate()
 
   const handleLogin = async () => {
@@ -109,17 +110,16 @@ const Login = () => {
       if (response.status === 200) {
         setEmail("")
         setPassword("")
-        navigate("/")
         
         toast({
           title: "✅ Login successful!",
           description: `Welcome ${response.data.data.user.firstName}`
         })
+        
+
+        navigate("/")
         const userData = response.data.data
         saveDataToLocalStorage("currentUserData", userData)
-        
-        // saveDataToLocalStorage("user", userData.token)
-        // localStorage.setItem("user", JSON.stringify(userData));
         return userData
       } else {
         toast({
@@ -149,11 +149,7 @@ const Login = () => {
       <Tabs defaultValue="login" className="w-[400px] ">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="login">Login</TabsTrigger>
-          <Can
-            permission="USER:ADD"
-            permissionType="actions"
-            yes={() => <TabsTrigger value="register">Register</TabsTrigger>}
-          ></Can>
+          <TabsTrigger value="register">Register</TabsTrigger>
         </TabsList>
         <TabsContent value="login">
           <Card>
@@ -192,7 +188,7 @@ const Login = () => {
             </CardFooter>
           </Card>
         </TabsContent>
-        <Can permission="USER:ADD" permissionType="actions" yes={() => renderRegister()}></Can>
+        {renderRegister()}
       </Tabs>
     </div>
   )

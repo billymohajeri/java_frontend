@@ -3,8 +3,44 @@ import { useQuery } from "@tanstack/react-query"
 import api from "@/api"
 import { Can } from "@/components/Can"
 import NoAccess from "@/components/NoAccess"
+import { User } from "@/types"
 
 const Dashboard = () => {
+  let token = ""
+  const user = localStorage.getItem("currentUserData")
+  if (user) {
+    try {
+      const objUser = JSON.parse(user)
+      const tokenWithQuotes = objUser?.token || null
+      token = tokenWithQuotes?.replace(/"/g, "")
+    } catch (error) {
+      console.error("Failed to parse user data:", error)
+    }
+  }
+
+  const handleFetchUsers = async () => {
+    let token = ""
+    const user = localStorage.getItem("currentUserData")
+    if (user) {
+      try {
+        const objUser = JSON.parse(user)
+        const tokenWithQuotes = objUser?.token || null
+        token = tokenWithQuotes?.replace(/"/g, "")
+      } catch (error) {
+        console.error("Failed to parse user data:", error)
+      }
+    }
+    const res = await api.get("/users", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    if (res.status !== 200) {
+      throw new Error("Something went wrong!")
+    }
+    return res.data.data
+  }
+
   const handleDashboardPageRender = () => {
     const { data: products, isLoading: isLoadingProducts } = useQuery({
       queryKey: ["products"],
@@ -14,12 +50,9 @@ const Dashboard = () => {
       }
     })
 
-    const { data: users, isLoading: isLoadingUsers } = useQuery({
+    const { data: users, isLoading: isLoadingUsers } = useQuery<User[]>({
       queryKey: ["users"],
-      queryFn: async () => {
-        const res = await api.get("/users")
-        return res.data.data
-      }
+      queryFn: handleFetchUsers
     })
 
     const { data: orders, isLoading: isLoadingOrders } = useQuery({

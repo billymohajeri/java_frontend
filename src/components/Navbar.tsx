@@ -13,16 +13,11 @@ const Navbar = () => {
 
   useEffect(() => {
     const user = localStorage.getItem("currentUserData")
-    // console.log(user);
     if (user) {
       const userObject = JSON.parse(user)
-      // console.log(userObject , userObject.user , userObject.token);
       if (userObject && userObject.user && userObject.token) {
         const token = userObject.token
-        // console.log(!!token);
         setIsLoggedIn(!!token)
-        // console.log(isLoggedIn);
-        // console.log(!!token);
       }
     }
   }, [isLoggedIn])
