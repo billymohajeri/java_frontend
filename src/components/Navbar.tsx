@@ -6,7 +6,6 @@ import { LogIn, LogOut } from "lucide-react"
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "./ui/navigation-menu"
 import { createContext, useEffect, useState } from "react"
 import { Badge } from "./ui/badge"
-import { userInfo } from "os"
 
 export const AuthContext = createContext(null)
 
@@ -39,15 +38,24 @@ const Navbar = () => {
         <div className="p-2 flex justify-between items-center">
           <ModeToggle />
           <div className="flex  items-center">
-            {isLoggedIn && <Badge variant="destructive">{name+" ("+ role+")"}</Badge>}
+            {isLoggedIn && <Badge variant="destructive">{name + " (" + role + ")"}</Badge>}
             <NavigationMenu className="p-2 flex">
               <NavigationMenuList className="flex flex-row space-x-4">
                 <NavigationMenuItem>
                   <Link to="/">Home</Link>
                 </NavigationMenuItem>
                 <Can
-                  permission="USER:VIEW"
-                  permissionType="views"
+                  permission="PRODUCT:ADD"
+                  permissionType="actions"
+                  yes={() => (
+                    <NavigationMenuItem>
+                      <Link to="/products">Products</Link>
+                    </NavigationMenuItem>
+                  )}
+                ></Can>
+                <Can
+                  permission="USER:GET"
+                  permissionType="actions"
                   yes={() => (
                     <NavigationMenuItem>
                       <Link to="/users">Users</Link>
@@ -55,11 +63,11 @@ const Navbar = () => {
                   )}
                 ></Can>
                 <Can
-                  permission="PRODUCT:ADD"
+                  permission="ORDER:GET"
                   permissionType="actions"
                   yes={() => (
                     <NavigationMenuItem>
-                      <Link to="/products">Products</Link>
+                      <Link to="/orders">Orders</Link>
                     </NavigationMenuItem>
                   )}
                 ></Can>

@@ -100,8 +100,8 @@ const UserList = () => {
   return (
     <>
       <Can
-        permission="USER:VIEW"
-        permissionType="views"
+        permission="USER:GET"
+        permissionType="actions"
         yes={() => handleUsersPageRender()}
         no={() => <NoAccess />}
       ></Can>
