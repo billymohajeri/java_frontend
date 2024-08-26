@@ -1,7 +1,5 @@
 import api from "@/api"
-import { Can } from "@/components/Can"
 import Loading from "@/components/Loading"
-import NoAccess from "@/components/NoAccess"
 import {
   Table,
   TableBody,
@@ -11,7 +9,7 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table"
-import { Order, User } from "@/types"
+import { Order } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 import { useNavigate } from "react-router-dom"
 
@@ -47,7 +45,7 @@ const OrderList = () => {
     isError,
     error
   } = useQuery<Order[]>({
-    queryKey: ["users"],
+    queryKey: ["orders"],
     queryFn: handleFetchOrders
   })
 
