@@ -16,29 +16,43 @@ export type PaginationProps = {
   handleCurrentPageChange: (page: number) => void
 }
 
-
 export type User = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  address: string;
-  email: string;
-  phoneNumber: number;
-  birthDate: string;
-  role: string;
-};
+  id: string
+  firstName: string
+  lastName: string
+  address: string
+  email: string
+  phoneNumber: number
+  birthDate: string
+  role: string
+}
+
+export type Order = {
+  id: string
+  userId: string
+  dateTime: number[]
+  comments: string
+  status: string
+  address: string
+}
+
+export type OrderUpdateDto = {
+  comments: string
+  status: string
+  address: string
+}
 
 export const ROLE = {
   Admin: "ADMIN",
   User: "USER"
-} as const;
+} as const
 
 export type DecodedUser = {
-  aud: string;
-  emailAddress: string;
-  exp: number;
-  iss: string;
-  name: string;
-  nameIdentifier: string;
-  role: keyof typeof ROLE;
-};
+  aud: string
+  emailAddress: string
+  exp: number
+  iss: string
+  name: string
+  nameIdentifier: string
+  role: keyof typeof ROLE
+}

@@ -58,6 +58,7 @@ const UserDetails = () => {
   }
 
   const handleDeleteUser = async () => {
+    console.log(token);
     const res = await api.delete(`/users/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`
@@ -91,8 +92,10 @@ const UserDetails = () => {
       }
     })
     if (res.status !== 200) {
+        
       throw new Error("Something went wrong!")
     }
+    console.log(token);
     toast({
       title: "✅ Edited!",
       description: `User "${res.data.data.firstName}" edited successfully.`

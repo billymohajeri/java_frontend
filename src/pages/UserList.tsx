@@ -17,7 +17,13 @@ import { useNavigate } from "react-router-dom"
 
 const UserList = () => {
   const navigate = useNavigate()
-  const handleUsersPageRender = () => {
+
+
+
+
+
+  
+  const handleUserPageRender = () => {
     const handleFetchUsers = async () => {
       let token = ""
       const user = localStorage.getItem("currentUserData")
@@ -71,6 +77,7 @@ const UserList = () => {
           <TableCaption>Click on each item to see details and more actions.</TableCaption>
           <TableHeader>
             <TableRow>
+              <TableHead>No.</TableHead>
               <TableHead>ID</TableHead>
               <TableHead>First Name</TableHead>
               <TableHead>Last Name</TableHead>
@@ -79,12 +86,13 @@ const UserList = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {users?.map((user) => (
+            {users?.map((user,index) => (
               <TableRow
                 key={user.id}
                 onClick={() => navigate(`/users/${user.id}`)}
                 className="cursor-pointer"
               >
+                <TableCell>{index+1}</TableCell>
                 <TableCell>{user.id}</TableCell>
                 <TableCell>{user.firstName}</TableCell>
                 <TableCell>{user.lastName}</TableCell>
@@ -102,7 +110,7 @@ const UserList = () => {
       <Can
         permission="USER:GET"
         permissionType="actions"
-        yes={() => handleUsersPageRender()}
+        yes={() => handleUserPageRender()}
         no={() => <NoAccess />}
       ></Can>
     </>

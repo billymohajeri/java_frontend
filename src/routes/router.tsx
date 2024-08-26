@@ -11,6 +11,7 @@ import { Can } from "@/components/Can"
 import ProductList from "@/pages/ProductList"
 import UserList from "@/pages/UserList"
 import OrderList from "@/pages/OrderList"
+import OrderDetails from "@/pages/OrderDetails"
 
 const router = createBrowserRouter([
   {
@@ -34,7 +35,7 @@ const router = createBrowserRouter([
       { path: "/users", element: <UserList /> },
       { path: "/users/:id", element: <UserDetails /> },
       { path: "/orders", element: <OrderList /> },
-      // { path: "/users/:id", element: <UserDetails /> },
+      { path: "/orders/:id", element: <OrderDetails /> },
       {
         path: "/products",
         element: (
