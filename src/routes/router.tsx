@@ -13,6 +13,7 @@ import UserList from "@/pages/UserList"
 import OrderList from "@/pages/OrderList"
 import OrderDetails from "@/pages/OrderDetails"
 import PaymentList from "@/pages/PaymentList"
+import PaymentDetails from "@/pages/PaymentDetails"
 
 const router = createBrowserRouter([
   {
@@ -38,7 +39,7 @@ const router = createBrowserRouter([
       { path: "/orders", element: <OrderList /> },
       { path: "/orders/:id", element: <OrderDetails /> },
       { path: "/payments", element: <PaymentList /> },
-      // { path: "/payments/:id", element: <OrderDetails /> },
+      { path: "/payments/:id", element: <PaymentDetails /> },
       {
         path: "/products",
         element: (
