@@ -31,6 +31,13 @@ import { useQuery } from "@tanstack/react-query"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select"
 
 const PaymentDetails = () => {
   const [amount, setAmount] = useState(0)
@@ -131,6 +138,9 @@ const PaymentDetails = () => {
     )
   }
 
+  const paymentMethod = ["CREDIT_CARD", "BANK_TRANSFER", "CASH"]
+  const paymentStatus = ["PENDING", "COMPLETED", "FAILED", "REFUNDED"]
+
   return (
     <>
       {isLoading && <Loading item="payment" />}
@@ -194,23 +204,43 @@ const PaymentDetails = () => {
                     <Label htmlFor="status" className="text-right">
                       Status
                     </Label>
-                    <Input
-                      id="status"
-                      value={status}
-                      onChange={(e) => setStatus(e.target.value)}
-                      className="col-span-3"
-                    />
+                    <Select onValueChange={(value) => setStatus(value)}>
+                      <SelectTrigger id="status" className="col-span-3">
+                        <SelectValue placeholder={status} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {paymentStatus.map((status) => (
+                          <SelectItem
+                            key={status}
+                            value={status}
+                            className="col-span-3 hover:bg-gray-200 hover:text-gray-800"
+                          >
+                            {status.replace("_", " ")}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="method" className="text-right">
                       Method
                     </Label>
-                    <Input
-                      id="method"
-                      value={method}
-                      onChange={(e) => setMethod(e.target.value)}
-                      className="col-span-3"
-                    />
+                    <Select onValueChange={(value) => setMethod(value)}>
+                      <SelectTrigger id="method" className="col-span-3">
+                        <SelectValue placeholder={method}  />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {paymentMethod.map((method) => (
+                          <SelectItem
+                            key={method}
+                            value={method}
+                            className="col-span-3  hover:bg-gray-200 hover:text-gray-800"
+                          >
+                            {method.replace("_", " ")}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
                 <DialogFooter>
