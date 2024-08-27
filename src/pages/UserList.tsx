@@ -1,7 +1,5 @@
 import api from "@/api"
-import { Can } from "@/components/Can"
 import Loading from "@/components/Loading"
-import NoAccess from "@/components/NoAccess"
 import {
   Table,
   TableBody,
@@ -18,58 +16,51 @@ import { useNavigate } from "react-router-dom"
 const UserList = () => {
   const navigate = useNavigate()
 
-
-
-
-
-  
-  const handleUserPageRender = () => {
-    const handleFetchUsers = async () => {
-      let token = ""
-      const user = localStorage.getItem("currentUserData")
-      if (user) {
-        try {
-          const objUser = JSON.parse(user)
-          const tokenWithQuotes = objUser?.token || null
-          token = tokenWithQuotes?.replace(/"/g, "")
-        } catch (error) {
-          console.error("Failed to parse user data:", error)
-        }
+  const handleFetchUsers = async () => {
+    let token = ""
+    const user = localStorage.getItem("currentUserData")
+    if (user) {
+      try {
+        const objUser = JSON.parse(user)
+        const tokenWithQuotes = objUser?.token || null
+        token = tokenWithQuotes?.replace(/"/g, "")
+      } catch (error) {
+        console.error("Failed to parse user data:", error)
       }
-      const res = await api.get("/users", {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-      if (res.status !== 200) {
-        throw new Error("Something went wrong!")
-      }
-      return res.data.data
     }
-
-    const {
-      data: users,
-      isLoading,
-      isError,
-      error
-    } = useQuery<User[]>({
-      queryKey: ["users"],
-      queryFn: handleFetchUsers
+    const res = await api.get("/users", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     })
-
-    {
-      isError && (
-        <div className="col-span-3 text-center text-red-500 font-semibold">
-          <p>Error: {error instanceof Error ? error.message : "An error occurred"}</p>
-        </div>
-      )
+    if (res.status !== 200) {
+      throw new Error("Something went wrong!")
     }
+    return res.data.data
+  }
 
-    return (
+  const {
+    data: users,
+    isLoading,
+    isError,
+    error
+  } = useQuery<User[]>({
+    queryKey: ["users"],
+    queryFn: handleFetchUsers
+  })
+
+  {
+    isError && (
+      <div className="col-span-3 text-center text-red-500 font-semibold">
+        <p>Error: {error instanceof Error ? error.message : "An error occurred"}</p>
+      </div>
+    )
+  }
+
+  return (
+    <>
       <div className="grid items-center justify-center">
-        <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 text-center mb-5">
-          List of all users
-        </h2>
+        <h2 className="  text-3xl font-semibold tracking-tight  text-center ">List of all users</h2>
 
         {isLoading && <Loading item="users" />}
 
@@ -86,13 +77,13 @@ const UserList = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {users?.map((user,index) => (
+            {users?.map((user, index) => (
               <TableRow
                 key={user.id}
                 onClick={() => navigate(`/users/${user.id}`)}
                 className="cursor-pointer"
               >
-                <TableCell>{index+1}</TableCell>
+                <TableCell>{index + 1}</TableCell>
                 <TableCell>{user.id}</TableCell>
                 <TableCell>{user.firstName}</TableCell>
                 <TableCell>{user.lastName}</TableCell>
@@ -103,16 +94,6 @@ const UserList = () => {
           </TableBody>
         </Table>
       </div>
-    )
-  }
-  return (
-    <>
-      <Can
-        permission="USER:GET"
-        permissionType="actions"
-        yes={() => handleUserPageRender()}
-        no={() => <NoAccess />}
-      ></Can>
     </>
   )
 }

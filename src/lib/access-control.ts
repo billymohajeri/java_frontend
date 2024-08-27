@@ -29,7 +29,9 @@ export const RBAC_ROLES: RoleControl = {
       "USER:REMOVE",
       "USER:EDIT",
       "ORDER:GET",
-      "PAYMENT:GET"
+      "ORDER:EDIT",
+      "PAYMENT:GET",
+      "PAYMENT:EDIT"
     ]
   },
   USER: {

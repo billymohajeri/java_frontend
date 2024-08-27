@@ -1,7 +1,5 @@
 import api from "@/api"
-import { Can } from "@/components/Can"
 import Loading from "@/components/Loading"
-import NoAccess from "@/components/NoAccess"
 import {
   Table,
   TableBody,
@@ -16,51 +14,51 @@ import { useQuery } from "@tanstack/react-query"
 import { useNavigate } from "react-router-dom"
 
 const PaymentList = () => {
-  const RenderPage = () => {
-    const navigate = useNavigate()
+  const navigate = useNavigate()
 
-    const handleFetchPayments = async () => {
-      let token = ""
-      const user = localStorage.getItem("currentUserData")
-      if (user) {
-        try {
-          const objUser = JSON.parse(user)
-          const tokenWithQuotes = objUser?.token || null
-          token = tokenWithQuotes?.replace(/"/g, "")
-        } catch (error) {
-          console.error("Failed to parse user data:", error)
-        }
+  const handleFetchPayments = async () => {
+    let token = ""
+    const user = localStorage.getItem("currentUserData")
+    if (user) {
+      try {
+        const objUser = JSON.parse(user)
+        const tokenWithQuotes = objUser?.token || null
+        token = tokenWithQuotes?.replace(/"/g, "")
+      } catch (error) {
+        console.error("Failed to parse user data:", error)
       }
-      const res = await api.get("/payments", {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-      if (res.status !== 200) {
-        throw new Error("Something went wrong!")
-      }
-      return res.data.data
     }
-
-    const {
-      data: payments,
-      isLoading,
-      isError,
-      error
-    } = useQuery<Payment[]>({
-      queryKey: ["payments"],
-      queryFn: handleFetchPayments
+    const res = await api.get("/payments", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     })
-
-    {
-      isError && (
-        <div className="col-span-3 text-center text-red-500 font-semibold">
-          <p>Error: {error instanceof Error ? error.message : "An error occurred"}</p>
-        </div>
-      )
+    if (res.status !== 200) {
+      throw new Error("Something went wrong!")
     }
+    return res.data.data
+  }
 
-    return (
+  const {
+    data: payments,
+    isLoading,
+    isError,
+    error
+  } = useQuery<Payment[]>({
+    queryKey: ["payments"],
+    queryFn: handleFetchPayments
+  })
+
+  {
+    isError && (
+      <div className="col-span-3 text-center text-red-500 font-semibold">
+        <p>Error: {error instanceof Error ? error.message : "An error occurred"}</p>
+      </div>
+    )
+  }
+
+  return (
+    <>
       <div className="grid items-center justify-center">
         <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 text-center mb-5">
           List of all payments
@@ -98,17 +96,6 @@ const PaymentList = () => {
           </TableBody>
         </Table>
       </div>
-    )
-  }
-
-  return (
-    <>
-      <Can
-        permission="PAYMENT:GET"
-        permissionType="actions"
-        yes={() => RenderPage()}
-        no={() => <NoAccess />}
-      ></Can>
     </>
   )
 }

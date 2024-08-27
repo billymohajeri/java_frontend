@@ -34,8 +34,28 @@ const router = createBrowserRouter([
         )
       },
       { path: "/products/:id", element: <ProductDetails /> },
-      { path: "/dashboard", element: <Dashboard /> },
-      { path: "/users", element: <UserList /> },
+      {
+        path: "/dashboard",
+        element: (
+          <Can
+            permission="DASHBOARD:VIEW"
+            permissionType="views"
+            yes={() => <Dashboard />}
+            no={() => <NoAccess />}
+          />
+        )
+      },
+      {
+        path: "/users",
+        element: (
+          <Can
+            permission="USER:GET"
+            permissionType="actions"
+            yes={() => <UserList />}
+            no={() => <NoAccess />}
+          />
+        )
+      },
       {
         path: "/users/:id",
         element: (
@@ -69,8 +89,25 @@ const router = createBrowserRouter([
           />
         )
       },
-      { path: "/payments", element: <PaymentList /> },
-      { path: "/payments/:id", element: <PaymentDetails /> },
+      {
+        path: "/payments",
+        element: (
+          <Can
+            permission="PAYMENT:GET"
+            permissionType="actions"
+            yes={() => <PaymentList />}
+            no={() => <NoAccess />}
+          />
+        )
+      },
+      { path: "/payments/:id", element: (
+        <Can
+          permission="PAYMENT:EDIT"
+          permissionType="actions"
+          yes={() => <PaymentDetails />}
+          no={() => <NoAccess />}
+        />
+      ) },
       {
         path: "/products",
         element: (
