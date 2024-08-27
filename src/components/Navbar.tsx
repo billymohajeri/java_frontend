@@ -38,7 +38,7 @@ const Navbar = () => {
         <div className="p-2 flex justify-between items-center">
           <ModeToggle />
           <div className="flex  items-center">
-            {isLoggedIn && <Badge variant="destructive">{name + " (" + role + ")"}</Badge>}
+            {isLoggedIn ? (<Badge variant="destructive">{name + " (" + role + ")"}</Badge>):(<Badge>GUEST</Badge>)}
             <NavigationMenu className="p-2 flex">
               <NavigationMenuList className="flex flex-row space-x-4">
                 <NavigationMenuItem>

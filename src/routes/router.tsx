@@ -14,6 +14,7 @@ import OrderList from "@/pages/OrderList"
 import OrderDetails from "@/pages/OrderDetails"
 import PaymentList from "@/pages/PaymentList"
 import PaymentDetails from "@/pages/PaymentDetails"
+import NoAccess from "@/components/NoAccess"
 
 const router = createBrowserRouter([
   {
@@ -35,9 +36,39 @@ const router = createBrowserRouter([
       { path: "/products/:id", element: <ProductDetails /> },
       { path: "/dashboard", element: <Dashboard /> },
       { path: "/users", element: <UserList /> },
-      { path: "/users/:id", element: <UserDetails /> },
-      { path: "/orders", element: <OrderList /> },
-      { path: "/orders/:id", element: <OrderDetails /> },
+      {
+        path: "/users/:id",
+        element: (
+          <Can
+            permission="USER:EDIT"
+            permissionType="actions"
+            yes={() => <UserDetails />}
+            no={() => <NoAccess />}
+          />
+        )
+      },
+      {
+        path: "/orders",
+        element: (
+          <Can
+            permission="ORDER:GET"
+            permissionType="actions"
+            yes={() => <OrderList />}
+            no={() => <NoAccess />}
+          />
+        )
+      },
+      {
+        path: "/orders/:id",
+        element: (
+          <Can
+            permission="ORDER:EDIT"
+            permissionType="actions"
+            yes={() => <OrderDetails />}
+            no={() => <NoAccess />}
+          />
+        )
+      },
       { path: "/payments", element: <PaymentList /> },
       { path: "/payments/:id", element: <PaymentDetails /> },
       {
