@@ -26,7 +26,7 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { toast } from "@/components/ui/use-toast"
-import { Order, OrderUpdateDto } from "@/types"
+import { Order } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { Label } from "@/components/ui/label"
@@ -69,13 +69,13 @@ const OrderDetails = () => {
     return res.data.data
   }
 
-  const handleEditOrder = async (editedOrder: OrderUpdateDto) => {
+  const handleEditOrder = async () => {
     const payload = {
       comments: comments,
       status: status,
       address: address
     }
-    const res = await api.put(`/orderid}`, payload, {
+    const res = await api.put(`/orders/${id}`, payload, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -83,7 +83,6 @@ const OrderDetails = () => {
     if (res.status !== 200) {
       throw new Error("Something went wrong!")
     }
-    console.log(token)
     toast({
       title: "✅ Edited!",
       description: `Order edited successfully.`
@@ -116,9 +115,9 @@ const OrderDetails = () => {
 
   useEffect(() => {
     if (order) {
+      setComments(order.comments)
+      setStatus(order.status)
       setAddress(order.address)
-      setAddress(order.comments)
-      setAddress(order.status)
     }
   }, [order])
 
@@ -141,12 +140,16 @@ const OrderDetails = () => {
           <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 text-center mb-5">
             Order details
           </h2>
-
           <div className="bg-white shadow-md rounded-lg p-5">
             <div className="flex flex-col md:flex-row">
               <div className="md:w-2/3 mt-4 md:mt-0 md:ml-4">
                 <div className="p-4">
-                  <h5 className="text-2xl font-semibold mb-2 text-gray-900">{order.userId}</h5>
+                  <p className="text-gray-700 mb-2">
+                    <strong>Order ID:</strong> {order.id}
+                  </p>
+                  <p className="text-gray-700 mb-2">
+                    <strong>User ID:</strong> {order.userId}
+                  </p>
                   <p className="text-gray-700 mb-2">
                     <strong>Date & Time:</strong> {order.dateTime}
                   </p>
@@ -159,9 +162,6 @@ const OrderDetails = () => {
                   <p className="text-gray-700 mb-2">
                     <strong>Address:</strong> {order.address}
                   </p>
-                  <p className="text-gray-500 text-sm">
-                    <small>User ID: {order.id}</small>
-                  </p>
                 </div>
               </div>
             </div>
@@ -170,7 +170,6 @@ const OrderDetails = () => {
             <Button asChild>
               <Link to="/orders">Back to Order List</Link>
             </Button>
-
             <Dialog>
               <DialogTrigger asChild>
                 <Button>Edit</Button>
@@ -206,7 +205,6 @@ const OrderDetails = () => {
                     />
                   </div>
                 </div>
-
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="address" className="text-right">
                     Address
@@ -227,11 +225,7 @@ const OrderDetails = () => {
                   <Button
                     onClick={() => {
                       if (id) {
-                        handleEditOrder({
-                          comments,
-                          status,
-                          address
-                        })
+                        handleEditOrder()
                       }
                     }}
                   >
@@ -249,7 +243,7 @@ const OrderDetails = () => {
                 <AlertDialogHeader>
                   <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete the selected account
+                    This action cannot be undone. This will permanently delete the selected order
                     and remove its data from our servers.
                   </AlertDialogDescription>
                 </AlertDialogHeader>

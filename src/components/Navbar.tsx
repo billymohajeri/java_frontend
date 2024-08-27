@@ -71,6 +71,15 @@ const Navbar = () => {
                     </NavigationMenuItem>
                   )}
                 ></Can>
+                <Can
+                  permission="PAYMENT:GET"
+                  permissionType="actions"
+                  yes={() => (
+                    <NavigationMenuItem>
+                      <Link to="/payments">Payments</Link>
+                    </NavigationMenuItem>
+                  )}
+                ></Can>
                 <NavigationMenuItem>
                   {isLoggedIn ? (
                     <Link to="/logout" onClick={handleLogout}>

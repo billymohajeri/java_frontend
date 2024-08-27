@@ -36,11 +36,19 @@ export type Order = {
   address: string
 }
 
-export type OrderUpdateDto = {
-  comments: string
+export type Payment = {
+  id: string
+  orderId: string
+  amount: number
   status: string
-  address: string
+  method: string
 }
+
+// export type OrderUpdateDto = {
+//   comments: string
+//   status: string
+//   address: string
+// }
 
 export const ROLE = {
   Admin: "ADMIN",
