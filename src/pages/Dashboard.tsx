@@ -2,32 +2,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useQuery } from "@tanstack/react-query"
 import api from "@/api"
 import { Order, Payment, User } from "@/types"
+import { useContext } from "react"
+import { UserContext } from "@/providers/user-provider"
 
 const Dashboard = () => {
-  let token = ""
-  const user = localStorage.getItem("currentUserData")
-  if (user) {
-    try {
-      const objUser = JSON.parse(user)
-      const tokenWithQuotes = objUser?.token || null
-      token = tokenWithQuotes?.replace(/"/g, "")
-    } catch (error) {
-      console.error("Failed to parse user data:", error)
-    }
-  }
+  const context = useContext(UserContext)
+  const token = context?.token
 
   const handleFetchUsers = async () => {
-    // let token = ""
-    // const user = localStorage.getItem("currentUserData")
-    if (user) {
-      try {
-        const objUser = JSON.parse(user)
-        const tokenWithQuotes = objUser?.token || null
-        token = tokenWithQuotes?.replace(/"/g, "")
-      } catch (error) {
-        console.error("Failed to parse user data:", error)
-      }
-    }
     const res = await api.get("/users", {
       headers: {
         Authorization: `Bearer ${token}`
@@ -63,7 +45,7 @@ const Dashboard = () => {
       return res.data.data
     }
   })
-  
+
   const { data: payments, isLoading: isLoadingPayments } = useQuery<Payment[]>({
     queryKey: ["payments"],
     queryFn: async () => {

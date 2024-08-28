@@ -26,9 +26,10 @@ import {
   DialogTrigger
 } from "@/components/ui/dialog"
 import { toast } from "@/components/ui/use-toast"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
+import { UserContext } from "@/providers/user-provider"
 
 const ProductDetails = () => {
   const [name, setName] = useState("")
@@ -42,17 +43,8 @@ const ProductDetails = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
 
-  let token = ""
-  const loggedInUser = localStorage.getItem("currentUserData")
-  if (loggedInUser) {
-    try {
-      const objUser = JSON.parse(loggedInUser)
-      const tokenWithQuotes = objUser?.token || null
-      token = tokenWithQuotes?.replace(/"/g, "")
-    } catch (error) {
-      console.error("Failed to parse user data:", error)
-    }
-  }
+  const context = useContext(UserContext)
+  const token = context?.token
 
   const handleFetchProduct = async () => {
     const res = await api.get(`/products/${id}`)

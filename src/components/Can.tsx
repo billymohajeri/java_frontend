@@ -1,10 +1,12 @@
+import { useContext } from "react"
 import {
-  Role,
   ResourcePermission,
   PagePermission,
   PermissionCategory,
-  RBAC_ROLES
+  RBAC_ROLES,
+  Role
 } from "../lib/access-control"
+import { UserContext } from "@/providers/user-provider"
 
 const checkPermission = (
   role: Role,
@@ -58,16 +60,14 @@ type CanProp = {
 }
 
 export const Can = ({ permission, permissionType, yes, no = () => null }: CanProp) => {
-  const user = localStorage.getItem("currentUserData")
+  const context = useContext(UserContext)
 
-  let USER_ROLE = null
-
-  if (user) {
-    try {
-      const objUser = JSON.parse(user)
-      USER_ROLE = objUser?.user?.role || null
-    } catch (error) {
-      console.error("Failed to parse user data:", error)
+  let USER_ROLE: Role = "GUEST"
+  if (context && context.user?.role) {
+    if (context.user.role === "ADMIN") {
+      USER_ROLE = "ADMIN"
+    } else {
+      USER_ROLE = "USER"
     }
   }
 

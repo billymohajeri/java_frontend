@@ -4,32 +4,26 @@ import { ThemeProvider } from "./ui/theme-provider"
 import { Can } from "./Can"
 import { LogIn, LogOut } from "lucide-react"
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "./ui/navigation-menu"
-import { createContext, useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { Badge } from "./ui/badge"
-
-export const AuthContext = createContext(null)
+import { UserContext } from "../providers/user-provider"
 
 const Navbar = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [role, setRole] = useState("USER")
-  const [name, setName] = useState("")
+  const [badge, setBadge] = useState({ name: "", role: "" })
+  const context = useContext(UserContext)
+  if (!context) {
+    return null
+  }
+  const { user, logout } = context
 
   useEffect(() => {
-    const user = localStorage.getItem("currentUserData")
     if (user) {
-      const userObject = JSON.parse(user)
-      if (userObject && userObject.user && userObject.token) {
-        const token = userObject.token
-        setIsLoggedIn(!!token)
-        setName(userObject.user.firstName)
-        setRole(userObject.user.role)
-      }
+      setBadge({ name: user.firstName, role: user.role })
     }
-  }, [isLoggedIn])
+  }, [context.user?.role])
 
   const handleLogout = () => {
-    localStorage.removeItem("currentUserData")
-    setIsLoggedIn(false)
+    logout()
   }
 
   return (
@@ -37,8 +31,12 @@ const Navbar = () => {
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <div className="p-2 flex justify-between items-center">
           <ModeToggle />
-          <div className="flex  items-center">
-            {isLoggedIn ? (<Badge variant="destructive">{name + " (" + role + ")"}</Badge>):(<Badge>GUEST</Badge>)}
+          <div className="flex items-center">
+            {context.user ? (
+              <Badge variant="destructive">{badge.name + " (" + badge.role + ")"}</Badge>
+            ) : (
+              <Badge>GUEST</Badge>
+            )}
             <NavigationMenu className="p-2 flex">
               <NavigationMenuList className="flex flex-row space-x-4">
                 <NavigationMenuItem>
@@ -81,8 +79,8 @@ const Navbar = () => {
                   )}
                 ></Can>
                 <NavigationMenuItem>
-                  {isLoggedIn ? (
-                    <Link to="/logout" onClick={handleLogout}>
+                  {context.user ? (
+                    <Link to="/" onClick={handleLogout}>
                       <LogOut />
                     </Link>
                   ) : (

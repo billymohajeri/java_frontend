@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom"
 
 import api from "@/api"
-import { Can } from "@/components/Can"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -24,8 +23,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { toast } from "@/components/ui/use-toast"
 import { saveDataToLocalStorage } from "@/lib/utils"
-import { useMutation } from "@tanstack/react-query"
-import { useState } from "react"
+import { ChangeEvent, FormEvent, useState } from "react"
 
 const renderRegister = () => {
   return (
@@ -95,32 +93,26 @@ const renderRegister = () => {
 }
 
 const Login = () => {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [credentials, setCredentials] = useState({
+    email: "",
+    password: ""
+  })
+
   const navigate = useNavigate()
 
-  const handleLogin = async () => {
-    const payload = {
-      email: email,
-      password: password
-    }
+  const handleLogin = async (e: FormEvent) => {
+    e.preventDefault()
     try {
-      const response = await api.post(`/users/login`, payload)
+      const response = await api.post(`/users/login`, credentials)
       if (response.status === 200) {
-        setEmail("")
-        setPassword("")
-        
         toast({
           title: "✅ Login successful!",
           description: `Welcome ${response.data.data.user.firstName}`
         })
-        
 
         navigate("/")
-        const userData = response.data.data
-        saveDataToLocalStorage("currentUserData", userData)
-        return userData
+        const token = response.data.data.token
+        saveDataToLocalStorage("token", token)
       } else {
         toast({
           title: "❌ Login failed!",
@@ -138,58 +130,62 @@ const Login = () => {
     }
   }
 
-  const loginMutation = useMutation({ mutationFn: handleLogin })
-
-  const onSubmit = () => {
-    loginMutation.mutate()
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setCredentials((prevState) => ({
+      ...prevState,
+      [name]: value
+    }))
   }
 
   return (
     <div className="flex items-center justify-center">
-      <Tabs defaultValue="login" className="w-[400px] ">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="login">Login</TabsTrigger>
-          <TabsTrigger value="register">Register</TabsTrigger>
-        </TabsList>
-        <TabsContent value="login">
-          <Card>
-            <CardHeader>
-              <CardTitle>Login</CardTitle>
-              <CardDescription>Enter your credentials to access your account.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="space-y-1">
-                <Label htmlFor="email">Email*</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  required
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="password">Password*</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  value={password}
-                  required
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-            </CardContent>
-            <CardFooter className="justify-center">
-              <Button onClick={onSubmit} disabled={loginMutation.isPending}>
-                {loginMutation.isPending ? "Logging in..." : "Login"}
-              </Button>
-            </CardFooter>
-          </Card>
-        </TabsContent>
-        {renderRegister()}
-      </Tabs>
+      <form onSubmit={handleLogin}>
+        <Tabs defaultValue="login" className="w-[400px] ">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="login">Login</TabsTrigger>
+            <TabsTrigger value="register">Register</TabsTrigger>
+          </TabsList>
+          <TabsContent value="login">
+            <Card>
+              <CardHeader>
+                <CardTitle>Login</CardTitle>
+                <CardDescription>Enter your credentials to access your account.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="space-y-1">
+                  <Label htmlFor="email">Email*</Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="Enter your email"
+                    value={credentials.email}
+                    required
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="password">Password*</Label>
+                  <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    placeholder="Enter your password"
+                    value={credentials.password}
+                    required
+                    onChange={handleChange}
+                  />
+                </div>
+              </CardContent>
+              <CardFooter className="justify-center">
+                <Button type="submit">Login</Button>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+          {renderRegister()}
+        </Tabs>
+      </form>
     </div>
   )
 }

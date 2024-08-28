@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import api from "@/api"
 
 import { Can } from "@/components/Can"
@@ -32,6 +32,7 @@ import { useQuery } from "@tanstack/react-query"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
+import { UserContext } from "@/providers/user-provider"
 
 const UserDetails = () => {
   const [firstName, setFirstName] = useState("")
@@ -43,22 +44,13 @@ const UserDetails = () => {
   const [role, setRole] = useState("")
 
   const navigate = useNavigate()
+  const context = useContext(UserContext)
+  const token = context?.token
 
   const { id } = useParams<{ id: string }>()
-  let token = ""
-  const loggedInUser = localStorage.getItem("currentUserData")
-  if (loggedInUser) {
-    try {
-      const objUser = JSON.parse(loggedInUser)
-      const tokenWithQuotes = objUser?.token || null
-      token = tokenWithQuotes?.replace(/"/g, "")
-    } catch (error) {
-      console.error("Failed to parse user data:", error)
-    }
-  }
 
   const handleDeleteUser = async () => {
-    console.log(token);
+    console.log(token)
     const res = await api.delete(`/users/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`
@@ -92,10 +84,9 @@ const UserDetails = () => {
       }
     })
     if (res.status !== 200) {
-        
       throw new Error("Something went wrong!")
     }
-    console.log(token);
+    console.log(token)
     toast({
       title: "✅ Edited!",
       description: `User "${res.data.data.firstName}" edited successfully.`

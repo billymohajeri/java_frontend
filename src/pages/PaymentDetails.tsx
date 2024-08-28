@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import api from "@/api"
 
 import Loading from "@/components/Loading"
@@ -38,6 +38,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select"
+import { UserContext } from "@/providers/user-provider"
 
 const PaymentDetails = () => {
   const [amount, setAmount] = useState(0)
@@ -47,17 +48,8 @@ const PaymentDetails = () => {
   const navigate = useNavigate()
 
   const { id } = useParams<{ id: string }>()
-  let token = ""
-  const loggedInUser = localStorage.getItem("currentUserData")
-  if (loggedInUser) {
-    try {
-      const objUser = JSON.parse(loggedInUser)
-      const tokenWithQuotes = objUser?.token || null
-      token = tokenWithQuotes?.replace(/"/g, "")
-    } catch (error) {
-      console.error("Failed to parse user data:", error)
-    }
-  }
+  const context = useContext(UserContext)
+  const token = context?.token
 
   const handleDeletePayment = async () => {
     const res = await api.delete(`/payments/${id}`, {
@@ -227,7 +219,7 @@ const PaymentDetails = () => {
                     </Label>
                     <Select onValueChange={(value) => setMethod(value)}>
                       <SelectTrigger id="method" className="col-span-3">
-                        <SelectValue placeholder={method}  />
+                        <SelectValue placeholder={method} />
                       </SelectTrigger>
                       <SelectContent>
                         {paymentMethod.map((method) => (

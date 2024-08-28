@@ -1,4 +1,4 @@
-export type Role = "ADMIN" | "USER"
+export type Role = "ADMIN" | "USER" | "GUEST"
 
 export type RoleControl = {
   [key: string]: {

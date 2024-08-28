@@ -9,25 +9,17 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table"
+import { UserContext } from "@/providers/user-provider"
 import { User } from "@/types"
 import { useQuery } from "@tanstack/react-query"
+import { useContext } from "react"
 import { useNavigate } from "react-router-dom"
 
 const UserList = () => {
   const navigate = useNavigate()
-
+  const context = useContext(UserContext)
+  const token = context?.token
   const handleFetchUsers = async () => {
-    let token = ""
-    const user = localStorage.getItem("currentUserData")
-    if (user) {
-      try {
-        const objUser = JSON.parse(user)
-        const tokenWithQuotes = objUser?.token || null
-        token = tokenWithQuotes?.replace(/"/g, "")
-      } catch (error) {
-        console.error("Failed to parse user data:", error)
-      }
-    }
     const res = await api.get("/users", {
       headers: {
         Authorization: `Bearer ${token}`

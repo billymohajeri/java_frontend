@@ -44,16 +44,22 @@ export type Payment = {
   method: string
 }
 
-// export type OrderUpdateDto = {
-//   comments: string
-//   status: string
-//   address: string
-// }
+export type Token = {
+  sub: string
+  userId: string
+}
 
 export const ROLE = {
   Admin: "ADMIN",
-  User: "USER"
+  User: "USER",
+  Guest: "GUEST"
 } as const
+
+export type UserContextType = {
+  user: User | null
+  token: string | null
+  logout: () => void;
+}
 
 export type DecodedUser = {
   aud: string
