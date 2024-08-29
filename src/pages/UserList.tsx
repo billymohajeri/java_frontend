@@ -108,24 +108,6 @@ const UserList = () => {
     )
   }
 
-  // const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   setPassword(e.target.value)
-  //   setPasswordError("")
-  // }
-
-  // const handleConfirmPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   setConfirmPassword(e.target.value)
-  //   setPasswordError("")
-  // }
-
-  // const validatePasswords = () => {
-  //   if (password !== confirmPassword) {
-  //     setPasswordError("Passwords do not match")
-  //   } else {
-  //     setPasswordError("")
-  //   }
-  // }
-
   return (
     <>
       <div className="grid items-center justify-center">
@@ -193,7 +175,7 @@ const UserList = () => {
                   type="password"
                 />
               </div>
-              
+
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="confirmPassword" className="text-right">
                   Confirm Password *
@@ -207,56 +189,55 @@ const UserList = () => {
                   type="password"
                 />
               </div>
-                {passwordError && <p className="text-red-400">{passwordError}</p>}
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="role" className="text-right">
-                  Role *
-                </Label>
-                <Input
-                  id="role"
-                  name="role"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  className="col-span-3"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="address" className="text-right">
-                  Address
-                </Label>
-                <Input
-                  id="address"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  className="col-span-3"
-                />
-              </div>
+              {passwordError && <p className="text-red-400">{passwordError}</p>}
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="role" className="text-right">
+                Role *
+              </Label>
+              <Input
+                id="role"
+                name="role"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="address" className="text-right">
+                Address
+              </Label>
+              <Input
+                id="address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                className="col-span-3"
+              />
+            </div>
 
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="phoneNumber" className="text-right">
-                  Phone Number *
-                </Label>
-                <Input
-                  id="phoneNumber"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="col-span-3"
-                />
-              </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="phoneNumber" className="text-right">
+                Phone Number *
+              </Label>
+              <Input
+                id="phoneNumber"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                className="col-span-3"
+              />
+            </div>
 
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="birthDate" className="text-right">
-                  Birth Date *
-                </Label>
-                <Input
-                  id="birthDate"
-                  value={birthDate}
-                  onChange={(e) => setBirthDate(e.target.value)}
-                  className="col-span-3"
-                />
-              </div>
-            
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="birthDate" className="text-right">
+                Birth Date *
+              </Label>
+              <Input
+                id="birthDate"
+                value={birthDate}
+                onChange={(e) => setBirthDate(e.target.value)}
+                className="col-span-3"
+              />
+            </div>
 
             <DialogFooter>
               <DialogClose asChild>

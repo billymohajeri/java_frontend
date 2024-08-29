@@ -2,20 +2,29 @@ export const routeNames = {
   Public: {
     login: "/login",
     register: "/register",
-    home: "/home",
     pageNotFound: "/page-not-found",
-    contact: "/contact",
-    productDetails: "/products/",
-    logout: "/logout"
+    logout: "/logout",
+    productParent: "/products",
+    productDetails: "/products/:id"
   },
+
   User: {
-    parentRoute: "/users", 
-    details: "/users/:id", 
+    parent: "/users",
+    details: "/users/:id",
     profile: "/user/profile"
   },
+
   Admin: {
-    parentRoute: "/admin",
-    profile: "/admin/profile",
-    products: "/admin/products"
+    dashboard: "/dashboard",
+  },
+
+  Order: {
+    parent: "/orders",
+    details: "/orders/:id"
+  },
+
+  Payment: {
+    parent: "/payments",
+    details: "/payments/:id"
   }
 }

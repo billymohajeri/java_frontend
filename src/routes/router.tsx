@@ -17,7 +17,7 @@ import PaymentDetails from "@/pages/PaymentDetails"
 import NoAccess from "@/components/NoAccess"
 import { routeNames } from "./routeNames"
 
-const { User } = routeNames;
+const { Public, User, Order, Payment, Admin } = routeNames
 const router = createBrowserRouter([
   {
     path: "/",
@@ -35,9 +35,9 @@ const router = createBrowserRouter([
           />
         )
       },
-      { path: "/products/:id", element: <ProductDetails /> },
+      { path: Public.productDetails, element: <ProductDetails /> },
       {
-        path: "/dashboard",
+        path: Admin.dashboard,
         element: (
           <Can
             permission="DASHBOARD:VIEW"
@@ -48,7 +48,7 @@ const router = createBrowserRouter([
         )
       },
       {
-        path: User.parentRoute,
+        path: User.parent,
         element: (
           <Can
             permission="USER:GET"
@@ -70,7 +70,7 @@ const router = createBrowserRouter([
         )
       },
       {
-        path: "/orders",
+        path: Order.parent,
         element: (
           <Can
             permission="ORDER:GET"
@@ -81,7 +81,7 @@ const router = createBrowserRouter([
         )
       },
       {
-        path: "/orders/:id",
+        path: Order.details,
         element: (
           <Can
             permission="ORDER:EDIT"
@@ -92,7 +92,7 @@ const router = createBrowserRouter([
         )
       },
       {
-        path: "/payments",
+        path: Payment.parent,
         element: (
           <Can
             permission="PAYMENT:GET"
@@ -102,16 +102,30 @@ const router = createBrowserRouter([
           />
         )
       },
-      { path: "/payments/:id", element: (
-        <Can
-          permission="PAYMENT:EDIT"
-          permissionType="actions"
-          yes={() => <PaymentDetails />}
-          no={() => <NoAccess />}
-        />
-      ) },
       {
-        path: "/products",
+        path: Payment.details,
+        element: (
+          <Can
+            permission="PAYMENT:EDIT"
+            permissionType="actions"
+            yes={() => <PaymentDetails />}
+            no={() => <NoAccess />}
+          />
+        )
+      },
+      {
+        path: Public.productDetails,
+        element: (
+          <Can
+            permission="PAYMENT:EDIT"
+            permissionType="actions"
+            yes={() => <PaymentDetails />}
+            no={() => <NoAccess />}
+          />
+        )
+      },
+      {
+        path: Public.productParent,
         element: (
           <Can
             permission="PRODUCT:ADD"
@@ -121,7 +135,7 @@ const router = createBrowserRouter([
           />
         )
       },
-      { path: "/login", element: <Login /> }
+      { path: Public.login, element: <Login /> }
     ]
   }
 ])
