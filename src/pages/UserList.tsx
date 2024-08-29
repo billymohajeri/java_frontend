@@ -42,7 +42,7 @@ const UserList = () => {
   const [confirmPassword, setConfirmPassword] = useState("")
   const [passwordError, setPasswordError] = useState("")
 
-  const handleAddUser = async (adddUser: AddUser) => {
+  const handleAddUser = async (addUser: AddUser) => {
     const result = passwordSchema.safeParse({ password, confirmPassword })
 
     if (!result.success) {
@@ -52,17 +52,7 @@ const UserList = () => {
       setPasswordError("")
     }
 
-    const payload = {
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      address: address,
-      phoneNumber: phoneNumber,
-      birthDate: birthDate,
-      role: role,
-      password: password
-    }
-    const res = await api.post(`/users/register`, payload)
+    const res = await api.post(`/users/register`, addUser)
     if (res.status !== 200) {
       throw new Error("Something went wrong!")
     }
@@ -71,7 +61,7 @@ const UserList = () => {
       title: "✅ Added!",
       description: `User "${res.data.data.firstName}" added successfully.`
     })
-    navigate("/users")
+    navigate("/users#")
     return res.data.data
   }
 
@@ -224,6 +214,7 @@ const UserList = () => {
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 className="col-span-3"
+                type="tel"
               />
             </div>
 
@@ -252,7 +243,7 @@ const UserList = () => {
                     lastName,
                     email,
                     address,
-                    phoneNumber: parseInt(phoneNumber),
+                    phoneNumber:phoneNumber,
                     birthDate,
                     role,
                     password
