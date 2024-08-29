@@ -26,6 +26,27 @@ export type User = {
   birthDate: string
   role: string
 }
+export type EditUser = {
+  id: string
+  firstName: string
+  lastName: string
+  address: string
+  email: string
+  phoneNumber: number
+  birthDate: string
+  role: string
+}
+
+export type AddUser = {
+  firstName: string
+  lastName: string
+  address: string
+  email: string
+  phoneNumber: number
+  birthDate: string
+  role: string
+  password: string
+}
 
 export type Order = {
   id: string
@@ -58,7 +79,7 @@ export const ROLE = {
 export type UserContextType = {
   user: User | null
   token: string | null
-  logout: () => void;
+  logout: () => void
 }
 
 export type DecodedUser = {

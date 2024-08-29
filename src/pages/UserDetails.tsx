@@ -27,7 +27,7 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { toast } from "@/components/ui/use-toast"
-import { User } from "@/types"
+import { EditUser } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { Label } from "@/components/ui/label"
@@ -67,7 +67,7 @@ const UserDetails = () => {
     return res.data.data
   }
 
-  const handleEditUser = async (editedUser: User) => {
+  const handleEditUser = async (editedUser: EditUser) => {
     const payload = {
       id: id,
       firstName: firstName,
@@ -112,7 +112,7 @@ const UserDetails = () => {
     isLoading,
     isError,
     error
-  } = useQuery<User>({
+  } = useQuery<EditUser>({
     queryKey: ["user", id],
     queryFn: handleFetchUser
   })

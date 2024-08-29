@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useEffect, useState } from "react"
-import { Token,  UserContextType } from "../types"
+import { Token, UserContextType } from "../types"
 import jwtDecode from "jwt-decode"
 import { useUserDetails } from "@/hooks/useUserDetails"
 
@@ -9,9 +9,9 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [userId, setUserId] = useState("")
   const tokenWithQuotes = localStorage.getItem("token")
   const myToken = tokenWithQuotes?.replace(/"/g, "") || null
-  const [token, setToken] = useState<string | null>(myToken);
+  const [token, setToken] = useState<string | null>(myToken)
 
-    const handleDecodeUser = (token: string): Token | null => {
+  const handleDecodeUser = (token: string): Token | null => {
     try {
       const decodedToken = jwtDecode<Token>(token)
       return decodedToken
@@ -31,12 +31,15 @@ export function UserProvider({ children }: { children: ReactNode }) {
   }, [token])
 
   const logout = () => {
-    localStorage.removeItem("token");
-    setToken(null);
-    setUserId("");
-  };
+    localStorage.removeItem("token")
+    setToken(null)
+    setUserId("")
+  }
 
+ 
   const { data: user } = useUserDetails(userId as string, token as string)
 
-  return <UserContext.Provider value={{ user, token,logout  }}>{children}</UserContext.Provider>
+  return (
+    <UserContext.Provider value={{ user, token, logout }}>{children}</UserContext.Provider>
+  )
 }

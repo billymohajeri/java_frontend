@@ -25,73 +25,6 @@ import { toast } from "@/components/ui/use-toast"
 import { saveDataToLocalStorage } from "@/lib/utils"
 import { ChangeEvent, FormEvent, useState } from "react"
 
-const renderRegister = () => {
-  return (
-    <TabsContent value="register">
-      <Card>
-        <CardHeader>
-          <CardTitle>Register</CardTitle>
-          <CardDescription>Fields marked with * are required</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          <CardContent className="space-y-2">
-            <div className="space-y-1">
-              <Label htmlFor="firstName">First Name*</Label>
-              <Input id="firstName" type="text" placeholder="Enter your first name" />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="lastName">Last Name*</Label>
-              <Input id="lastName" type="text" placeholder="Enter your last name" />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="address">Address</Label>
-              <Input id="address" type="text" placeholder="Enter your address" />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="email">Email*</Label>
-              <Input id="email" type="email" placeholder="Enter your email" />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="phoneNumber">Phone Number</Label>
-              <Input id="phoneNumber" type="tel" placeholder="Enter your phone number" />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="birthDate">Birth Date</Label>
-              <Input id="birthDate" type="date" />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="role">Role*</Label>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="USER">User</SelectItem>
-                    <SelectItem value="ADMIN">Admin</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1"></div>
-            <div className="space-y-1">
-              <Label htmlFor="password">Password*</Label>
-              <Input id="password" type="password" placeholder="Enter your password" />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="repeatPassword">Retype Password*</Label>
-              <Input id="repeatPassword" type="password" placeholder="Retype your password" />
-            </div>
-          </CardContent>
-        </CardContent>
-        <CardFooter className="justify-center">
-          <Button>Register</Button>
-        </CardFooter>
-      </Card>
-    </TabsContent>
-  )
-}
-
 const Login = () => {
   const [credentials, setCredentials] = useState({
     email: "",
@@ -110,7 +43,6 @@ const Login = () => {
           description: `Welcome ${response.data.data.user.firstName}`
         })
 
-        navigate("/")
         const token = response.data.data.token
         saveDataToLocalStorage("token", token)
       } else {
@@ -128,6 +60,7 @@ const Login = () => {
       console.error("Login request failed with error:", error)
       throw error
     }
+    navigate("/")
   }
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -183,7 +116,69 @@ const Login = () => {
               </CardFooter>
             </Card>
           </TabsContent>
-          {renderRegister()}
+
+          <TabsContent value="register">
+            <Card>
+              <CardHeader>
+                <CardTitle>Register</CardTitle>
+                <CardDescription>Fields marked with * are required</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <CardContent className="space-y-2">
+                  <div className="space-y-1">
+                    <Label htmlFor="firstName">First Name*</Label>
+                    <Input id="firstName" type="text" placeholder="Enter your first name" />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="lastName">Last Name*</Label>
+                    <Input id="lastName" type="text" placeholder="Enter your last name" />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="address">Address</Label>
+                    <Input id="address" type="text" placeholder="Enter your address" />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="email">Email*</Label>
+                    <Input id="email" type="email" placeholder="Enter your email" />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="phoneNumber">Phone Number</Label>
+                    <Input id="phoneNumber" type="tel" placeholder="Enter your phone number" />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="birthDate">Birth Date</Label>
+                    <Input id="birthDate" type="date" />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="role">Role*</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="USER">User</SelectItem>
+                          <SelectItem value="ADMIN">Admin</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1"></div>
+                  <div className="space-y-1">
+                    <Label htmlFor="password">Password*</Label>
+                    <Input id="password" type="password" placeholder="Enter your password" />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="repeatPassword">Retype Password*</Label>
+                    <Input id="repeatPassword" type="password" placeholder="Retype your password" />
+                  </div>
+                </CardContent>
+              </CardContent>
+              <CardFooter className="justify-center">
+                <Button>Register</Button>
+              </CardFooter>
+            </Card>
+          </TabsContent>
         </Tabs>
       </form>
     </div>

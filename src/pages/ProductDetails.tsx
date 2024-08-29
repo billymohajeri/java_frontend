@@ -1,4 +1,5 @@
 import api from "@/api"
+import {z} from "zod"
 import { Can } from "@/components/Can"
 import { Button } from "@/components/ui/button"
 import { Product } from "@/types"
@@ -107,6 +108,11 @@ const ProductDetails = () => {
     navigate("/products")
     return res.data.data
   }
+
+
+  const newProductSchema = z.string();
+
+
 
   useEffect(() => {
     if (product) {

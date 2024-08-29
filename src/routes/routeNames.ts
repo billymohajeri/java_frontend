@@ -9,7 +9,8 @@ export const routeNames = {
     logout: "/logout"
   },
   User: {
-    parentRoute: "/user",
+    parentRoute: "/users", 
+    details: "/users/:id", 
     profile: "/user/profile"
   },
   Admin: {

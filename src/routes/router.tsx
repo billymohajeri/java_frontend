@@ -15,7 +15,9 @@ import OrderDetails from "@/pages/OrderDetails"
 import PaymentList from "@/pages/PaymentList"
 import PaymentDetails from "@/pages/PaymentDetails"
 import NoAccess from "@/components/NoAccess"
+import { routeNames } from "./routeNames"
 
+const { User } = routeNames;
 const router = createBrowserRouter([
   {
     path: "/",
@@ -46,7 +48,7 @@ const router = createBrowserRouter([
         )
       },
       {
-        path: "/users",
+        path: User.parentRoute,
         element: (
           <Can
             permission="USER:GET"
@@ -57,7 +59,7 @@ const router = createBrowserRouter([
         )
       },
       {
-        path: "/users/:id",
+        path: User.details,
         element: (
           <Can
             permission="USER:EDIT"
