@@ -24,11 +24,13 @@ import {
 } from "@/components/ui/table"
 import { toast } from "@/components/ui/use-toast"
 import { UserContext } from "@/providers/user-provider"
-import { passwordSchema } from "@/schemas/user"
+import { userSchema } from "@/schemas/user"
 import { User, AddUser } from "@/types"
 import { useQuery } from "@tanstack/react-query"
+import { UserPlusIcon } from "lucide-react"
 import { useContext, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { ZodIssue } from "zod"
 
 const UserList = () => {
   const [firstName, setFirstName] = useState("")
@@ -40,17 +42,27 @@ const UserList = () => {
   const [role, setRole] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
-  const [passwordError, setPasswordError] = useState("")
+  const [validationErrors, setValidationErrors] = useState<ZodIssue[]>([])
+  const [open, setOpen] = useState(false)
 
   const handleAddUser = async (addUser: AddUser) => {
-    const result = passwordSchema.safeParse({ password, confirmPassword })
+    console.log(addUser);
+    const result = userSchema.safeParse(addUser)
 
     if (!result.success) {
-      setPasswordError(result.error.errors[0].message)
-      console.log(passwordError)
+      console.log(result.error.errors);
+      console.log(result.error.errors[0]);
+      console.log(result.error);
+
+      setValidationErrors(result.error.errors)
+      console.log(validationErrors)
     } else {
-      setPasswordError("")
+      setValidationErrors([])
     }
+
+
+  
+
 
     const res = await api.post(`/users/register`, addUser)
     if (res.status !== 200) {
@@ -61,7 +73,7 @@ const UserList = () => {
       title: "✅ Added!",
       description: `User "${res.data.data.firstName}" added successfully.`
     })
-    navigate("/users#")
+    setOpen(false)
     return res.data.data
   }
 
@@ -98,14 +110,24 @@ const UserList = () => {
     )
   }
 
+  const errorsAsObject = validationErrors.reduce((validationErrors, validationError) => {
+    return {
+      ...validationErrors,
+      [validationError.path[0]]: validationError.message
+    }
+  }, {} as { [key: string]: string })
+
   return (
     <>
       <div className="grid items-center justify-center">
         <h2 className="text-3xl font-semibold tracking-tight text-center">List of all users</h2>
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <div className="grid items-center justify-center my-5">
-              <Button>➕ Add User</Button>
+              <Button>
+                <UserPlusIcon className="mr-4" />
+                Add User
+              </Button>
             </div>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
@@ -128,6 +150,7 @@ const UserList = () => {
                   className="col-span-3"
                 />
               </div>
+                {errorsAsObject["firstName"] && <p className="text-red-400">{errorsAsObject["firstName"]}</p>}
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="lastName" className="text-right">
                   Last Name *
@@ -140,6 +163,7 @@ const UserList = () => {
                   className="col-span-3"
                 />
               </div>
+              {errorsAsObject["lastName"] && <span className="text-red-400">{errorsAsObject["lastName"]}</span>}
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="email" className="text-right">
                   Email *
@@ -179,7 +203,6 @@ const UserList = () => {
                   type="password"
                 />
               </div>
-              {passwordError && <p className="text-red-400">{passwordError}</p>}
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="role" className="text-right">
@@ -243,7 +266,7 @@ const UserList = () => {
                     lastName,
                     email,
                     address,
-                    phoneNumber:phoneNumber,
+                    phoneNumber,
                     birthDate,
                     role,
                     password
@@ -278,7 +301,7 @@ const UserList = () => {
                 className="cursor-pointer"
               >
                 <TableCell>{index + 1}</TableCell>
-                <TableCell>{user.id}</TableCell>
+                <TableCell>{user.id.substring(0, 5)}...</TableCell>
                 <TableCell>{user.firstName}</TableCell>
                 <TableCell>{user.lastName}</TableCell>
                 <TableCell>{user.email}</TableCell>

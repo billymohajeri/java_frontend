@@ -1,7 +1,9 @@
 import { z } from "zod"
 
-export const passwordSchema = z
+export const userSchema = z
   .object({
+    firstName: z.string().min(1, "First Name cannot be empty"),
+    lastName: z.string().min(1, "Last Name cannot be empty"),
     password: z
       .string()
       .min(1, "Password cannot be empty")
