@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   Table,
   TableBody,
@@ -46,23 +47,19 @@ const UserList = () => {
   const [open, setOpen] = useState(false)
 
   const handleAddUser = async (addUser: AddUser) => {
-    console.log(addUser);
+    console.log(addUser)
     const result = userSchema.safeParse(addUser)
 
     if (!result.success) {
-      console.log(result.error.errors);
-      console.log(result.error.errors[0]);
-      console.log(result.error);
+      console.log(result.error.errors)
+      console.log(result.error.errors[0])
+      console.log(result.error)
 
       setValidationErrors(result.error.errors)
       console.log(validationErrors)
     } else {
       setValidationErrors([])
     }
-
-
-  
-
 
     const res = await api.post(`/users/register`, addUser)
     if (res.status !== 200) {
@@ -130,7 +127,7 @@ const UserList = () => {
               </Button>
             </div>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="sm:max-w-[450px] overflow-y-scroll max-h-screen">
             <DialogHeader>
               <DialogTitle>Add User</DialogTitle>
               <DialogDescription>
@@ -150,7 +147,9 @@ const UserList = () => {
                   className="col-span-3"
                 />
               </div>
-                {errorsAsObject["firstName"] && <p className="text-red-400">{errorsAsObject["firstName"]}</p>}
+              {errorsAsObject["firstName"] && (
+                <p className="text-red-400">{errorsAsObject["firstName"]}</p>
+              )}
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="lastName" className="text-right">
                   Last Name *
@@ -163,7 +162,9 @@ const UserList = () => {
                   className="col-span-3"
                 />
               </div>
-              {errorsAsObject["lastName"] && <span className="text-red-400">{errorsAsObject["lastName"]}</span>}
+              {errorsAsObject["lastName"] && (
+                <p className="text-red-400">{errorsAsObject["lastName"]}</p>
+              )}
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="email" className="text-right">
                   Email *
@@ -176,6 +177,7 @@ const UserList = () => {
                   className="col-span-3"
                 />
               </div>
+              {errorsAsObject["email"] && <p className="text-red-400">{errorsAsObject["email"]}</p>}
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="password" className="text-right">
                   Password *
@@ -189,7 +191,7 @@ const UserList = () => {
                   type="password"
                 />
               </div>
-
+              {errorsAsObject["password"] && <p className="text-red-400">{errorsAsObject["password"]}</p>}
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="confirmPassword" className="text-right">
                   Confirm Password *
@@ -203,6 +205,7 @@ const UserList = () => {
                   type="password"
                 />
               </div>
+              {errorsAsObject["confirmPassword"] && <p className="text-red-400">{errorsAsObject["confirmPassword"]}</p>}
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="role" className="text-right">
@@ -240,7 +243,7 @@ const UserList = () => {
                 type="tel"
               />
             </div>
-
+            {errorsAsObject["phoneNumber"] && <p className="text-red-400">{errorsAsObject["phoneNumber"]}</p>}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="birthDate" className="text-right">
                 Birth Date *
@@ -252,7 +255,7 @@ const UserList = () => {
                 className="col-span-3"
               />
             </div>
-
+            {errorsAsObject["birthDate"] && <p className="text-red-400">{errorsAsObject["birthDate"]}</p>}
             <DialogFooter>
               <DialogClose asChild>
                 <Button type="button" variant="secondary">
