@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   Table,
   TableBody,
@@ -24,10 +23,12 @@ import {
   TableRow
 } from "@/components/ui/table"
 import { toast } from "@/components/ui/use-toast"
+import { convertToServerDateFormat } from "@/lib/dateUtility"
 import { UserContext } from "@/providers/user-provider"
 import { userSchema } from "@/schemas/user"
 import { User, AddUser } from "@/types"
 import { useQuery } from "@tanstack/react-query"
+import { format, parse } from "date-fns"
 import { UserPlusIcon } from "lucide-react"
 import { useContext, useState } from "react"
 import { useNavigate } from "react-router-dom"
@@ -47,33 +48,45 @@ const UserList = () => {
   const [open, setOpen] = useState(false)
 
   const handleAddUser = async (addUser: AddUser) => {
-    console.log(addUser)
     const result = userSchema.safeParse(addUser)
 
-    if (!result.success) {
-      console.log(result.error.errors)
-      console.log(result.error.errors[0])
-      console.log(result.error)
+    console.log(addUser)
+    setBirthDate(convertToServerDateFormat(birthDate))
+    console.log("birthDate", birthDate)
 
+    if (!result.success) {
       setValidationErrors(result.error.errors)
-      console.log(validationErrors)
+      console.log("result.error.errors", result.error.errors)
     } else {
       setValidationErrors([])
-    }
 
-    const res = await api.post(`/users/register`, addUser)
-    if (res.status !== 200) {
-      throw new Error("Something went wrong!")
+      try {
+        const res = await api.post(`/users/register`, addUser)
+        console.log("res", res)
+        if (res.data.status == 200) {
+          toast({
+            title: "✅ Added!",
+            description: `User "${res.data.data.firstName}" added successfully.`
+          })
+          setOpen(false)
+          return res.data.data
+        } else {
+          // toast({
+          //   title: "❌ Login failed!",
+          //   description: `${res.status}`
+          // })
+          // throw new Error("Login failed with status: " + res.status)
+        }
+      } catch (error: any) {
+        toast({
+          title: "❌ Adding user failed!",
+          description: `${error.response.data.error.message}`
+        })
+        console.log("Adding user  request failed with error:", error.response.data.error.message)
+        throw error
+      }
     }
-    console.log(token)
-    toast({
-      title: "✅ Added!",
-      description: `User "${res.data.data.firstName}" added successfully.`
-    })
-    setOpen(false)
-    return res.data.data
   }
-
   const navigate = useNavigate()
   const context = useContext(UserContext)
   const token = context?.token
@@ -113,6 +126,24 @@ const UserList = () => {
       [validationError.path[0]]: validationError.message
     }
   }, {} as { [key: string]: string })
+
+  // const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const selectedDate = e.target.value
+
+  //   console.log('birthDate', birthDate)
+  //   setBirthDate(convertToServerDateFormat(selectedDate))
+  //   console.log('convertToServerDateFormat(selectedDate)', convertToServerDateFormat(selectedDate))
+  // }
+  const [formattedDate, setFormattedDate] = useState<string>('');
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const dateValue = e.target.value;
+    const parsedDate = parse(dateValue, 'yyyy-MM-dd', new Date());
+    const formatted = format(parsedDate, 'dd-MM-yyyy');
+    console.log('first', typeof formatted)
+    console.log('first', formatted)
+    setFormattedDate(formatted);
+    setBirthDate(formatted);
+  };
 
   return (
     <>
@@ -191,7 +222,9 @@ const UserList = () => {
                   type="password"
                 />
               </div>
-              {errorsAsObject["password"] && <p className="text-red-400">{errorsAsObject["password"]}</p>}
+              {errorsAsObject["password"] && (
+                <p className="text-red-400">{errorsAsObject["password"]}</p>
+              )}
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="confirmPassword" className="text-right">
                   Confirm Password *
@@ -205,7 +238,9 @@ const UserList = () => {
                   type="password"
                 />
               </div>
-              {errorsAsObject["confirmPassword"] && <p className="text-red-400">{errorsAsObject["confirmPassword"]}</p>}
+              {errorsAsObject["confirmPassword"] && (
+                <p className="text-red-400">{errorsAsObject["confirmPassword"]}</p>
+              )}
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="role" className="text-right">
@@ -243,19 +278,30 @@ const UserList = () => {
                 type="tel"
               />
             </div>
-            {errorsAsObject["phoneNumber"] && <p className="text-red-400">{errorsAsObject["phoneNumber"]}</p>}
+            {errorsAsObject["phoneNumber"] && (
+              <p className="text-red-400">{errorsAsObject["phoneNumber"]}</p>
+            )}
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="birthDate" className="text-right">
+                Birth Date *
+              </Label>
+            </div>
+
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="birthDate" className="text-right">
                 Birth Date *
               </Label>
               <Input
                 id="birthDate"
-                value={birthDate}
-                onChange={(e) => setBirthDate(e.target.value)}
-                className="col-span-3"
+                value={formattedDate ? format(parse(formattedDate, 'dd-MM-yyyy', new Date()), 'yyyy-MM-dd') : ''}
+                onChange={handleDateChange}
+                className="col-span-3 ui-date-picker"
+                type="date"
               />
             </div>
-            {errorsAsObject["birthDate"] && <p className="text-red-400">{errorsAsObject["birthDate"]}</p>}
+            {errorsAsObject["birthDate"] && (
+              <p className="text-red-400">{errorsAsObject["birthDate"]}</p>
+            )}
             <DialogFooter>
               <DialogClose asChild>
                 <Button type="button" variant="secondary">
@@ -272,7 +318,8 @@ const UserList = () => {
                     phoneNumber,
                     birthDate,
                     role,
-                    password
+                    password,
+                    confirmPassword
                   })
                 }}
               >

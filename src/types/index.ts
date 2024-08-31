@@ -46,6 +46,7 @@ export type AddUser = {
   birthDate: string
   role: string
   password: string
+  confirmPassword: string
 }
 
 export type Order = {
