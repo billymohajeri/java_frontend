@@ -63,19 +63,13 @@ const UserList = () => {
       try {
         const res = await api.post(`/users/register`, addUser)
         console.log("res", res)
-        if (res.data.status == 200) {
+        if (res.status == 200) {
           toast({
             title: "✅ Added!",
             description: `User "${res.data.data.firstName}" added successfully.`
           })
           setOpen(false)
           return res.data.data
-        } else {
-          // toast({
-          //   title: "❌ Login failed!",
-          //   description: `${res.status}`
-          // })
-          // throw new Error("Login failed with status: " + res.status)
         }
       } catch (error: any) {
         toast({
@@ -127,23 +121,16 @@ const UserList = () => {
     }
   }, {} as { [key: string]: string })
 
-  // const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const selectedDate = e.target.value
-
-  //   console.log('birthDate', birthDate)
-  //   setBirthDate(convertToServerDateFormat(selectedDate))
-  //   console.log('convertToServerDateFormat(selectedDate)', convertToServerDateFormat(selectedDate))
-  // }
-  const [formattedDate, setFormattedDate] = useState<string>('');
+  const [formattedDate, setFormattedDate] = useState<string>("")
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const dateValue = e.target.value;
-    const parsedDate = parse(dateValue, 'yyyy-MM-dd', new Date());
-    const formatted = format(parsedDate, 'dd-MM-yyyy');
-    console.log('first', typeof formatted)
-    console.log('first', formatted)
-    setFormattedDate(formatted);
-    setBirthDate(formatted);
-  };
+    const dateValue = e.target.value
+    const parsedDate = parse(dateValue, "yyyy-MM-dd", new Date())
+    const formatted = format(parsedDate, "dd-MM-yyyy")
+    console.log("first", typeof formatted)
+    console.log("first", formatted)
+    setFormattedDate(formatted)
+    setBirthDate(formatted)
+  }
 
   return (
     <>
@@ -293,7 +280,11 @@ const UserList = () => {
               </Label>
               <Input
                 id="birthDate"
-                value={formattedDate ? format(parse(formattedDate, 'dd-MM-yyyy', new Date()), 'yyyy-MM-dd') : ''}
+                value={
+                  formattedDate
+                    ? format(parse(formattedDate, "dd-MM-yyyy", new Date()), "yyyy-MM-dd")
+                    : ""
+                }
                 onChange={handleDateChange}
                 className="col-span-3 ui-date-picker"
                 type="date"
