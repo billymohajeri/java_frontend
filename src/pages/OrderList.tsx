@@ -20,6 +20,7 @@ const OrderList = () => {
   const context = useContext(UserContext)
   const token = context?.token
   const handleFetchOrders = async () => {
+    console.log(token);
     const res = await api.get("/orders", {
       headers: {
         Authorization: `Bearer ${token}`

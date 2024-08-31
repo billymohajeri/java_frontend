@@ -14,6 +14,14 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select"
+import {
   Table,
   TableBody,
   TableCaption,
@@ -23,11 +31,11 @@ import {
   TableRow
 } from "@/components/ui/table"
 import { toast } from "@/components/ui/use-toast"
-import { convertToServerDateFormat } from "@/lib/dateUtility"
 import { UserContext } from "@/providers/user-provider"
 import { userSchema } from "@/schemas/user"
 import { User, AddUser } from "@/types"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import axios, { AxiosError } from "axios"
 import { format, parse } from "date-fns"
 import { UserPlusIcon } from "lucide-react"
 import { useContext, useState } from "react"
@@ -46,38 +54,54 @@ const UserList = () => {
   const [confirmPassword, setConfirmPassword] = useState("")
   const [validationErrors, setValidationErrors] = useState<ZodIssue[]>([])
   const [open, setOpen] = useState(false)
+  const queryClient = useQueryClient()
+
+  interface ApiErrorResponse {
+    error: {
+      message: string
+    }
+  }
 
   const handleAddUser = async (addUser: AddUser) => {
     const result = userSchema.safeParse(addUser)
 
-    console.log(addUser)
-    setBirthDate(convertToServerDateFormat(birthDate))
-    console.log("birthDate", birthDate)
-
     if (!result.success) {
       setValidationErrors(result.error.errors)
-      console.log("result.error.errors", result.error.errors)
     } else {
       setValidationErrors([])
 
       try {
         const res = await api.post(`/users/register`, addUser)
-        console.log("res", res)
         if (res.status == 200) {
           toast({
             title: "✅ Added!",
             description: `User "${res.data.data.firstName}" added successfully.`
           })
+          queryClient.invalidateQueries({ queryKey: ["users"] })
+
           setOpen(false)
           return res.data.data
         }
-      } catch (error: any) {
-        toast({
-          title: "❌ Adding user failed!",
-          description: `${error.response.data.error.message}`
-        })
-        console.log("Adding user  request failed with error:", error.response.data.error.message)
-        throw error
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          const axiosError = error as AxiosError<ApiErrorResponse>
+          if (axiosError.response) {
+            toast({
+              title: "❌ Adding user failed!",
+              description: `${axiosError.response.data.error.message}`
+            })
+          } else {
+            toast({
+              title: "❌ Adding user failed!",
+              description: error.message || "An unknown error occurred."
+            })
+          }
+        } else {
+          toast({
+            title: "❌ Adding user failed!",
+            description: "An unknown error occurred."
+          })
+        }
       }
     }
   }
@@ -233,14 +257,19 @@ const UserList = () => {
               <Label htmlFor="role" className="text-right">
                 Role *
               </Label>
-              <Input
-                id="role"
-                name="role"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                className="col-span-3"
-              />
+              <Select name="role" onValueChange={(value) => setRole(value)}>
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="Set Role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="USER">USER</SelectItem>
+                    <SelectItem value="ADMIN">ADMIN</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
+            {errorsAsObject["role"] && <p className="text-red-400">{errorsAsObject["role"]}</p>}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="address" className="text-right">
                 Address
@@ -268,12 +297,6 @@ const UserList = () => {
             {errorsAsObject["phoneNumber"] && (
               <p className="text-red-400">{errorsAsObject["phoneNumber"]}</p>
             )}
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="birthDate" className="text-right">
-                Birth Date *
-              </Label>
-            </div>
-
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="birthDate" className="text-right">
                 Birth Date *

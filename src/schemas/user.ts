@@ -10,6 +10,8 @@ export const userSchema = z
     lastName: z.string().min(1, "Last Name cannot be empty"),
 
     email: z.string().email("Invalid email address"),
+    
+    role: z.string().min(1, "Role cannot be empty"),
 
     phoneNumber: z.string().regex(PHONE_REGEX, {
       message: "Phone number must start with a '+' and contain at least 5 digits"
