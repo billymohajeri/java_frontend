@@ -33,6 +33,7 @@ import { Link, useNavigate, useParams } from "react-router-dom"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { UserContext } from "@/providers/user-provider"
+import NoAccess from "@/components/NoAccess"
 
 const UserDetails = () => {
   const [firstName, setFirstName] = useState("")
@@ -140,192 +141,200 @@ const UserDetails = () => {
   }
 
   return (
-    <>
-      {isLoading && <Loading item="user" />}
-
-      {user && (
-        <div className="container mx-auto mt-5">
-          <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 text-center mb-5">
-            User details
-          </h2>
-
-          <div className="bg-white shadow-md rounded-lg p-5">
-            <div className="flex flex-col md:flex-row">
-              <div className="md:w-2/3 mt-4 md:mt-0 md:ml-4">
-                <div className="p-4">
-                  <h5 className="text-2xl font-semibold mb-2 text-gray-900">
-                    {user.firstName} {user.lastName}
-                  </h5>
-                  <p className="text-gray-700 mb-2">
-                    <strong>Email:</strong> {user.email}
-                  </p>
-                  <p className="text-gray-700 mb-2">
-                    <strong>Phone Number:</strong> {user.phoneNumber}
-                  </p>
-                  <p className="text-gray-700 mb-2">
-                    <strong>Address:</strong> {user.address}
-                  </p>
-                  <p className="text-gray-700 mb-2">
-                    <strong>Birth Date:</strong> {user.birthDate}
-                  </p>
-                  <p className="text-gray-700 mb-2">
-                    <strong>Role:</strong> {user.role}
-                  </p>
-                  <p className="text-gray-500 text-sm">
-                    <small>User ID: {user.id}</small>
-                  </p>
+    <Can
+      permission="USER:EDIT"
+      permissionType="actions"
+      yes={() => (
+        <>
+          {isLoading && <Loading item="user" />}
+          {user && (
+            <div className="container mx-auto mt-5">
+              <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 text-center mb-5">
+                User Details
+              </h2>
+              <div className="bg-white shadow-md rounded-lg p-5">
+                <div className="flex flex-col md:flex-row">
+                  <div className="md:w-2/3 mt-4 md:mt-0 md:ml-4">
+                    <div className="p-4">
+                      <h5 className="text-2xl font-semibold mb-2 text-gray-900">
+                        {user.firstName} {user.lastName}
+                      </h5>
+                      <p className="text-gray-700 mb-2">
+                        <strong>Email:</strong> {user.email}
+                      </p>
+                      <p className="text-gray-700 mb-2">
+                        <strong>Phone Number:</strong> {user.phoneNumber}
+                      </p>
+                      <p className="text-gray-700 mb-2">
+                        <strong>Address:</strong> {user.address}
+                      </p>
+                      <p className="text-gray-700 mb-2">
+                        <strong>Birth Date:</strong> {user.birthDate}
+                      </p>
+                      <p className="text-gray-700 mb-2">
+                        <strong>Role:</strong> {user.role}
+                      </p>
+                      <p>
+                        <small>User ID:</small>
+                      </p>
+                      <p className="text-gray-500 text-sm">
+                        <small>{user.id}</small>
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
+              <div className="flex justify-center gap-4 mt-4">
+                <Button asChild>
+                  <Link to="/users">Back to User List</Link>
+                </Button>
+                <Can
+                  permission="USER:EDIT"
+                  permissionType="actions"
+                  yes={() => (
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button>Edit</Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                          <DialogTitle>Edit user</DialogTitle>
+                          <DialogDescription>
+                            Make changes to this profile here. Click save when you&apos;re done.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="firstName" className="text-right">
+                              First Name
+                            </Label>
+                            <Input
+                              id="firstName"
+                              value={firstName}
+                              onChange={(e) => setFirstName(e.target.value)}
+                              className="col-span-3"
+                            />
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="lastName" className="text-right">
+                              Last Name
+                            </Label>
+                            <Input
+                              id="lastName"
+                              value={lastName}
+                              onChange={(e) => setLastName(e.target.value)}
+                              className="col-span-3"
+                            />
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="email" className="text-right">
+                              Email
+                            </Label>
+                            <Input
+                              id="email"
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
+                              className="col-span-3"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="address" className="text-right">
+                            Address
+                          </Label>
+                          <Input
+                            id="address"
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
+                            className="col-span-3"
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="phoneNumber" className="text-right">
+                            Phone Number
+                          </Label>
+                          <Input
+                            id="phoneNumber"
+                            value={phoneNumber}
+                            onChange={(e) => setPhoneNumber(e.target.value)}
+                            className="col-span-3"
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="birthDate" className="text-right">
+                            Birth Date
+                          </Label>
+                          <Input
+                            id="birthDate"
+                            value={birthDate}
+                            onChange={(e) => setBirthDate(e.target.value)}
+                            className="col-span-3"
+                          />
+                        </div>
+
+                        <DialogFooter>
+                          <DialogClose asChild>
+                            <Button type="button" variant="secondary">
+                              Cancel
+                            </Button>
+                          </DialogClose>
+                          <Button
+                            onClick={() => {
+                              if (id) {
+                                handleEditUser({
+                                  id,
+                                  firstName,
+                                  lastName,
+                                  email,
+                                  address,
+                                  phoneNumber: parseInt(phoneNumber),
+                                  birthDate,
+                                  role
+                                })
+                              }
+                            }}
+                          >
+                            Save changes
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  )}
+                ></Can>
+                <Can
+                  permission="USER:REMOVE"
+                  permissionType="actions"
+                  yes={() => (
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="destructive">Delete</Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone. This will permanently delete the selected
+                            account and remove its data from our servers.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={handleDeleteUser}>Continue</AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  )}
+                ></Can>
+              </div>
             </div>
-          </div>
-          <div className="flex justify-center gap-4 mt-4">
-            <Button asChild>
-              <Link to="/users">Back to User List</Link>
-            </Button>
-            <Can
-              permission="USER:EDIT"
-              permissionType="actions"
-              yes={() => (
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button>Edit</Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                      <DialogTitle>Edit user</DialogTitle>
-                      <DialogDescription>
-                        Make changes to this profile here. Click save when you&apos;re done.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="firstName" className="text-right">
-                          First Name
-                        </Label>
-                        <Input
-                          id="firstName"
-                          value={firstName}
-                          onChange={(e) => setFirstName(e.target.value)}
-                          className="col-span-3"
-                        />
-                      </div>
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="lastName" className="text-right">
-                          Last Name
-                        </Label>
-                        <Input
-                          id="lastName"
-                          value={lastName}
-                          onChange={(e) => setLastName(e.target.value)}
-                          className="col-span-3"
-                        />
-                      </div>
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="email" className="text-right">
-                          Email
-                        </Label>
-                        <Input
-                          id="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          className="col-span-3"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="address" className="text-right">
-                        Address
-                      </Label>
-                      <Input
-                        id="address"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        className="col-span-3"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="phoneNumber" className="text-right">
-                        Phone Number
-                      </Label>
-                      <Input
-                        id="phoneNumber"
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
-                        className="col-span-3"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="birthDate" className="text-right">
-                        Birth Date
-                      </Label>
-                      <Input
-                        id="birthDate"
-                        value={birthDate}
-                        onChange={(e) => setBirthDate(e.target.value)}
-                        className="col-span-3"
-                      />
-                    </div>
-
-                    <DialogFooter>
-                      <DialogClose asChild>
-                        <Button type="button" variant="secondary">
-                          Cancel
-                        </Button>
-                      </DialogClose>
-                      <Button
-                        onClick={() => {
-                          if (id) {
-                            handleEditUser({
-                              id,
-                              firstName,
-                              lastName,
-                              email,
-                              address,
-                              phoneNumber: parseInt(phoneNumber),
-                              birthDate,
-                              role
-                            })
-                          }
-                        }}
-                      >
-                        Save changes
-                      </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              )}
-            ></Can>
-            <Can
-              permission="USER:REMOVE"
-              permissionType="actions"
-              yes={() => (
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="destructive">Delete</Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone. This will permanently delete the selected
-                        account and remove its data from our servers.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={handleDeleteUser}>Continue</AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              )}
-            ></Can>
-          </div>
-        </div>
+          )}
+        </>
       )}
-    </>
+      no={() => <NoAccess />}
+    />
   )
 }
 

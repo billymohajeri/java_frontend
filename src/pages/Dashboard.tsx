@@ -4,7 +4,7 @@ import api from "@/api"
 import { Order, Payment, User } from "@/types"
 import { useContext } from "react"
 import { UserContext } from "@/providers/user-provider"
-import { User2Icon, UserCheck, UserPlusIcon } from "lucide-react"
+import { ShoppingBag, User2Icon, UserCheck, UserPlusIcon, Users2Icon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom"
 
@@ -77,6 +77,12 @@ const Dashboard = () => {
               {isLoadingProducts ? "Loading..." : products?.length}
             </h4>
           </CardContent>
+          <CardFooter className="flex justify-start mt-auto">
+            <Button onClick={() => navigate("/products")}>
+              <ShoppingBag className="mr-4" />
+              See All
+            </Button>
+          </CardFooter>
         </Card>
         <Card className="flex flex-col  h-full">
           <div className="flex  items-start">
@@ -102,9 +108,9 @@ const Dashboard = () => {
             </div>
           </div>
           <CardFooter className="flex justify-start mt-auto">
-            <Button onClick={() => navigate("/register")}>
-              <UserPlusIcon className="mr-4" />
-              Add New User
+            <Button onClick={() => navigate("/users")}>
+              <Users2Icon className="mr-4" />
+              See All
             </Button>
           </CardFooter>
         </Card>
@@ -118,6 +124,7 @@ const Dashboard = () => {
               {isLoadingOrders ? "Loading..." : orders?.length}
             </h4>
           </CardContent>
+          
         </Card>
 
         <Card>

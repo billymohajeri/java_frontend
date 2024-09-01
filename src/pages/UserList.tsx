@@ -172,7 +172,7 @@ const UserList = () => {
   return (
     <>
       <div className="grid items-center justify-center">
-        <h2 className="text-3xl font-semibold tracking-tight text-center">List of all users</h2>
+        <h2 className="text-3xl font-semibold tracking-tight text-center">List of all Users</h2>
         <Dialog open={open} onOpenChange={setOpen}>
           <div className="grid items-center justify-center my-5">
             <DialogTrigger asChild>

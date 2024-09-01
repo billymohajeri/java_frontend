@@ -54,7 +54,7 @@ const router = createBrowserRouter([
             permission="USER:GET"
             permissionType="actions"
             yes={() => <UserList />}
-            no={() => <NoAccess />}
+            // no={() => <NoAccess />}
           />
         )
       },
@@ -65,7 +65,6 @@ const router = createBrowserRouter([
             permission="USER:EDIT"
             permissionType="actions"
             yes={() => <UserDetails />}
-            no={() => <NoAccess />}
           />
         )
       },
