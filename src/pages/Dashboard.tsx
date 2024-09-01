@@ -1,11 +1,15 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { useQuery } from "@tanstack/react-query"
 import api from "@/api"
 import { Order, Payment, User } from "@/types"
 import { useContext } from "react"
 import { UserContext } from "@/providers/user-provider"
+import { User2Icon, UserCheck, UserPlusIcon } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { useNavigate } from "react-router-dom"
 
 const Dashboard = () => {
+  const navigate = useNavigate()
   const context = useContext(UserContext)
   const token = context?.token
 
@@ -58,6 +62,9 @@ const Dashboard = () => {
     }
   })
 
+  const adminCount = users?.filter((user) => user.role === "ADMIN").length || 0
+  const userCount = users?.filter((user) => user.role === "USER").length || 0
+
   return (
     <>
       <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -66,19 +73,40 @@ const Dashboard = () => {
             <CardTitle>Total Products</CardTitle>
           </CardHeader>
           <CardContent>
-            <h2 className="text-2xl font-bold">
+            <h4 className="text-2xl font-bold">
               {isLoadingProducts ? "Loading..." : products?.length}
-            </h2>
+            </h4>
           </CardContent>
         </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Total Users</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <h2 className="text-2xl font-bold">{isLoadingUsers ? "Loading..." : users?.length}</h2>
-          </CardContent>
+        <Card className="flex flex-col  h-full">
+          <div className="flex  items-start">
+            <CardHeader className="flex-1">
+              <CardTitle>
+                <div>
+                  Total Users:
+                  <h2 className="text-2xl font-bold">
+                    {isLoadingUsers ? "Loading..." : users?.length}
+                  </h2>
+                </div>
+              </CardTitle>
+            </CardHeader>
+            <div className="flex flex-col p-5 ">
+              <div className="text-lg flex">
+                <UserCheck className="ml-1" />
+                <p className="ml-4">Admins: {adminCount}</p>
+              </div>
+              <div className="text-lg flex">
+                <User2Icon />
+                <p className="ml-5">Users: {userCount}</p>
+              </div>
+            </div>
+          </div>
+          <CardFooter className="flex justify-start mt-auto">
+            <Button onClick={() => navigate("/register")}>
+              <UserPlusIcon className="mr-4" />
+              Add New User
+            </Button>
+          </CardFooter>
         </Card>
 
         <Card>
@@ -86,9 +114,9 @@ const Dashboard = () => {
             <CardTitle>Total Orders</CardTitle>
           </CardHeader>
           <CardContent>
-            <h2 className="text-2xl font-bold">
+            <h4 className="text-2xl font-bold">
               {isLoadingOrders ? "Loading..." : orders?.length}
-            </h2>
+            </h4>
           </CardContent>
         </Card>
 
@@ -97,11 +125,11 @@ const Dashboard = () => {
             <CardTitle>Total Sales</CardTitle>
           </CardHeader>
           <CardContent>
-            <h2 className="text-2xl font-bold">
+            <h4 className="text-2xl font-bold">
               {isLoadingPayments
                 ? "Loading..."
                 : `$${payments?.reduce((total, payment) => total + payment.amount, 0).toFixed(2)}`}
-            </h2>
+            </h4>
           </CardContent>
         </Card>
 

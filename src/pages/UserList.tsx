@@ -156,19 +156,32 @@ const UserList = () => {
     setBirthDate(formatted)
   }
 
+  const handleReset = () => {
+    setFirstName("")
+    setLastName("")
+    setEmail("")
+    setPassword("")
+    setConfirmPassword("")
+    setAddress("")
+    setPhoneNumber("")
+    setValidationErrors([])
+    setBirthDate("")
+    setFormattedDate("")
+  }
+
   return (
     <>
       <div className="grid items-center justify-center">
         <h2 className="text-3xl font-semibold tracking-tight text-center">List of all users</h2>
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <div className="grid items-center justify-center my-5">
-              <Button>
+          <div className="grid items-center justify-center my-5">
+            <DialogTrigger asChild>
+              <Button onClick={handleReset}>
                 <UserPlusIcon className="mr-4" />
                 Add User
               </Button>
-            </div>
-          </DialogTrigger>
+            </DialogTrigger>
+          </div>
           <DialogContent className="sm:max-w-[450px] overflow-y-scroll max-h-screen">
             <DialogHeader>
               <DialogTitle>Add User</DialogTitle>
@@ -303,6 +316,7 @@ const UserList = () => {
               </Label>
               <Input
                 id="birthDate"
+                name="birthDate"
                 value={
                   formattedDate
                     ? format(parse(formattedDate, "dd-MM-yyyy", new Date()), "yyyy-MM-dd")
