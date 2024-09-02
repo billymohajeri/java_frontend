@@ -111,3 +111,9 @@ export type DecodedUser = {
   nameIdentifier: string
   role: keyof typeof ROLE
 }
+
+export type ApiErrorResponse = {
+  error: {
+    message: string
+  }
+}
