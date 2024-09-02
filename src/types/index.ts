@@ -68,6 +68,15 @@ export type Order = {
   address: string
 }
 
+export type AddOrder = {
+  userId: string
+  dateTime: string
+  comments: string
+  status: string
+  address: string
+  products: Product[]
+}
+
 export type Payment = {
   id: string
   orderId: string
