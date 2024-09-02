@@ -61,17 +61,14 @@ const OrderList = () => {
   const queryClient = useQueryClient()
 
   const handleAddOrder = async (addOrder: AddOrder) => {
-    console.log("addOrder", addOrder)
     const result = orderSchema.safeParse(addOrder)
-
     if (!result.success) {
       setValidationErrors(result.error.errors)
     } else {
       setValidationErrors([])
-
       try {
         const res = await api.post(`/orders`, addOrder)
-        if (res.status == 200) {
+        if (res.status == 201) {
           toast({
             title: "✅ Added!",
             className: "bg-green-100 text-black",
@@ -155,6 +152,7 @@ const OrderList = () => {
     setStatus("")
     setAddress("")
     setProducts([])
+    setValidationErrors([])
   }
 
   return (
@@ -239,7 +237,7 @@ const OrderList = () => {
                 </SelectContent>
               </Select>
             </div>
-            {/* {errorsAsObject["status"] && <p className="text-red-400">{errorsAsObject["status"]}</p>} */}
+            {errorsAsObject["status"] && <p className="text-red-400">{errorsAsObject["status"]}</p>}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="address" className="text-right">
                 Address *
@@ -252,23 +250,23 @@ const OrderList = () => {
                 className="col-span-3"
               />
             </div>
-            {/* {errorsAsObject["address"] && <p className="text-red-400">{errorsAsObject["address"]}</p>} */}
-            <div className="grid grid-cols-4 items-center gap-4">
+            {errorsAsObject["address"] && <p className="text-red-400">{errorsAsObject["address"]}</p>}
+            {/* <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="products" className="text-right">
                 Products *
               </Label>
               <Input
                 id="products"
                 name="products"
-                // value={products}
-                // onChange={(e) => setProducts([{"id":e.target.value}])}
+                value={products}
+                onChange={(e) => setProducts([{"id":e.target.value}])}
                 className="col-span-3"
               />
             </div>
+          {errorsAsObject["products"] && (
+            <p className="text-red-400">{errorsAsObject["products"]}</p>
+          )} */}
           </div>
-          {/* {errorsAsObject["products"] && (
-              <p className="text-red-400">{errorsAsObject["products"]}</p>
-            )} */}
 
           <DialogFooter>
             <DialogClose asChild>
@@ -296,7 +294,7 @@ const OrderList = () => {
                         "https://img.kwcdn.com/product/fancy/c41cfa3a-a8bf-4bed-abbe-8d33289dde34.jpg?imageView2/2/w/800/q/70/format/webp"
                       ],
                       color: "Green",
-                      meta: null,
+                      meta: "null",
                       rating: 4.5,
                       stock: 100
                     }
