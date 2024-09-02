@@ -54,7 +54,6 @@ const router = createBrowserRouter([
             permission="USER:GET"
             permissionType="actions"
             yes={() => <UserList />}
-            // no={() => <NoAccess />}
           />
         )
       },
@@ -75,7 +74,6 @@ const router = createBrowserRouter([
             permission="ORDER:GET"
             permissionType="actions"
             yes={() => <OrderList />}
-            no={() => <NoAccess />}
           />
         )
       },

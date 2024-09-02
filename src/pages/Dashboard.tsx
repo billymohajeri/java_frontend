@@ -152,7 +152,7 @@ const Dashboard = () => {
                 <ul>
                   {orders?.slice(0, 5).map((order) => (
                     <li key={order.id} className="border-b py-2">
-                      <span>{order.userId}</span> - <span>{`$${order.status}`}</span>
+                      <span>{order.address}</span> - <span>{`$${order.status}`}</span>
                     </li>
                   ))}
                 </ul>
