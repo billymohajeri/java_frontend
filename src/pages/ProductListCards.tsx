@@ -78,19 +78,32 @@ const ProductListCards = () => {
   return (
     <div className="p-10">
       <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 text-center">
-        List of all Products 
+        List of all Products
       </h2>
-      <h3 className="scroll-m-20 pb-2 text-2xl font-semibold tracking-tight first:mt-0 text-center mb-5">(Total: {filteredProducts?.length} items)</h3>
-      <Input
-        type="text"
-        name="searchInput"
-        value={searchValue}
-        onChange={handleSearchValueChange}
-        className="mb-3 text-lg"
-        placeholder="Search for products..."
-      />
+      <h3 className="scroll-m-20 pb-2 text-2xl font-semibold tracking-tight first:mt-0 text-center mb-5">
+        (Total: {filteredProducts?.length} items)
+      </h3>
       <div className="flex mb-5">
-        <p className="text-lg basis-1/3 mt-1 ml-2">
+        <Input
+          type="text"
+          name="searchInput"
+          value={searchValue}
+          onChange={handleSearchValueChange}
+          className="mb-3 text-lg basis-11/12"
+          placeholder="Search for products..."
+        />
+        <Button
+          variant="link"
+          className="basis-1/12 ml-3"
+          onClick={() => {
+            setSearchValue("")
+          }}
+        >
+          Reset
+        </Button>
+      </div>
+      <div className="flex mb-5">
+        <p className="text-lg basis-3/12 mt-1 ml-2">
           Price Range: € {minPrice} - € {maxPrice}
         </p>
         <Input
@@ -100,7 +113,7 @@ const ProductListCards = () => {
           min={0}
           max={maxPrice - 1}
           onChange={handleMinPriceChange}
-          className="mb-3 text-lg basis-1/3"
+          className="mb-3 text-lg basis-4/12"
           placeholder="Min"
         />
         <p className="m-2"> to </p>
@@ -111,9 +124,19 @@ const ProductListCards = () => {
           min={minPrice + 1}
           value={maxPrice}
           onChange={handleMaxPriceChange}
-          className="mb-3 text-lg basis-1/3"
+          className="mb-3 text-lg basis-4/12"
           placeholder="Max"
         />
+        <Button
+          variant="link"
+          className="ml-3 basis-1/12"
+          onClick={() => {
+            setMinPrice(0)
+            setMaxPrice(maxPriceFixed)
+          }}
+        >
+          Reset
+        </Button>
       </div>
 
       <div className="grid grid-cols-3 gap-10">
@@ -143,7 +166,9 @@ const ProductListCards = () => {
               {product.stock > 0 ? (
                 <Button>Add to cart</Button>
               ) : (
-                <Button variant={"secondary"} className="text-gray-400">Not Available</Button>
+                <Button variant={"secondary"} className="text-gray-400">
+                  Not Available
+                </Button>
               )}
             </CardFooter>
           </Card>
