@@ -23,8 +23,8 @@ import { Input } from "./ui/input"
 import api from "@/api"
 import { toast } from "./ui/use-toast"
 import axios, { AxiosError } from "axios"
-import { title } from "process"
 import { ApiErrorResponse } from "@/types"
+import { AvatarIcon } from "@radix-ui/react-icons"
 
 const Navbar = () => {
   const [badge, setBadge] = useState({ name: "", role: "" })
@@ -121,18 +121,35 @@ const Navbar = () => {
                       <Sheet>
                         <form>
                           <SheetTrigger asChild>
-                            <div className="ml-5 cursor-pointer">Edit profile</div>
+                            <div className="ml-5 cursor-pointer">Profile</div>
                           </SheetTrigger>
-                          <SheetContent>
+                          <SheetContent className="overflow-y-scroll">
                             <SheetHeader>
-                              <SheetTitle>Edit profile</SheetTitle>
+                              <SheetTitle>Profile</SheetTitle>
                               <SheetDescription>
                                 Make changes to your profile here. Click save when you&apos;re done.
                               </SheetDescription>
                             </SheetHeader>
+                            <div className="w-full flex justify-center items-center">
+                              <AvatarIcon className="w-32 h-32 text-zinc-300" />
+                            </div>
+                            <p className="text-center text-lg">
+                              {firstName} {lastName}
+                            </p>
                             <div className="grid gap-4 py-4">
                               <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="name" className="text-right">
+                                <Label htmlFor="id" className="text-right">
+                                  User ID
+                                </Label>
+                                <Input
+                                  id="id"
+                                  defaultValue={context.user?.id}
+                                  className="col-span-3 border-0"
+                                  disabled={true}
+                                />
+                              </div>
+                              <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="firstName" className="text-right">
                                   First Name
                                 </Label>
                                 <Input
@@ -151,6 +168,64 @@ const Navbar = () => {
                                   value={lastName}
                                   onChange={(e) => setLastName(e.target.value)}
                                   className="col-span-3"
+                                />
+                              </div>
+                              <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="email" className="text-right">
+                                  Email
+                                </Label>
+                                <Input
+                                  id="email"
+                                  defaultValue={context.user?.email}
+                                  className="col-span-3 border-0"
+                                  disabled={true}
+                                />
+                              </div>
+                              <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="address" className="text-right">
+                                  Address
+                                </Label>
+                                <Input
+                                  id="address"
+                                  defaultValue={context.user?.address}
+                                  className="col-span-3 border-0"
+                                  disabled={true}
+                                />
+                              </div>
+
+                              <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="phoneNumber" className="text-right">
+                                  Phone Number
+                                </Label>
+                                <Input
+                                  id="phoneNumber"
+                                  defaultValue={context.user?.phoneNumber}
+                                  className="col-span-3 border-0"
+                                  disabled={true}
+                                />
+                              </div>
+
+                              <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="birthDate" className="text-right">
+                                  Birth Date
+                                </Label>
+                                <Input
+                                  id="birthDate"
+                                  defaultValue={context.user?.birthDate.toString()}
+                                  className="col-span-3 border-0"
+                                  disabled={true}
+                                />
+                              </div>
+
+                              <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="role" className="text-right">
+                                  Role
+                                </Label>
+                                <Input
+                                  id="role"
+                                  defaultValue={context.user?.role}
+                                  className="col-span-3 border-0"
+                                  disabled={true}
                                 />
                               </div>
                             </div>
