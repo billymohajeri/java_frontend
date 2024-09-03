@@ -80,7 +80,8 @@ const ProductList = () => {
       error
     } = useQuery<Product[]>({
       queryKey: ["products"],
-      queryFn: handleFetchProducts
+      queryFn: handleFetchProducts,
+      enabled: context?.user?.role === "ADMIN"
     })
 
     {
@@ -347,7 +348,7 @@ const ProductList = () => {
   return (
     <>
       <Can
-        permission="PRODUCT:GET"
+        permission="PRODUCT:EDIT"
         permissionType="actions"
         yes={() => handleProductPageRender()}
         no={() => <NoAccess />}

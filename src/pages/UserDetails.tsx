@@ -115,7 +115,8 @@ const UserDetails = () => {
     error
   } = useQuery<EditUser>({
     queryKey: ["user", id],
-    queryFn: handleFetchUser
+    queryFn: handleFetchUser,
+    enabled: context?.user?.role === "ADMIN"
   })
 
   useEffect(() => {

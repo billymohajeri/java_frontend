@@ -263,6 +263,15 @@ const Navbar = () => {
                   )}
                 ></Can>
                 <Can
+                  permission="DASHBOARD:VIEW"
+                  permissionType="views"
+                  yes={() => (
+                    <NavigationMenuItem>
+                      <Link to="/dashboard">Dashboard</Link>
+                    </NavigationMenuItem>
+                  )}
+                ></Can>
+                <Can
                   permission="PRODUCT:ADD"
                   permissionType="actions"
                   yes={() => (

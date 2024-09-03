@@ -46,13 +46,13 @@ const Login = () => {
       if (response.status === 200) {
         toast({
           title: "✅ Login successful!",
-          className:"bg-green-100 text-black dark:bg-emerald-900 dark:text-white",
+          className: "bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white",
           description: `Welcome ${response.data.data.user.firstName}`
         })
 
         const token = response.data.data.token
         login(token)
-        navigate("/")
+        response.data.data.user.role === "ADMIN" ? navigate("/dashboard") : navigate("/")
       } else {
         toast({
           title: "❌ Login failed!",

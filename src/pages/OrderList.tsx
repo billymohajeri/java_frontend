@@ -73,7 +73,7 @@ const OrderList = () => {
         if (res.status == 201) {
           toast({
             title: "✅ Added!",
-            className:"bg-green-100 text-black dark:bg-emerald-900 dark:text-white",
+            className: "bg-green-100 text-black dark:bg-emerald-900 dark:text-white",
             description: `Order added successfully.`
           })
           queryClient.invalidateQueries({ queryKey: ["orders"] })
@@ -129,7 +129,8 @@ const OrderList = () => {
     error
   } = useQuery<Order[]>({
     queryKey: ["orders"],
-    queryFn: handleFetchOrders
+    queryFn: handleFetchOrders,
+    enabled: context?.user?.role === "ADMIN"
   })
 
   {
@@ -159,7 +160,7 @@ const OrderList = () => {
 
   return (
     <Can
-      permission="PRODUCT:GET"
+      permission="ORDER:GET"
       permissionType="actions"
       yes={() => (
         <div className="grid items-center justify-center">
