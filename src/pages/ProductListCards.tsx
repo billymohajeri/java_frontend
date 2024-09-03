@@ -143,7 +143,7 @@ const ProductListCards = () => {
               {product.stock > 0 ? (
                 <Button>Add to cart</Button>
               ) : (
-                <Button variant={"outline"}>Not Available</Button>
+                <Button variant={"secondary"} className="text-gray-400">Not Available</Button>
               )}
             </CardFooter>
           </Card>

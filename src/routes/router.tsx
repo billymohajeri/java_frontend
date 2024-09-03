@@ -49,33 +49,15 @@ const router = createBrowserRouter([
       },
       {
         path: User.parent,
-        element: (
-          <Can
-            permission="USER:GET"
-            permissionType="actions"
-            yes={() => <UserList />}
-          />
-        )
+        element: <Can permission="USER:GET" permissionType="actions" yes={() => <UserList />} />
       },
       {
         path: User.details,
-        element: (
-          <Can
-            permission="USER:EDIT"
-            permissionType="actions"
-            yes={() => <UserDetails />}
-          />
-        )
+        element: <Can permission="USER:EDIT" permissionType="actions" yes={() => <UserDetails />} />
       },
       {
         path: Order.parent,
-        element: (
-          <Can
-            permission="ORDER:GET"
-            permissionType="actions"
-            yes={() => <OrderList />}
-          />
-        )
+        element: <Can permission="ORDER:GET" permissionType="actions" yes={() => <OrderList />} />
       },
       {
         path: Order.details,

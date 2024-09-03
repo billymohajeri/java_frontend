@@ -9,7 +9,7 @@ export type RoleControl = {
 
 export type PermissionCategory = keyof RoleControl[Role]
 
-type Page = "HOME" | "DASHBOARD"
+type Page = "HOME" | "DASHBOARD" | "PROFILE"
 type Resource = "PRODUCT" | "USER" | "ORDER" | "PAYMENT"
 type Method = "GET" | "ADD" | "EDIT" | "REMOVE"
 
@@ -35,7 +35,7 @@ export const RBAC_ROLES: RoleControl = {
     ]
   },
   USER: {
-    views: ["HOME:VIEW"],
+    views: ["HOME:VIEW", "PROFILE:VIEW"],
     actions: ["PRODUCT:GET"]
   }
 }

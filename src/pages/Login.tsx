@@ -45,6 +45,7 @@ const Login = () => {
 
         const token = response.data.data.token
         saveDataToLocalStorage("token", token)
+        navigate("/")
       } else {
         toast({
           title: "❌ Login failed!",
@@ -60,7 +61,6 @@ const Login = () => {
       console.error("Login request failed with error:", error)
       throw error
     }
-    navigate("/")
   }
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {

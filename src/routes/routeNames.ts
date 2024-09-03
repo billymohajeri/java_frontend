@@ -5,17 +5,17 @@ export const routeNames = {
     pageNotFound: "/page-not-found",
     logout: "/logout",
     productParent: "/products",
-    productDetails: "/products/:id"
+    productDetails: "/products/:id",
+    profile: "/profile"
   },
 
   User: {
     parent: "/users",
     details: "/users/:id",
-    profile: "/user/profile"
   },
 
   Admin: {
-    dashboard: "/dashboard",
+    dashboard: "/dashboard"
   },
 
   Order: {
