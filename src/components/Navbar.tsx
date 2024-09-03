@@ -9,7 +9,6 @@ import { Badge } from "./ui/badge"
 import { UserContext } from "../providers/user-provider"
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
   SheetFooter,
@@ -25,11 +24,15 @@ import { toast } from "./ui/use-toast"
 import axios, { AxiosError } from "axios"
 import { ApiErrorResponse } from "@/types"
 import { AvatarIcon } from "@radix-ui/react-icons"
+import { ZodIssue } from "zod"
+import { profileSchema } from "@/schemas/profile"
 
 const Navbar = () => {
   const [badge, setBadge] = useState({ name: "", role: "" })
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
+  const [validationErrors, setValidationErrors] = useState<ZodIssue[]>([])
+  const [open, setOpen] = useState(false)
 
   const context = useContext(UserContext)
   if (!context) {
@@ -43,55 +46,72 @@ const Navbar = () => {
       setFirstName(user.firstName)
       setLastName(user.lastName)
     }
-  }, [context.user?.role, context.user])
+  }, [user?.role, user])
 
   const handleLogout = () => {
     logout()
   }
 
+  const errorsAsObject = validationErrors.reduce((validationErrors, validationError) => {
+    return {
+      ...validationErrors,
+      [validationError.path[0]]: validationError.message
+    }
+  }, {} as { [key: string]: string })
+
   const handleEditUser = async () => {
+    setValidationErrors([])
     const payload = {
       firstName: firstName,
       lastName: lastName
     }
-    try {
-      const res = await api.put(`/users/${context.user?.id}`, payload, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-      if (res.status == 200) {
-        const updatedUser = res.data.data
-        setBadge({ name: updatedUser.firstName, role: updatedUser.role })
-        toast({
-          title: "✅ Edited!",
-          className: "bg-green-100 text-black",
-          description: `User "${updatedUser.firstName}" edited successfully.`
+    const result = profileSchema.safeParse(payload)
+
+    if (!result.success) {
+      setValidationErrors(result.error.errors)
+    } else {
+      setValidationErrors([])
+
+      try {
+        const res = await api.put(`/users/${context.user?.id}`, payload, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         })
-        return res.data.data
-      }
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        const axiosError = error as AxiosError<ApiErrorResponse>
-        if (axiosError.response) {
+        if (res.status == 200) {
+          const updatedUser = res.data.data
+          setBadge({ name: updatedUser.firstName, role: updatedUser.role })
           toast({
-            title: "❌ Editing User failed!",
-            className: "bg-red-100 text-black",
-            description: `${axiosError.response.data.error.message}`
+            title: "✅ Edited!",
+            className:"bg-green-100 text-black dark:bg-emerald-900 dark:text-white",
+            description: `User "${updatedUser.firstName}" edited successfully.`
           })
+          setOpen(false)
+          return res.data.data
+        }
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          const axiosError = error as AxiosError<ApiErrorResponse>
+          if (axiosError.response) {
+            toast({
+              title: "❌ Editing User failed!",
+              className: "bg-red-100 text-black",
+              description: `${axiosError.response.data.error.message}`
+            })
+          } else {
+            toast({
+              title: "❌ Editing User failed!",
+              className: "bg-red-100 text-black",
+              description: error.message || "An unknown error occurred."
+            })
+          }
         } else {
           toast({
             title: "❌ Editing User failed!",
             className: "bg-red-100 text-black",
-            description: error.message || "An unknown error occurred."
+            description: "An unknown error occurred."
           })
         }
-      } else {
-        toast({
-          title: "❌ Editing User failed!",
-          className: "bg-red-100 text-black",
-          description: "An unknown error occurred."
-        })
       }
     }
   }
@@ -118,7 +138,7 @@ const Navbar = () => {
                   permissionType="views"
                   yes={() => (
                     <NavigationMenuItem>
-                      <Sheet>
+                      <Sheet open={open} onOpenChange={setOpen}>
                         <form>
                           <SheetTrigger asChild>
                             <div className="ml-5 cursor-pointer">Profile</div>
@@ -133,9 +153,7 @@ const Navbar = () => {
                             <div className="w-full flex justify-center items-center">
                               <AvatarIcon className="w-32 h-32 text-zinc-300" />
                             </div>
-                            <p className="text-center text-lg">
-                              {firstName} {lastName}
-                            </p>
+
                             <div className="grid gap-4 py-4">
                               <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="id" className="text-right">
@@ -159,6 +177,9 @@ const Navbar = () => {
                                   className="col-span-3"
                                 />
                               </div>
+                              {errorsAsObject["firstName"] && (
+                                <p className="text-red-400">{errorsAsObject["firstName"]}</p>
+                              )}
                               <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="username" className="text-right">
                                   Last Name
@@ -170,6 +191,9 @@ const Navbar = () => {
                                   className="col-span-3"
                                 />
                               </div>
+                              {errorsAsObject["lastName"] && (
+                                <p className="text-red-400">{errorsAsObject["lastName"]}</p>
+                              )}
                               <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="email" className="text-right">
                                   Email
@@ -230,9 +254,7 @@ const Navbar = () => {
                               </div>
                             </div>
                             <SheetFooter>
-                              <SheetClose asChild>
-                                <Button onClick={handleEditUser}>Save changes</Button>
-                              </SheetClose>
+                              <Button onClick={handleEditUser}>Save changes</Button>
                             </SheetFooter>
                           </SheetContent>
                         </form>
