@@ -66,12 +66,15 @@ const ProductListCards = () => {
   useEffect(() => {
     let filtered = products?.filter(
       (product) => product.price >= minPrice && product.price <= maxPrice
-    )
+    );
+  
     if (availableOnly) {
-      filtered = products?.filter((product) => product.stock > 0)
+      filtered = filtered?.filter((product) => product.stock > 0);
     }
-    setFilteredProducts(filtered)
-  }, [minPrice, maxPrice, products, availableOnly])
+  
+    setFilteredProducts(filtered);
+  }, [minPrice, maxPrice, availableOnly, products]);
+  
 
   const handleMinPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
     setMinPrice(Number(e.target.value))
