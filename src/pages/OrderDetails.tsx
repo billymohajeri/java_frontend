@@ -55,6 +55,7 @@ const OrderDetails = () => {
     }
     toast({
       title: "✅ Deleted!",
+      className:"bg-green-100 text-black dark:bg-emerald-900 dark:text-white",
       description: `Order deleted successfully.`
     })
     navigate("/orders")
@@ -77,6 +78,7 @@ const OrderDetails = () => {
     }
     toast({
       title: "✅ Edited!",
+      className:"bg-green-100 text-black dark:bg-emerald-900 dark:text-white",
       description: `Order edited successfully.`
     })
     navigate("/orders")

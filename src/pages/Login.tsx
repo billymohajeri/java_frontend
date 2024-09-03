@@ -23,9 +23,15 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { toast } from "@/components/ui/use-toast"
 import { saveDataToLocalStorage } from "@/lib/utils"
-import { ChangeEvent, FormEvent, useState } from "react"
+import { ChangeEvent, FormEvent, useContext, useState } from "react"
+import { UserContext } from "@/providers/user-provider"
 
 const Login = () => {
+  const context = useContext(UserContext)
+  if (!context) {
+    return null
+  }
+  const { login } = context
   const [credentials, setCredentials] = useState({
     email: "",
     password: ""
@@ -40,11 +46,12 @@ const Login = () => {
       if (response.status === 200) {
         toast({
           title: "✅ Login successful!",
+          className:"bg-green-100 text-black dark:bg-emerald-900 dark:text-white",
           description: `Welcome ${response.data.data.user.firstName}`
         })
 
         const token = response.data.data.token
-        saveDataToLocalStorage("token", token)
+        login(token)
         navigate("/")
       } else {
         toast({

@@ -100,6 +100,7 @@ export type UserContextType = {
   user: User | null
   token: string | null
   logout: () => void
+  login: (newToken: string) => void;
 }
 
 export type DecodedUser = {

@@ -107,7 +107,7 @@ const ProductList = () => {
           if (res.status == 200) {
             toast({
               title: "✅ Added!",
-              className: "bg-green-100 text-black",
+              className:"bg-green-100 text-black dark:bg-emerald-900 dark:text-white",
               description: `Product "${res.data.data.name}" added successfully.`
             })
             queryClient.invalidateQueries({ queryKey: ["products"] })

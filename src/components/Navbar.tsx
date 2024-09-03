@@ -46,7 +46,7 @@ const Navbar = () => {
       setFirstName(user.firstName)
       setLastName(user.lastName)
     }
-  }, [user?.role, user])
+  }, [user,token])
 
   const handleLogout = () => {
     logout()
@@ -83,7 +83,7 @@ const Navbar = () => {
           setBadge({ name: updatedUser.firstName, role: updatedUser.role })
           toast({
             title: "✅ Edited!",
-            className:"bg-green-100 text-black dark:bg-emerald-900 dark:text-white",
+            className: "bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white",
             description: `User "${updatedUser.firstName}" edited successfully.`
           })
           setOpen(false)
@@ -161,7 +161,7 @@ const Navbar = () => {
                                 </Label>
                                 <Input
                                   id="id"
-                                  defaultValue={context.user?.id}
+                                  defaultValue={user?.id}
                                   className="col-span-3 border-0"
                                   disabled={true}
                                 />

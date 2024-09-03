@@ -76,6 +76,7 @@ const ProductDetails = () => {
     }
     toast({
       title: "✅ Deleted!",
+      className:"bg-green-100 text-black dark:bg-emerald-900 dark:text-white",
       description: `Product "${res.data.data.name}" deleted successfully.`
     })
     navigate("/products")
@@ -103,6 +104,7 @@ const ProductDetails = () => {
     }
     toast({
       title: "✅ Edited!",
+      className:"bg-green-100 text-black dark:bg-emerald-900 dark:text-white",
       description: `Product "${res.data.data.name}" edited successfully.`
     })
     navigate("/products")

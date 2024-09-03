@@ -62,6 +62,7 @@ const PaymentDetails = () => {
     }
     toast({
       title: "✅ Deleted!",
+      className:"bg-green-100 text-black dark:bg-emerald-900 dark:text-white",
       description: `Payment deleted successfully.`
     })
     navigate("/payments")
@@ -84,6 +85,7 @@ const PaymentDetails = () => {
     }
     toast({
       title: "✅ Edited!",
+      className:"bg-green-100 text-black dark:bg-emerald-900 dark:text-white",
       description: `Payment edited successfully.`
     })
     navigate("/payments")
