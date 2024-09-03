@@ -46,7 +46,7 @@ const Navbar = () => {
       setFirstName(user.firstName)
       setLastName(user.lastName)
     }
-  }, [user,token])
+  }, [user, token])
 
   const handleLogout = () => {
     logout()
@@ -309,7 +309,6 @@ const Navbar = () => {
                     </Link>
                   )}
                 </NavigationMenuItem>
-                <NavigationMenuItem></NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
           </div>

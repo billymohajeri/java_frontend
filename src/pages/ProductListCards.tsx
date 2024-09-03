@@ -10,6 +10,8 @@ import {
   CardTitle
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Product } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 import { ChangeEvent, useEffect, useState } from "react"
@@ -51,6 +53,7 @@ const ProductListCards = () => {
   const [maxPrice, setMaxPrice] = useState(100)
   const [maxPriceFixed, setMaxPriceFixed] = useState(100)
   const [filteredProducts, setFilteredProducts] = useState(products)
+  const [availableOnly, setAvailableOnly] = useState(false)
 
   useEffect(() => {
     if (products && products.length > 0) {
@@ -61,11 +64,14 @@ const ProductListCards = () => {
   }, [products])
 
   useEffect(() => {
-    const filtered = products?.filter(
+    let filtered = products?.filter(
       (product) => product.price >= minPrice && product.price <= maxPrice
     )
+    if (availableOnly) {
+      filtered = products?.filter((product) => product.stock > 0)
+    }
     setFilteredProducts(filtered)
-  }, [minPrice, maxPrice, products])
+  }, [minPrice, maxPrice, products, availableOnly])
 
   const handleMinPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
     setMinPrice(Number(e.target.value))
@@ -137,6 +143,30 @@ const ProductListCards = () => {
         >
           Reset
         </Button>
+      </div>
+      <div className="flex mb-5">
+        <RadioGroup defaultValue="showAllItems" className="flex mb-5">
+          <div className="flex items-center space-x-2 mr-2">
+            <RadioGroupItem
+              value="showAllItems"
+              id="r1"
+              onClick={() => {
+                setAvailableOnly(false)
+              }}
+            />
+            <Label htmlFor="r1">Show All Items</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem
+              value="availableItemsOnly"
+              id="r2"
+              onClick={() => {
+                setAvailableOnly(true)
+              }}
+            />
+            <Label htmlFor="r2">Available Items Only</Label>
+          </div>
+        </RadioGroup>
       </div>
 
       <div className="grid grid-cols-3 gap-10">
