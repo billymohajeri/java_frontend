@@ -61,7 +61,7 @@ const UserDetails = () => {
     }
     toast({
       title: "✅ Deleted!",
-      className:"bg-green-100 text-black dark:bg-emerald-900 dark:text-white",
+      className: "bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white",
       description: `User "${res.data.data.firstName}" deleted successfully.`
     })
     navigate("/users")
@@ -89,7 +89,7 @@ const UserDetails = () => {
     }
     toast({
       title: "✅ Edited!",
-      className:"bg-green-100 text-black dark:bg-emerald-900 dark:text-white",
+      className: "bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white",
       description: `User "${res.data.data.firstName}" edited successfully.`
     })
     navigate("/users")

@@ -12,15 +12,24 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { toast } from "@/components/ui/use-toast"
+import { UserContext } from "@/providers/user-provider"
 import { Product } from "@/types"
 import { useQuery } from "@tanstack/react-query"
-import { ChangeEvent, useEffect, useState } from "react"
+import { UUID } from "crypto"
+import { ChangeEvent, useContext, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 
 const ProductListCards = () => {
   const [searchValue, setSearchValue] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const productsPerPage = 10
+
+  const context = useContext(UserContext)
+  if (!context) {
+    return null
+  }
+  const { user, logout, token } = context
 
   const handleFetchProducts = async () => {
     const res = await api.get("/products", { params: { search: searchValue } })
@@ -54,6 +63,7 @@ const ProductListCards = () => {
   const [maxPriceFixed, setMaxPriceFixed] = useState(100)
   const [filteredProducts, setFilteredProducts] = useState(products)
   const [availableOnly, setAvailableOnly] = useState(false)
+  const [selectedProductId, setSelectedProductId] = useState("")
 
   useEffect(() => {
     if (products && products.length > 0) {
@@ -81,6 +91,46 @@ const ProductListCards = () => {
 
   const handleMaxPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
     setMaxPrice(Number(e.target.value))
+  }
+
+  const [quantities, setQuantities] = useState<{ [key: string]: number }>({})
+
+  const handleQuantityChange = (productId: string, quantity: number) => {
+    setQuantities((prev) => ({
+      ...prev,
+      [productId]: quantity
+    }))
+  }
+  const handleAddToCart = async (productId: string, quantity: number) => {
+    const payload = {
+      productId: productId,
+      quantity: quantity,
+      userId: user?.id
+    }
+    try {
+      const response = await api.post(`/carts`, payload)
+      if (response.status === 200) {
+        toast({
+          title: "✅ Added successfully!",
+          className: "bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white",
+          description: `The product has been added to your cart.`
+        })
+        console.log(response.data.data)
+     
+      } else {
+        toast({
+          title: "❌ Failed to Add!",
+          className: "bg-red-100 text-black",
+          description: `There was an error adding the product to your cart. ${response.status}`
+        })
+      }
+    } catch (error) {
+      toast({
+        title: "❌ Login failed!",
+        className: "bg-red-100 text-black",
+        description: `${error}`
+      })
+    }
   }
 
   return (
@@ -191,16 +241,38 @@ const ProductListCards = () => {
                 <CardDescription>€ {product.price.toFixed(2)}</CardDescription>
               </CardHeader>
               <CardContent>
+                <img
+                  src={product.images[0]}
+                  alt={product.name}
+                  className="w-full h-32 object-cover"
+                />
                 <p>Rating: {product.rating}</p>
               </CardContent>
             </Link>
-            <CardFooter>
+            <CardFooter className="flex flex-col items-start space-y-2">
               {product.stock > 0 ? (
-                <Button>Add to cart</Button>
+                <div className="flex items-center space-x-4">
+                  <Input
+                    type="number"
+                    value={quantities[product.id] || 1}
+                    min={1}
+                    max={product.stock}
+                    onChange={(e) => handleQuantityChange(product.id, Number(e.target.value))}
+                    className="w-16"
+                    placeholder="Qty"
+                  />
+                  <Button onClick={() => handleAddToCart(product.id, quantities[product.id] || 1)}>
+                    Add to cart
+                  </Button>
+                </div>
               ) : (
                 <Button variant={"secondary"} className="text-gray-400">
                   Not Available
                 </Button>
+              )}
+
+              {quantities[product.id] === product.stock && (
+                <p className="text-sm text-red-400">No more items available</p>
               )}
             </CardFooter>
           </Card>

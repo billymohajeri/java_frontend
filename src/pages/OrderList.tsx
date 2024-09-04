@@ -73,7 +73,7 @@ const OrderList = () => {
         if (res.status == 201) {
           toast({
             title: "✅ Added!",
-            className: "bg-green-100 text-black dark:bg-emerald-900 dark:text-white",
+            className: "bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white",
             description: `Order added successfully.`
           })
           queryClient.invalidateQueries({ queryKey: ["orders"] })

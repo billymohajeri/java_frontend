@@ -1,5 +1,5 @@
 import api from "@/api"
-import {z} from "zod"
+import { z } from "zod"
 import { Can } from "@/components/Can"
 import { Button } from "@/components/ui/button"
 import { Product } from "@/types"
@@ -76,7 +76,7 @@ const ProductDetails = () => {
     }
     toast({
       title: "✅ Deleted!",
-      className:"bg-green-100 text-black dark:bg-emerald-900 dark:text-white",
+      className: "bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white",
       description: `Product "${res.data.data.name}" deleted successfully.`
     })
     navigate("/products")
@@ -104,17 +104,14 @@ const ProductDetails = () => {
     }
     toast({
       title: "✅ Edited!",
-      className:"bg-green-100 text-black dark:bg-emerald-900 dark:text-white",
+      className: "bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white",
       description: `Product "${res.data.data.name}" edited successfully.`
     })
     navigate("/products")
     return res.data.data
   }
 
-
-  const newProductSchema = z.string();
-
-
+  const newProductSchema = z.string()
 
   useEffect(() => {
     if (product) {
@@ -186,7 +183,11 @@ const ProductDetails = () => {
           </div>
           <div className="flex justify-center gap-4 mt-4">
             <Button asChild>
-              <Link to="/products">Back to Product List</Link>
+              {context?.user?.role === "ADMIN" ? (
+                <Link to="/products">Back to Product List</Link>
+              ) : (
+                <Link to="/">Back to Product List</Link>
+              )}
             </Button>
             <Can
               permission="PRODUCT:EDIT"
