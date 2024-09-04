@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetDescription,
   SheetFooter,
@@ -30,6 +31,17 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { ChangeEvent, useContext, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import axios, { AxiosError } from "axios"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from "@/components/ui/dialog"
+import { Textarea } from "@/components/ui/textarea"
 
 const ProductListCards = () => {
   const [searchValue, setSearchValue] = useState("")
@@ -42,7 +54,7 @@ const ProductListCards = () => {
   if (!context) {
     return null
   }
-  const { user, logout, token } = context
+  const { user, token } = context
 
   const handleFetchProducts = async () => {
     const res = await api.get("/products", { params: { search: searchValue } })
@@ -76,7 +88,9 @@ const ProductListCards = () => {
   const [maxPriceFixed, setMaxPriceFixed] = useState(100)
   const [filteredProducts, setFilteredProducts] = useState(products)
   const [availableOnly, setAvailableOnly] = useState(false)
-  const [selectedProductId, setSelectedProductId] = useState("")
+  const [newAddress, setNewAddress] = useState("")
+  const [comments, setComments] = useState("")
+  const [paymentMethod, setPaymentMethod] = useState("")
 
   useEffect(() => {
     if (products && products.length > 0) {
@@ -149,6 +163,17 @@ const ProductListCards = () => {
     }
   }, [cart])
 
+  const [total, setTotal] = useState(0)
+
+  useEffect(() => {
+    if (cart && cart.products) {
+      const totalAmount = cart.products
+        .reduce((sum, item) => sum + item.product.price * item.quantity, 0)
+        .toFixed(2)
+      setTotal(Number(totalAmount))
+    }
+  }, [cart])
+
   const handleAddToCart = async (productId: string, quantity: number) => {
     const payload = {
       productId: productId,
@@ -163,7 +188,7 @@ const ProductListCards = () => {
           className: "bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white",
           description: `The product has been added to your cart.`
         })
-        console.log(response.data.data)
+        queryClient.invalidateQueries({ queryKey: ["cart"] })
       } else {
         toast({
           title: "❌ Failed to Add!",
@@ -220,6 +245,82 @@ const ProductListCards = () => {
       }
     }
   }
+
+  const handleConfirmOrder = async (
+    newAddress: string,
+    comments: string,
+    paymentMethod: string
+  ) => {
+    const products = cart?.products.map((item) => item.product)
+    const orderData = {
+      userId: user?.id,
+      dateTime: new Date().toISOString(),
+      comments: comments,
+      status: "PENDING",
+      address: newAddress || user?.address,
+      products: products
+    }
+    try {
+      const orderResponse = await api.post("/orders", orderData, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      if (orderResponse.status === 201) {
+        const orderId = orderResponse.data.data.id
+        const paymentData = {
+          orderId,
+          amount: total,
+          status: "PENDING",
+          method: paymentMethod
+        }
+        const paymentResponse = await api.post("/payments", paymentData, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        if (paymentResponse.status === 201) {
+          queryClient.invalidateQueries({ queryKey: ["cart"] })
+          toast({
+            title: "✅ Order and Payment Successful!",
+            className: "bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white",
+            description: `Your order has been placed successfully with payment.`
+          })
+        } else {
+          toast({
+            title: "⚠️ Order Successful, but Payment Failed",
+            className: "bg-yellow-100 text-black",
+            description: `Your order was placed, but the payment failed. Please try again.`
+          })
+        }
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError<ApiErrorResponse>
+
+        if (axiosError.response) {
+          toast({
+            title: "❌ Order or Payment Failed!",
+            className: "bg-red-100 text-black",
+            description: `${axiosError.response.data.error.message}`
+          })
+        } else {
+          toast({
+            title: "❌ Order or Payment Failed!",
+            className: "bg-red-100 text-black",
+            description: error.message || "An unknown error occurred."
+          })
+        }
+      } else {
+        toast({
+          title: "❌ Order or Payment Failed!",
+          className: "bg-red-100 text-black",
+          description: "An unknown error occurred."
+        })
+      }
+    }
+  }
+
   return (
     <>
       <Sheet>
@@ -229,7 +330,7 @@ const ProductListCards = () => {
               <TooltipTrigger asChild>
                 <SheetTrigger asChild>
                   <div className="relative cursor-pointer flex items-center text-gray-700 hover:text-gray-900">
-                    <ShoppingCart className="ml-2 w-6 h-6" />
+                    <ShoppingCart className="ml-2 w-6 h-6 dark:text-white" />
                     {(cart?.products?.length ?? 0) > 0 && (
                       <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                         {cart?.products?.length ?? 0}
@@ -291,14 +392,100 @@ const ProductListCards = () => {
               </div>
             ))}
           </div>
-          <SheetFooter className="grid mt-5">
+          <SheetFooter className="grid mt-5 min-h-24">
             <p className="font-semibold text-xl text-center">
-              Total: €
-              {cart?.products
-                .reduce((total, item) => total + item.product.price * item.quantity, 0)
-                .toFixed(2)}
+              {total === 0 ? "Your cart is empty" : `Total: ${total} €`}
             </p>
-            <Button className="mt-2">Proceed to Checkout</Button>
+            <SheetClose asChild>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button className="mt-2" disabled={total === 0}>
+                    Proceed to Checkout
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[600px]">
+                  <DialogHeader>
+                    <DialogTitle>Checkout</DialogTitle>
+                    <DialogDescription>
+                      Review your order details below. You can choose a payment method, change your
+                      shipping address if needed, and add any extra instructions in the comments
+                      before proceeding.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 gap-4">
+                      <Label htmlFor="shippingAddress" className="text-right text-sm">
+                        Shipping Address
+                      </Label>
+                      <Textarea
+                        id="shippingAddress"
+                        value={newAddress}
+                        placeholder={user?.address}
+                        onChange={(e) => setNewAddress(e.target.value)}
+                        className="col-span-3"
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 gap-4">
+                      <Label htmlFor="comments" className="text-right text-sm">
+                        Comments
+                      </Label>
+                      <Textarea
+                        id="comments"
+                        value={comments}
+                        className="col-span-3"
+                        placeholder="Any special instructions?"
+                        onChange={(e) => setComments(e.target.value)}
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="comments" className="text-right text-sm">
+                        Amount
+                      </Label>
+                      <Input
+                        id="amount"
+                        defaultValue={total}
+                        className="col-span-3"
+                        placeholder="Any special instructions?"
+                        disabled={true}
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-start gap-4">
+                      <Label htmlFor="paymentMethod" className="text-right text-sm">
+                        Payment Method
+                      </Label>
+                      <RadioGroup
+                        value={paymentMethod}
+                        onValueChange={(value) => setPaymentMethod(value)}
+                        className="col-span-3 flex flex-col space-y-2"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="CREDIT_CARD" id="CREDIT_CARD" />
+                          <Label htmlFor="CREDIT_CARD">Credit Card</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="BANK_TRANSFER" id="BANK_TRANSFER" />
+                          <Label htmlFor="BANK_TRANSFER">Bank Transfer</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="CASH" id="CASH" />
+                          <Label htmlFor="CASH">Cash</Label>
+                        </div>
+                      </RadioGroup>
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button
+                        onClick={() => handleConfirmOrder(newAddress, comments, paymentMethod)}
+                        disabled={paymentMethod === ""}
+                      >
+                        Confirm Order
+                      </Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </SheetClose>
           </SheetFooter>
         </SheetContent>
       </Sheet>
@@ -412,7 +599,7 @@ const ProductListCards = () => {
                   <img
                     src={product.images[0]}
                     alt={product.name}
-                    className="w-full h-32 object-cover"
+                    className="w-full h-full object-cover"
                   />
                   <p>Rating: {product.rating}</p>
                 </CardContent>

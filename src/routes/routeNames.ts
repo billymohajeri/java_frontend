@@ -2,7 +2,8 @@ export const routeNames = {
   Public: {
     login: "/login",
     productParent: "/products",
-    productDetails: "/products/:id"
+    productDetails: "/products/:id",
+    checkout:"/checkout"
   },
 
   Admin: {
