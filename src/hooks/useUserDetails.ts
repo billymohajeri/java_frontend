@@ -9,3 +9,4 @@ export const useUserDetails = (userId: string, token: string) => {
     initialData: null,
   });
 };
+ 

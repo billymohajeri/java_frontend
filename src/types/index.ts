@@ -118,3 +118,14 @@ export type ApiErrorResponse = {
     message: string
   }
 }
+
+export type CartItem ={
+  product: Product;
+  quantity: number;
+}
+
+export type Cart ={
+  cartId: string;
+  user: User;
+  products: CartItem[];
+}

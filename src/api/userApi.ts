@@ -15,3 +15,4 @@ export const getUserDetails = async (userId: string, token: string) => {
   }
   throw Error("Did not fetch user info")
 }
+ 
