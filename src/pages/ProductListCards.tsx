@@ -16,7 +16,6 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
   SheetFooter,
@@ -26,15 +25,18 @@ import {
 } from "@/components/ui/sheet"
 import { toast } from "@/components/ui/use-toast"
 import { UserContext } from "@/providers/user-provider"
-import { Cart, Product } from "@/types"
-import { useQuery } from "@tanstack/react-query"
+import { ApiErrorResponse, Cart, Product } from "@/types"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { ChangeEvent, useContext, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
+import axios, { AxiosError } from "axios"
 
 const ProductListCards = () => {
   const [searchValue, setSearchValue] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const productsPerPage = 10
+
+  const queryClient = useQueryClient()
 
   const context = useContext(UserContext)
   if (!context) {
@@ -179,7 +181,44 @@ const ProductListCards = () => {
   }
 
   const handleRemoveItem = async (cartId: string, productId: string) => {
-    console.log(`${productId} Removed`)
+    try {
+      const response = await api.delete(`/carts/${cartId}/product/${productId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      if (response.status === 200) {
+        toast({
+          title: "✅ Removed successfully!",
+          className: "bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white",
+          description: `The product has been removed from your cart.`
+        })
+        queryClient.invalidateQueries({ queryKey: ["cart"] })
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError<ApiErrorResponse>
+        if (axiosError.response) {
+          toast({
+            title: "❌ Failed to Remove!",
+            className: "bg-red-100 text-black",
+            description: `${error}`
+          })
+        } else {
+          toast({
+            title: "❌ Failed to Remove!",
+            className: "bg-red-100 text-black",
+            description: error.message || "An unknown error occurred."
+          })
+        }
+      } else {
+        toast({
+          title: "❌ Failed to Remove!",
+          className: "bg-red-100 text-black",
+          description: "An unknown error occurred."
+        })
+      }
+    }
   }
   return (
     <>
