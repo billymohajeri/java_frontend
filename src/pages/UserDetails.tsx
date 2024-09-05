@@ -143,7 +143,7 @@ const UserDetails = () => {
       {isLoading && <Loading item="user" />}
       {user && (
         <div className="container mx-auto mt-5">
-          <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 text-center mb-5">
+          <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight text-center mb-5 mt-24">
             User Details
           </h2>
           <div className="bg-white shadow-md rounded-lg p-5">

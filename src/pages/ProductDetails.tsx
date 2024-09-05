@@ -147,6 +147,9 @@ const ProductDetails = () => {
     <>
       {product && (
         <div className="container mx-auto mt-5">
+          <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight text-center mb-5 mt-24">
+            Product Details
+          </h2>
           <div className="bg-white shadow-md rounded-lg p-5">
             <div className="flex flex-col md:flex-row">
               {product.images && (

@@ -17,7 +17,6 @@ import { Label } from "@/components/ui/label"
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -159,8 +158,14 @@ const ProductList = () => {
 
   return (
     <>
-      <div className="grid items-center justify-center">
-        <h2 className="text-3xl font-semibold tracking-tight text-center">List of all Products</h2>
+      <div className="grid items-center justify-center p-10">
+        <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight text-center mt-24">
+          List of all Products
+        </h2>
+        <h3 className="scroll-m-20 pb-2 text-2xl font-semibold tracking-tight first:mt-0 text-center mb-5">
+          (Total: {products?.length} products)
+        </h3>
+        <h4 className="text-center text-sm text-gray-400 mb-5">Click on each item to see details and more actions.</h4>
         <Dialog open={open} onOpenChange={setOpen}>
           <div className="grid items-center justify-center my-5">
             <DialogTrigger asChild>
@@ -310,7 +315,6 @@ const ProductList = () => {
 
         {isLoading && <Loading item="products" />}
         <Table className="">
-          <TableCaption>Click on each item to see details and more actions.</TableCaption>
           <TableHeader>
             <TableRow>
               <TableHead>No.</TableHead>

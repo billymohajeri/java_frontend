@@ -509,10 +509,10 @@ const ProductListCards = () => {
         </SheetContent>
       </Sheet>
       <div className="p-10">
-        <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 text-center">
+        <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight text-center">
           List of all Products
         </h2>
-        <h3 className="scroll-m-20 pb-2 text-2xl font-semibold tracking-tight first:mt-0 text-center mb-5">
+        <h3 className="scroll-m-20 pb-2 text-2xl font-semibold tracking-tight text-center mb-5">
           (Total: {filteredProducts?.length} items)
         </h3>
         <div className="flex mb-5">
@@ -611,7 +611,7 @@ const ProductListCards = () => {
       </div>
 
       {currentProducts.length > 0 ? (
-        <div className="grid grid-cols-6 gap-10 p-10">
+        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-10 p-10">
           {currentProducts.map((product) => (
             <Card key={product.id}>
               <Link to={`/products/${product.id}`}>

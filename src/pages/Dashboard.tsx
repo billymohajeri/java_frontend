@@ -72,110 +72,101 @@ const Dashboard = () => {
   const userCount = users?.filter((user) => user.role === "USER").length || 0
 
   return (
-    <Can
-      permission="DASHBOARD:VIEW"
-      permissionType="views"
-      yes={() => (
-        <>
-          <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Total Products</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <h4 className="text-2xl font-bold">
-                  {isLoadingProducts ? "Loading..." : products?.length}
-                </h4>
-              </CardContent>
-              <CardFooter className="flex justify-start mt-auto">
-                <Button onClick={() => navigate("/products")}>
-                  <ShoppingBag className="mr-4" />
-                  See All
-                </Button>
-              </CardFooter>
-            </Card>
-            <Card className="flex flex-col  h-full">
-              <div className="flex  items-start">
-                <CardHeader className="flex-1">
-                  <CardTitle>
-                    <div>
-                      Total Users:
-                      <h2 className="text-2xl font-bold">
-                        {isLoadingUsers ? "Loading..." : users?.length}
-                      </h2>
-                    </div>
-                  </CardTitle>
-                </CardHeader>
-                <div className="flex flex-col p-5 ">
-                  <div className="text-lg flex">
-                    <UserCheck className="ml-1" />
-                    <p className="ml-4">Admins: {adminCount}</p>
-                  </div>
-                  <div className="text-lg flex">
-                    <User2Icon />
-                    <p className="ml-5">Users: {userCount}</p>
-                  </div>
+    <>
+      <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-24">
+        <Card>
+          <CardHeader>
+            <CardTitle>Total Products</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <h4 className="text-2xl font-bold">
+              {isLoadingProducts ? "Loading..." : products?.length}
+            </h4>
+          </CardContent>
+          <CardFooter className="flex justify-start mt-auto">
+            <Button onClick={() => navigate("/products")}>
+              <ShoppingBag className="mr-4" />
+              See All
+            </Button>
+          </CardFooter>
+        </Card>
+        <Card className="flex flex-col  h-full">
+          <div className="flex  items-start">
+            <CardHeader className="flex-1">
+              <CardTitle>
+                <div>
+                  Total Users:
+                  <h2 className="text-2xl font-bold">
+                    {isLoadingUsers ? "Loading..." : users?.length}
+                  </h2>
                 </div>
+              </CardTitle>
+            </CardHeader>
+            <div className="flex flex-col p-5 ">
+              <div className="text-lg flex">
+                <UserCheck className="ml-1" />
+                <p className="ml-4">Admins: {adminCount}</p>
               </div>
-              <CardFooter className="flex justify-start mt-auto">
-                <Button onClick={() => navigate("/users")}>
-                  <Users2Icon className="mr-4" />
-                  See All
-                </Button>
-              </CardFooter>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Total Orders</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <h4 className="text-2xl font-bold">
-                  {isLoadingOrders ? "Loading..." : orders?.length}
-                </h4>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Total Sales</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <h4 className="text-2xl font-bold">
-                  {isLoadingPayments
-                    ? "Loading..."
-                    : `$${payments
-                        ?.reduce((total, payment) => total + payment.amount, 0)
-                        .toFixed(2)}`}
-                </h4>
-              </CardContent>
-            </Card>
-
-            <div className="col-span-1 md:col-span-2 lg:col-span-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Recent Orders</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {isLoadingOrders ? (
-                    <p>Loading...</p>
-                  ) : (
-                    <ul>
-                      {orders?.slice(0, 5).map((order) => (
-                        <li key={order.id} className="border-b py-2">
-                          <span>{order.address}</span> - <span>{`$${order.status}`}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </CardContent>
-              </Card>
+              <div className="text-lg flex">
+                <User2Icon />
+                <p className="ml-5">Users: {userCount}</p>
+              </div>
             </div>
           </div>
-        </>
-      )}
-      no={() => <NoAccess />}
-    ></Can>
+          <CardFooter className="flex justify-start mt-auto">
+            <Button onClick={() => navigate("/users")}>
+              <Users2Icon className="mr-4" />
+              See All
+            </Button>
+          </CardFooter>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Total Orders</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <h4 className="text-2xl font-bold">
+              {isLoadingOrders ? "Loading..." : orders?.length}
+            </h4>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Total Sales</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <h4 className="text-2xl font-bold">
+              {isLoadingPayments
+                ? "Loading..."
+                : `$${payments?.reduce((total, payment) => total + payment.amount, 0).toFixed(2)}`}
+            </h4>
+          </CardContent>
+        </Card>
+
+        <div className="col-span-1 md:col-span-2 lg:col-span-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Orders</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {isLoadingOrders ? (
+                <p>Loading...</p>
+              ) : (
+                <ul>
+                  {orders?.slice(0, 5).map((order) => (
+                    <li key={order.id} className="border-b py-2">
+                      <span>{order.address}</span> - <span>{`$${order.status}`}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </>
   )
 }
 
