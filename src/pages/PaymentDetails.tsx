@@ -17,8 +17,8 @@ import {
 import { Button } from "@/components/ui/button"
 import { toast } from "@/components/ui/use-toast"
 import { ApiErrorResponse, Payment } from "@/types"
-import { useQuery } from "@tanstack/react-query"
-import { Link, useNavigate, useParams } from "react-router-dom"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { Link, useParams } from "react-router-dom"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import {
@@ -39,8 +39,8 @@ const PaymentDetails = () => {
   const [status, setStatus] = useState("")
   const [method, setMethod] = useState("")
   const [validationErrors, setValidationErrors] = useState<ZodIssue[]>([])
-
-  const navigate = useNavigate()
+  const [open, setOpen] = useState(false)
+  const queryClient = useQueryClient()
 
   const { id } = useParams<{ id: string }>()
   const context = useContext(UserContext)
@@ -63,15 +63,15 @@ const PaymentDetails = () => {
             Authorization: `Bearer ${token}`
           }
         })
-        if (res.status !== 200) {
-          throw new Error("Something went wrong!")
+        if (res.status === 200) {
+          toast({
+            title: "✅ Edited!",
+            className: "bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white",
+            description: `Payment edited successfully.`
+          })
+          queryClient.invalidateQueries({ queryKey: ["payment"] })
+          setOpen(false)
         }
-        toast({
-          title: "✅ Edited!",
-          className: "bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white",
-          description: `Payment edited successfully.`
-        })
-        // navigate("/payments")
         return res.data.data
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
@@ -198,7 +198,7 @@ const PaymentDetails = () => {
             <Button asChild variant="secondary">
               <Link to="/payments">Back to Payment List</Link>
             </Button>
-            <Dialog>
+            <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
                 <Button variant="secondary" onClick={handleReset}>
                   Edit
@@ -214,14 +214,14 @@ const PaymentDetails = () => {
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="amount" className="text-right">
-                      Amount
+                      Amount *
                     </Label>
                     <Input
                       id="amount"
                       value={amount}
                       type="number"
                       min={0}
-                      onChange={(e) => setAmount(parseFloat(e.target.value)||0)}
+                      onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
                       className="col-span-3"
                     />
                   </div>
@@ -230,7 +230,7 @@ const PaymentDetails = () => {
                   )}
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="status" className="text-right">
-                      Status
+                      Status *
                     </Label>
                     <Select onValueChange={(value) => setStatus(value)}>
                       <SelectTrigger id="status" className="col-span-3">
@@ -254,7 +254,7 @@ const PaymentDetails = () => {
                   )}
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="method" className="text-right">
-                      Method
+                      Method *
                     </Label>
                     <Select onValueChange={(value) => setMethod(value)}>
                       <SelectTrigger id="method" className="col-span-3">
@@ -283,17 +283,16 @@ const PaymentDetails = () => {
                       Cancel
                     </Button>
                   </DialogClose>
-                  <DialogClose asChild>
                   <Button
-                    onClick={() => {
-                      if (id) {
-                        handleEditPayment()
-                      }
-                    }}
-                    
+                    onClick={handleEditPayment}
+                    disabled={
+                      amount === payment.amount &&
+                      status === payment.status &&
+                      method === payment.method
+                    }
                   >
                     Save changes
-                  </Button></DialogClose>
+                  </Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
