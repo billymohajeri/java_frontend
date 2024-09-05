@@ -52,15 +52,18 @@ const PaymentList = () => {
 
   return (
     <>
-      <div className="grid items-center justify-center">
-        <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 text-center mb-5">
-          List of all payments
+      <div className="grid items-center justify-center p-10">
+        <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight text-center mt-24">
+          List of all Payments
         </h2>
-
+        <h3 className="scroll-m-20 pb-2 text-2xl font-semibold tracking-tight first:mt-0 text-center mb-5">
+          (Total: {payments?.length} items)
+        </h3>
+        <h4 className="text-center text-sm text-gray-400 mb-5">Click on each item to see details and more actions.</h4>
         {isLoading && <Loading item="payments" />}
 
         <Table className="">
-          <TableCaption>Click on each item to see details and more actions.</TableCaption>
+          
           <TableHeader>
             <TableRow>
               <TableHead>No.</TableHead>

@@ -16,7 +16,7 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { toast } from "@/components/ui/use-toast"
-import { Payment } from "@/types"
+import { ApiErrorResponse, Payment } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { Label } from "@/components/ui/label"
@@ -29,11 +29,15 @@ import {
   SelectValue
 } from "@/components/ui/select"
 import { UserContext } from "@/providers/user-provider"
+import { ZodIssue } from "zod"
+import { paymentSchema } from "@/schemas/payment"
+import axios, { AxiosError } from "axios"
 
 const PaymentDetails = () => {
   const [amount, setAmount] = useState(0)
   const [status, setStatus] = useState("")
   const [method, setMethod] = useState("")
+  const [validationErrors, setValidationErrors] = useState<ZodIssue[]>([])
 
   const navigate = useNavigate()
 
@@ -47,23 +51,53 @@ const PaymentDetails = () => {
       status: status,
       method: method
     }
-    const res = await api.put(`/payments/${id}`, payload, {
-      headers: {
-        Authorization: `Bearer ${token}`
+    const result = paymentSchema.safeParse(payload)
+    if (!result.success) {
+      setValidationErrors(result.error.errors)
+    } else {
+      setValidationErrors([])
+      try {
+        const res = await api.put(`/payments/${id}`, payload, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        if (res.status !== 200) {
+          throw new Error("Something went wrong!")
+        }
+        toast({
+          title: "✅ Edited!",
+          className: "bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white",
+          description: `Payment edited successfully.`
+        })
+        navigate("/payments")
+        return res.data.data
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          const axiosError = error as AxiosError<ApiErrorResponse>
+          if (axiosError.response) {
+            toast({
+              title: "❌ Editing payment failed!",
+              className: "bg-red-100 text-black",
+              description: `${axiosError.response.data.error.message}`
+            })
+          } else {
+            toast({
+              title: "❌ Editing payment failed!",
+              className: "bg-red-100 text-black",
+              description: error.message || "An unknown error occurred."
+            })
+          }
+        } else {
+          toast({
+            title: "❌ Editing payment failed!",
+            className: "bg-red-100 text-black",
+            description: "An unknown error occurred."
+          })
+        }
       }
-    })
-    if (res.status !== 200) {
-      throw new Error("Something went wrong!")
     }
-    toast({
-      title: "✅ Edited!",
-      className: "bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white",
-      description: `Payment edited successfully.`
-    })
-    navigate("/payments")
-    return res.data.data
   }
-
   const handleFetchPayment = async () => {
     const res = await api.get(`/payments/${id}`, {
       headers: {
@@ -105,8 +139,24 @@ const PaymentDetails = () => {
     )
   }
 
+  const errorsAsObject = validationErrors.reduce((validationErrors, validationError) => {
+    return {
+      ...validationErrors,
+      [validationError.path[0]]: validationError.message
+    }
+  }, {} as { [key: string]: string })
+
   const paymentMethod = ["CREDIT_CARD", "BANK_TRANSFER", "CASH"]
   const paymentStatus = ["PENDING", "COMPLETED", "FAILED", "REFUNDED"]
+
+  const handleReset = () => {
+    setValidationErrors([])
+    if (payment) {
+      setAmount(payment.amount)
+      setStatus(payment.status)
+      setMethod(payment.method)
+    }
+  }
 
   return (
     <>
@@ -114,7 +164,7 @@ const PaymentDetails = () => {
 
       {payment && (
         <div className="container mx-auto mt-5">
-          <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 text-center mb-5">
+          <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight text-center mb-5 mt-24">
             Payment details
           </h2>
           <div className="bg-white shadow-md rounded-lg p-5">
@@ -146,7 +196,9 @@ const PaymentDetails = () => {
             </Button>
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="secondary">Edit</Button>
+                <Button variant="secondary" onClick={handleReset}>
+                  Edit
+                </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
@@ -163,10 +215,15 @@ const PaymentDetails = () => {
                     <Input
                       id="amount"
                       value={amount}
+                      type="number"
+                      min={0}
                       onChange={(e) => setAmount(parseFloat(e.target.value))}
                       className="col-span-3"
                     />
                   </div>
+                  {errorsAsObject["amount"] && (
+                    <p className="text-red-400">{errorsAsObject["amount"]}</p>
+                  )}
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="status" className="text-right">
                       Status
@@ -188,6 +245,9 @@ const PaymentDetails = () => {
                       </SelectContent>
                     </Select>
                   </div>
+                  {errorsAsObject["status"] && (
+                    <p className="text-red-400">{errorsAsObject["status"]}</p>
+                  )}
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="method" className="text-right">
                       Method
@@ -209,6 +269,9 @@ const PaymentDetails = () => {
                       </SelectContent>
                     </Select>
                   </div>
+                  {errorsAsObject["method"] && (
+                    <p className="text-red-400">{errorsAsObject["method"]}</p>
+                  )}
                 </div>
                 <DialogFooter>
                   <DialogClose asChild>

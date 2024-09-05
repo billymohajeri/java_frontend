@@ -31,7 +31,6 @@ import {
   TableRow
 } from "@/components/ui/table"
 import { toast } from "@/components/ui/use-toast"
-import { convertArrayTimestampToDateTimeFormat } from "@/lib/dateUtility"
 import { UserContext } from "@/providers/user-provider"
 import { orderSchema } from "@/schemas/order"
 import { AddOrder, ApiErrorResponse, Order, Product } from "@/types"
@@ -157,10 +156,14 @@ const OrderList = () => {
   }
 
   return (
-    <div className="grid items-center justify-center">
-      <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 text-center mb-5">
+    <div className="grid items-center justify-center p-10">
+      <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight text-center mt-24">
         List of all Orders
       </h2>
+      <h3 className="scroll-m-20 pb-2 text-2xl font-semibold tracking-tight first:mt-0 text-center mb-5">
+          (Total: {orders?.length} items)
+        </h3>
+        <h4 className="text-center text-sm text-gray-400 mb-5">Click on each item to see details and more actions.</h4>
       <Dialog open={open} onOpenChange={setOpen}>
         <div className="grid items-center justify-center my-5">
           <DialogTrigger asChild>
@@ -313,7 +316,6 @@ const OrderList = () => {
       {isLoading && <Loading item="orders" />}
 
       <Table className="">
-        <TableCaption>Click on each item to see details and more actions.</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead>No.</TableHead>
