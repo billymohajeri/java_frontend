@@ -1,7 +1,5 @@
 import api from "@/api"
-import { Can } from "@/components/Can"
 import Loading from "@/components/Loading"
-import NoAccess from "@/components/NoAccess"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -174,235 +172,226 @@ const UserList = () => {
   }
 
   return (
-    <Can
-      permission="USER:GET"
-      permissionType="actions"
-      yes={() => (
-        <>
-          <div className="grid items-center justify-center">
-            <h2 className="text-3xl font-semibold tracking-tight text-center">List of all Users</h2>
-            <Dialog open={open} onOpenChange={setOpen}>
-              <div className="grid items-center justify-center my-5">
-                <DialogTrigger asChild>
-                  <Button onClick={handleReset}>
-                    <UserPlusIcon className="mr-4" />
-                    Add User
-                  </Button>
-                </DialogTrigger>
-              </div>
-              <DialogContent className="sm:max-w-[450px] overflow-y-scroll max-h-screen">
-                <DialogHeader>
-                  <DialogTitle>Add User</DialogTitle>
-                  <DialogDescription>
-                    Enter the new user&apos;s information here. Click Add when you&apos;re done.
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="firstName" className="text-right">
-                      First Name *
-                    </Label>
-                    <Input
-                      id="firstName"
-                      name="firstName"
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      className="col-span-3"
-                    />
-                  </div>
-                  {errorsAsObject["firstName"] && (
-                    <p className="text-red-400">{errorsAsObject["firstName"]}</p>
-                  )}
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="lastName" className="text-right">
-                      Last Name *
-                    </Label>
-                    <Input
-                      id="lastName"
-                      name="lastName"
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                      className="col-span-3"
-                    />
-                  </div>
-                  {errorsAsObject["lastName"] && (
-                    <p className="text-red-400">{errorsAsObject["lastName"]}</p>
-                  )}
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="email" className="text-right">
-                      Email *
-                    </Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="col-span-3"
-                    />
-                  </div>
-                  {errorsAsObject["email"] && (
-                    <p className="text-red-400">{errorsAsObject["email"]}</p>
-                  )}
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="password" className="text-right">
-                      Password *
-                    </Label>
-                    <Input
-                      id="password"
-                      name="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="col-span-3"
-                      type="password"
-                    />
-                  </div>
-                  {errorsAsObject["password"] && (
-                    <p className="text-red-400">{errorsAsObject["password"]}</p>
-                  )}
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="confirmPassword" className="text-right">
-                      Confirm Password *
-                    </Label>
-                    <Input
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="col-span-3"
-                      type="password"
-                    />
-                  </div>
-                  {errorsAsObject["confirmPassword"] && (
-                    <p className="text-red-400">{errorsAsObject["confirmPassword"]}</p>
-                  )}
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="role" className="text-right">
-                    Role *
-                  </Label>
-                  <Select name="role" onValueChange={(value) => setRole(value)}>
-                    <SelectTrigger className="col-span-3">
-                      <SelectValue placeholder="Set Role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem value="USER">USER</SelectItem>
-                        <SelectItem value="ADMIN">ADMIN</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-                {errorsAsObject["role"] && <p className="text-red-400">{errorsAsObject["role"]}</p>}
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="address" className="text-right">
-                    Address
-                  </Label>
-                  <Input
-                    id="address"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    className="col-span-3"
-                  />
-                </div>
-
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="phoneNumber" className="text-right">
-                    Phone Number *
-                  </Label>
-                  <Input
-                    id="phoneNumber"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    className="col-span-3"
-                    type="tel"
-                  />
-                </div>
-                {errorsAsObject["phoneNumber"] && (
-                  <p className="text-red-400">{errorsAsObject["phoneNumber"]}</p>
-                )}
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="birthDate" className="text-right">
-                    Birth Date *
-                  </Label>
-                  <Input
-                    id="birthDate"
-                    name="birthDate"
-                    value={
-                      formattedDate
-                        ? format(parse(formattedDate, "dd-MM-yyyy", new Date()), "yyyy-MM-dd")
-                        : ""
-                    }
-                    onChange={handleDateChange}
-                    className="col-span-3 ui-date-picker"
-                    type="date"
-                  />
-                </div>
-                {errorsAsObject["birthDate"] && (
-                  <p className="text-red-400">{errorsAsObject["birthDate"]}</p>
-                )}
-                <DialogFooter>
-                  <DialogClose asChild>
-                    <Button type="button" variant="secondary">
-                      Cancel
-                    </Button>
-                  </DialogClose>
-                  <Button
-                    onClick={() => {
-                      handleAddUser({
-                        firstName,
-                        lastName,
-                        email,
-                        address,
-                        phoneNumber,
-                        birthDate,
-                        role,
-                        password,
-                        confirmPassword
-                      })
-                    }}
-                  >
-                    Add
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-
-            {isLoading && <Loading item="users" />}
-
-            <Table className="">
-              <TableCaption>Click on each item to see details and more actions.</TableCaption>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>No.</TableHead>
-                  <TableHead>ID</TableHead>
-                  <TableHead>First Name</TableHead>
-                  <TableHead>Last Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Role</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {users?.map((user, index) => (
-                  <TableRow
-                    key={user.id}
-                    onClick={() => navigate(`/users/${user.id}`)}
-                    className="cursor-pointer"
-                  >
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>{user.id.substring(0, 5)}...</TableCell>
-                    <TableCell>{user.firstName}</TableCell>
-                    <TableCell>{user.lastName}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>{user.role}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+    <>
+      <div className="grid items-center justify-center">
+        <h2 className="text-3xl font-semibold tracking-tight text-center">List of all Users</h2>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <div className="grid items-center justify-center my-5">
+            <DialogTrigger asChild>
+              <Button onClick={handleReset}>
+                <UserPlusIcon className="mr-4" />
+                Add User
+              </Button>
+            </DialogTrigger>
           </div>
-        </>
-      )}
-      no={() => <NoAccess />}
-    />
+          <DialogContent className="sm:max-w-[450px] overflow-y-scroll max-h-screen">
+            <DialogHeader>
+              <DialogTitle>Add User</DialogTitle>
+              <DialogDescription>
+                Enter the new user&apos;s information here. Click Add when you&apos;re done.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="firstName" className="text-right">
+                  First Name *
+                </Label>
+                <Input
+                  id="firstName"
+                  name="firstName"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  className="col-span-3"
+                />
+              </div>
+              {errorsAsObject["firstName"] && (
+                <p className="text-red-400">{errorsAsObject["firstName"]}</p>
+              )}
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="lastName" className="text-right">
+                  Last Name *
+                </Label>
+                <Input
+                  id="lastName"
+                  name="lastName"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  className="col-span-3"
+                />
+              </div>
+              {errorsAsObject["lastName"] && (
+                <p className="text-red-400">{errorsAsObject["lastName"]}</p>
+              )}
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="email" className="text-right">
+                  Email *
+                </Label>
+                <Input
+                  id="email"
+                  name="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="col-span-3"
+                />
+              </div>
+              {errorsAsObject["email"] && <p className="text-red-400">{errorsAsObject["email"]}</p>}
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="password" className="text-right">
+                  Password *
+                </Label>
+                <Input
+                  id="password"
+                  name="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="col-span-3"
+                  type="password"
+                />
+              </div>
+              {errorsAsObject["password"] && (
+                <p className="text-red-400">{errorsAsObject["password"]}</p>
+              )}
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="confirmPassword" className="text-right">
+                  Confirm Password *
+                </Label>
+                <Input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="col-span-3"
+                  type="password"
+                />
+              </div>
+              {errorsAsObject["confirmPassword"] && (
+                <p className="text-red-400">{errorsAsObject["confirmPassword"]}</p>
+              )}
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="role" className="text-right">
+                Role *
+              </Label>
+              <Select name="role" onValueChange={(value) => setRole(value)}>
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="Set Role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="USER">USER</SelectItem>
+                    <SelectItem value="ADMIN">ADMIN</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            {errorsAsObject["role"] && <p className="text-red-400">{errorsAsObject["role"]}</p>}
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="address" className="text-right">
+                Address
+              </Label>
+              <Input
+                id="address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                className="col-span-3"
+              />
+            </div>
+
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="phoneNumber" className="text-right">
+                Phone Number *
+              </Label>
+              <Input
+                id="phoneNumber"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                className="col-span-3"
+                type="tel"
+              />
+            </div>
+            {errorsAsObject["phoneNumber"] && (
+              <p className="text-red-400">{errorsAsObject["phoneNumber"]}</p>
+            )}
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="birthDate" className="text-right">
+                Birth Date *
+              </Label>
+              <Input
+                id="birthDate"
+                name="birthDate"
+                value={
+                  formattedDate
+                    ? format(parse(formattedDate, "dd-MM-yyyy", new Date()), "yyyy-MM-dd")
+                    : ""
+                }
+                onChange={handleDateChange}
+                className="col-span-3 ui-date-picker"
+                type="date"
+              />
+            </div>
+            {errorsAsObject["birthDate"] && (
+              <p className="text-red-400">{errorsAsObject["birthDate"]}</p>
+            )}
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button type="button" variant="secondary">
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button
+                onClick={() => {
+                  handleAddUser({
+                    firstName,
+                    lastName,
+                    email,
+                    address,
+                    phoneNumber,
+                    birthDate,
+                    role,
+                    password,
+                    confirmPassword
+                  })
+                }}
+              >
+                Add
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {isLoading && <Loading item="users" />}
+
+        <Table className="">
+          <TableCaption>Click on each item to see details and more actions.</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead>No.</TableHead>
+              <TableHead>ID</TableHead>
+              <TableHead>First Name</TableHead>
+              <TableHead>Last Name</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Role</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {users?.map((user, index) => (
+              <TableRow
+                key={user.id}
+                onClick={() => navigate(`/users/${user.id}`)}
+                className="cursor-pointer"
+              >
+                <TableCell>{index + 1}</TableCell>
+                <TableCell>{user.id.substring(0, 5)}...</TableCell>
+                <TableCell>{user.firstName}</TableCell>
+                <TableCell>{user.lastName}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>{user.role}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </>
   )
 }
 

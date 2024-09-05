@@ -4,7 +4,7 @@ import api from "@/api"
 import { Order, Payment, User } from "@/types"
 import { useContext } from "react"
 import { UserContext } from "@/providers/user-provider"
-import { ShoppingBag, User2Icon, UserCheck, UserPlusIcon, Users2Icon } from "lucide-react"
+import { ShoppingBag, User2Icon, UserCheck, Users2Icon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom"
 import { Can } from "@/components/Can"
@@ -175,7 +175,7 @@ const Dashboard = () => {
         </>
       )}
       no={() => <NoAccess />}
-    />
+    ></Can>
   )
 }
 

@@ -1,7 +1,5 @@
 import api from "@/api"
-import { Can } from "@/components/Can"
 import Loading from "@/components/Loading"
-import NoAccess from "@/components/NoAccess"
 import { productSchema } from "@/schemas/product"
 import { Button } from "@/components/ui/button"
 import {
@@ -60,107 +58,107 @@ const ProductList = () => {
   const token = context?.token
   const navigate = useNavigate()
 
-  const handleProductPageRender = () => {
-    const handleFetchProducts = async () => {
-      const res = await api.get("/products", {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-      if (res.status !== 200) {
-        throw new Error("Something went wrong!")
+  const handleFetchProducts = async () => {
+    const res = await api.get("/products", {
+      headers: {
+        Authorization: `Bearer ${token}`
       }
-      return res.data.data
-    }
-
-    const {
-      data: products,
-      isLoading,
-      isError,
-      error
-    } = useQuery<Product[]>({
-      queryKey: ["products"],
-      queryFn: handleFetchProducts,
-      enabled: context?.user?.role === "ADMIN"
     })
-
-    {
-      isError && (
-        <div className="col-span-3 text-center text-red-500 font-semibold">
-          <p>Error: {error instanceof Error ? error.message : "An error occurred"}</p>
-        </div>
-      )
+    if (res.status !== 200) {
+      throw new Error("Something went wrong!")
     }
+    return res.data.data
+  }
 
-    const handleAddProduct = async (addProduct: AddProduct) => {
-      const result = productSchema.safeParse(addProduct)
+  const {
+    data: products,
+    isLoading,
+    isError,
+    error
+  } = useQuery<Product[]>({
+    queryKey: ["products"],
+    queryFn: handleFetchProducts,
+    enabled: context?.user?.role === "ADMIN"
+  })
 
-      if (!result.success) {
-        setValidationErrors(result.error.errors)
-      } else {
-        setValidationErrors([])
-        try {
-          const res = await api.post(`/products`, addProduct, {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          })
-          if (res.status == 200) {
-            toast({
-              title: "✅ Added!",
-              className: "bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white",
-              description: `Product "${res.data.data.name}" added successfully.`
-            })
-            queryClient.invalidateQueries({ queryKey: ["products"] })
+  {
+    isError && (
+      <div className="col-span-3 text-center text-red-500 font-semibold">
+        <p>Error: {error instanceof Error ? error.message : "An error occurred"}</p>
+      </div>
+    )
+  }
 
-            setOpen(false)
-            return res.data.data
+  const handleAddProduct = async (addProduct: AddProduct) => {
+    const result = productSchema.safeParse(addProduct)
+
+    if (!result.success) {
+      setValidationErrors(result.error.errors)
+    } else {
+      setValidationErrors([])
+      try {
+        const res = await api.post(`/products`, addProduct, {
+          headers: {
+            Authorization: `Bearer ${token}`
           }
-        } catch (error: unknown) {
-          if (axios.isAxiosError(error)) {
-            const axiosError = error as AxiosError<ApiErrorResponse>
-            if (axiosError.response) {
-              toast({
-                title: "❌ Adding product failed!",
-                className: "bg-red-100 text-black",
-                description: `${axiosError.response.data.error.message}`
-              })
-            } else {
-              toast({
-                title: "❌ Adding product failed!",
-                className: "bg-red-100 text-black",
-                description: error.message || "An unknown error occurred."
-              })
-            }
+        })
+        if (res.status == 200) {
+          toast({
+            title: "✅ Added!",
+            className: "bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white",
+            description: `Product "${res.data.data.name}" added successfully.`
+          })
+          queryClient.invalidateQueries({ queryKey: ["products"] })
+
+          setOpen(false)
+          return res.data.data
+        }
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          const axiosError = error as AxiosError<ApiErrorResponse>
+          if (axiosError.response) {
+            toast({
+              title: "❌ Adding product failed!",
+              className: "bg-red-100 text-black",
+              description: `${axiosError.response.data.error.message}`
+            })
           } else {
             toast({
               title: "❌ Adding product failed!",
               className: "bg-red-100 text-black",
-              description: "An unknown error occurred."
+              description: error.message || "An unknown error occurred."
             })
           }
+        } else {
+          toast({
+            title: "❌ Adding product failed!",
+            className: "bg-red-100 text-black",
+            description: "An unknown error occurred."
+          })
         }
       }
     }
+  }
 
-    const errorsAsObject = validationErrors.reduce((validationErrors, validationError) => {
-      return {
-        ...validationErrors,
-        [validationError.path[0]]: validationError.message
-      }
-    }, {} as { [key: string]: string })
-
-    const handleReset = () => {
-      setName("")
-      setPrice(0)
-      setDescription("")
-      setImages([])
-      setColor("")
-      setRating(0)
-      setStock(0)
+  const errorsAsObject = validationErrors.reduce((validationErrors, validationError) => {
+    return {
+      ...validationErrors,
+      [validationError.path[0]]: validationError.message
     }
+  }, {} as { [key: string]: string })
 
-    return (
+  const handleReset = () => {
+    setName("")
+    setPrice(0)
+    setDescription("")
+    setImages([])
+    setColor("")
+    setRating(0)
+    setStock(0)
+  }
+
+  return (
+    <>
       <div className="grid items-center justify-center">
         <h2 className="text-3xl font-semibold tracking-tight text-center">List of all Products</h2>
         <Dialog open={open} onOpenChange={setOpen}>
@@ -343,16 +341,6 @@ const ProductList = () => {
           </TableBody>
         </Table>
       </div>
-    )
-  }
-  return (
-    <>
-      <Can
-        permission="PRODUCT:EDIT"
-        permissionType="actions"
-        yes={() => handleProductPageRender()}
-        no={() => <NoAccess />}
-      ></Can>
     </>
   )
 }
