@@ -7,8 +7,8 @@ const NotFound = () => {
 
   return (
     <>
-      <div className="flex items-center justify-center h-screen">
-        <div className="shadow overflow-hidden sm:rounded-lg p-5 max-w-lg w-full text-center">
+      <div className="flex items-center justify-center mt-48">
+        <div className="shadow overflow-hidden bg-white sm:rounded-lg p-5 max-w-lg w-full text-center">
           <h1 className="text-2xl font-bold text-gray-900">Oops!</h1>
           <p className="mt-3 text-base text-gray-500">Sorry, an unexpected error has occurred.</p>
           <img
@@ -21,10 +21,11 @@ const NotFound = () => {
               <p className="mt-3 italic text-sm text-red-500">
                 {error.statusText || error.message}
               </p>
-              <br />
             </div>
           )}
-          <Button onClick={() => navigate("/")}>Back to Home</Button>
+          <Button variant="secondary" className="mt-5" onClick={() => navigate("/")}>
+            Back to Home
+          </Button>
         </div>
       </div>
     </>

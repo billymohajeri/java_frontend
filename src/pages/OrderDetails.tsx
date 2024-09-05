@@ -26,63 +26,131 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { toast } from "@/components/ui/use-toast"
-import { Order } from "@/types"
-import { useQuery } from "@tanstack/react-query"
+import { ApiErrorResponse, Order } from "@/types"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { UserContext } from "@/providers/user-provider"
+import axios, { AxiosError } from "axios"
+import NotFound from "./NotFound"
+import { ZodIssue } from "zod"
+import { orderSchema } from "@/schemas/order"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select"
 
 const OrderDetails = () => {
   const [comments, setComments] = useState("")
   const [status, setStatus] = useState("")
   const [address, setAddress] = useState("")
+  const [validationErrors, setValidationErrors] = useState<ZodIssue[]>([])
+  const [open, setOpen] = useState(false)
+  const queryClient = useQueryClient()
 
   const navigate = useNavigate()
 
   const { id } = useParams<{ id: string }>()
   const context = useContext(UserContext)
   const token = context?.token
-
   const handleDeleteOrder = async () => {
-    const res = await api.delete(`/orders/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`
+    try {
+      const res = await api.delete(`/orders/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      if (res.status === 200) {
+        toast({
+          title: "✅ Deleted!",
+          className: "bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white",
+          description: `Order deleted successfully.`
+        })
+        navigate("/orders")
+        return res.data.data
       }
-    })
-    if (res.status !== 200) {
-      throw new Error("Something went wrong!")
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError<ApiErrorResponse>
+        if (axiosError.response) {
+          toast({
+            title: "❌ Deleting Order failed!",
+            className: "bg-red-100 text-black",
+            description: `${axiosError.response.data.error.message}`
+          })
+        } else {
+          toast({
+            title: "❌ Deleting Order failed!",
+            className: "bg-red-100 text-black",
+            description: error.message || "An unknown error occurred."
+          })
+        }
+      } else {
+        toast({
+          title: "❌ Deleting Order failed!",
+          className: "bg-red-100 text-black",
+          description: "An unknown error occurred."
+        })
+      }
     }
-    toast({
-      title: "✅ Deleted!",
-      className: "bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white",
-      description: `Order deleted successfully.`
-    })
-    navigate("/orders")
-    return res.data.data
   }
-
   const handleEditOrder = async () => {
     const payload = {
       comments: comments,
       status: status,
       address: address
     }
-    const res = await api.put(`/orders/${id}`, payload, {
-      headers: {
-        Authorization: `Bearer ${token}`
+    const result = orderSchema.safeParse(payload)
+    if (!result.success) {
+      setValidationErrors(result.error.errors)
+    } else {
+      setValidationErrors([])
+      try {
+        const res = await api.put(`/orders/${id}`, payload, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        if (res.status === 200) {
+          toast({
+            title: "✅ Edited!",
+            className: "bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white",
+            description: `Order edited successfully.`
+          })
+          queryClient.invalidateQueries({ queryKey: ["order"] })
+          setOpen(false)
+        }
+        return res.data.data
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          const axiosError = error as AxiosError<ApiErrorResponse>
+          if (axiosError.response) {
+            toast({
+              title: "❌ Editing Order failed!",
+              className: "bg-red-100 text-black",
+              description: `${axiosError.response.data.error.message}`
+            })
+          } else {
+            toast({
+              title: "❌ Editing Order failed!",
+              className: "bg-red-100 text-black",
+              description: error.message || "An unknown error occurred."
+            })
+          }
+        } else {
+          toast({
+            title: "❌ Editing Order failed!",
+            className: "bg-red-100 text-black",
+            description: "An unknown error occurred."
+          })
+        }
       }
-    })
-    if (res.status !== 200) {
-      throw new Error("Something went wrong!")
     }
-    toast({
-      title: "✅ Edited!",
-      className: "bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white",
-      description: `Order edited successfully.`
-    })
-    navigate("/orders")
-    return res.data.data
   }
 
   const handleFetchOrder = async () => {
@@ -118,12 +186,31 @@ const OrderDetails = () => {
 
   if (isError) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-red-500 font-semibold">
-          Error: {error?.message || "Unable to fetch product details"}
-        </p>
-      </div>
+      <>
+        <div>{error.message.includes("404") && <NotFound />}</div>
+        <div className="flex justify-center items-center mt-12">
+          <p className="text-red-500 font-semibold">
+            Error: {error?.message || "Unable to fetch order details"}
+          </p>
+        </div>
+      </>
     )
+  }
+
+  const errorsAsObject = validationErrors.reduce((validationErrors, validationError) => {
+    return {
+      ...validationErrors,
+      [validationError.path[0]]: validationError.message
+    }
+  }, {} as { [key: string]: string })
+
+  const handleReset = () => {
+    setValidationErrors([])
+    if (order) {
+      setComments(order.comments)
+      setStatus(order.status)
+      setAddress(order.address)
+    }
   }
 
   return (
@@ -162,12 +249,14 @@ const OrderDetails = () => {
             </div>
           </div>
           <div className="flex justify-center gap-4 mt-4">
-            <Button asChild>
+            <Button asChild variant="secondary">
               <Link to="/orders">Back to Order List</Link>
             </Button>
-            <Dialog>
+            <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
-                <Button>Edit</Button>
+                <Button variant="secondary" onClick={handleReset}>
+                  Edit
+                </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
@@ -188,17 +277,34 @@ const OrderDetails = () => {
                       className="col-span-3"
                     />
                   </div>
+                  {errorsAsObject["comments"] && (
+                    <p className="text-red-400">{errorsAsObject["comments"]}</p>
+                  )}
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="status" className="text-right">
                       Status
                     </Label>
-                    <Input
-                      id="status"
-                      value={status}
-                      onChange={(e) => setStatus(e.target.value)}
-                      className="col-span-3"
-                    />
+                    <Select
+                      name="status"
+                      onValueChange={(value) => setStatus(value)}
+                      defaultValue={order.status}
+                    >
+                      <SelectTrigger className="col-span-3">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="PENDING">Pending</SelectItem>
+                          <SelectItem value="SHIPPED">Shipped</SelectItem>
+                          <SelectItem value="DELIVERED">Delivered</SelectItem>
+                          <SelectItem value="CANCELED">Canceled</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
                   </div>
+                  {errorsAsObject["status"] && (
+                    <p className="text-red-400">{errorsAsObject["status"]}</p>
+                  )}
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="address" className="text-right">
@@ -211,18 +317,23 @@ const OrderDetails = () => {
                     className="col-span-3"
                   />
                 </div>
+                {errorsAsObject["address"] && (
+                  <p className="text-red-400">{errorsAsObject["address"]}</p>
+                )}
                 <DialogFooter>
                   <DialogClose asChild>
                     <Button type="button" variant="secondary">
                       Cancel
                     </Button>
                   </DialogClose>
+
                   <Button
-                    onClick={() => {
-                      if (id) {
-                        handleEditOrder()
-                      }
-                    }}
+                    onClick={handleEditOrder}
+                    disabled={
+                      comments === order.comments &&
+                      status === order.status &&
+                      address === order.address
+                    }
                   >
                     Save changes
                   </Button>
@@ -231,7 +342,7 @@ const OrderDetails = () => {
             </Dialog>
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="destructive">Delete</Button>
+                <Button>Delete</Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>

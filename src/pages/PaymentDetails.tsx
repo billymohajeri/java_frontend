@@ -32,6 +32,7 @@ import { UserContext } from "@/providers/user-provider"
 import { ZodIssue } from "zod"
 import { paymentSchema } from "@/schemas/payment"
 import axios, { AxiosError } from "axios"
+import NotFound from "./NotFound"
 
 const PaymentDetails = () => {
   const [amount, setAmount] = useState(0)
@@ -70,7 +71,7 @@ const PaymentDetails = () => {
           className: "bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white",
           description: `Payment edited successfully.`
         })
-        navigate("/payments")
+        // navigate("/payments")
         return res.data.data
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
@@ -131,11 +132,14 @@ const PaymentDetails = () => {
 
   if (isError) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-red-500 font-semibold">
-          Error: {error?.message || "Unable to fetch product details"}
-        </p>
-      </div>
+      <>
+        <div>{error.message.includes("404") && <NotFound />}</div>
+        <div className="flex justify-center items-center mt-12">
+          <p className="text-red-500 font-semibold">
+            Error: {error?.message || "Unable to fetch payment details"}
+          </p>
+        </div>
+      </>
     )
   }
 
@@ -279,15 +283,17 @@ const PaymentDetails = () => {
                       Cancel
                     </Button>
                   </DialogClose>
+                  <DialogClose asChild>
                   <Button
                     onClick={() => {
                       if (id) {
                         handleEditPayment()
                       }
                     }}
+                    
                   >
                     Save changes
-                  </Button>
+                  </Button></DialogClose>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
