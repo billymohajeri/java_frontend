@@ -1,7 +1,6 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { ShoppingCart, X } from "lucide-react"
 import api from "@/api"
-import PaginationComponent from "@/components/PaginationComponent"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -11,6 +10,15 @@ import {
   CardHeader,
   CardTitle
 } from "@/components/ui/card"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious
+} from "@/components/ui/pagination"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -45,8 +53,6 @@ import { Textarea } from "@/components/ui/textarea"
 
 const ProductListCards = () => {
   const [searchValue, setSearchValue] = useState("")
-  const [currentPage, setCurrentPage] = useState(1)
-  const productsPerPage = 10
 
   const queryClient = useQueryClient()
 
@@ -91,6 +97,19 @@ const ProductListCards = () => {
   const [newAddress, setNewAddress] = useState("")
   const [comments, setComments] = useState("")
   const [paymentMethod, setPaymentMethod] = useState("")
+
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 12
+
+  const totalPages = Math.ceil((filteredProducts ? filteredProducts.length : 0) / itemsPerPage)
+
+  const indexOfLastItem = currentPage * itemsPerPage
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage
+  const currentProducts = (filteredProducts || []).slice(indexOfFirstItem, indexOfLastItem)
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber)
+  }
 
   useEffect(() => {
     if (products && products.length > 0) {
@@ -588,7 +607,12 @@ const ProductListCards = () => {
               <p>Error: {error instanceof Error ? error.message : "An error occurred"}</p>
             </div>
           )}
-          {filteredProducts?.map((product) => (
+        </div>
+      </div>
+
+      {currentProducts.length > 0 ? (
+        <div className="grid grid-cols-6 gap-10 p-10">
+          {currentProducts.map((product) => (
             <Card key={product.id}>
               <Link to={`/products/${product.id}`}>
                 <CardHeader>
@@ -635,12 +659,42 @@ const ProductListCards = () => {
             </Card>
           ))}
         </div>
-        <PaginationComponent
-          totalPages={5}
-          currentPage={currentPage}
-          handleCurrentPageChange={handleCurrentPageChange}
-        />
-      </div>
+      ) : (
+        <p>No products available.</p>
+      )}
+
+      {totalPages > 1 && (
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href="#"
+                onClick={() => handlePageChange(currentPage > 1 ? currentPage - 1 : 1)}
+              />
+            </PaginationItem>
+
+            {[...Array(totalPages)].map((_, index) => (
+              <PaginationItem key={index}>
+                <PaginationLink
+                  href="#"
+                  isActive={index + 1 === currentPage}
+                  onClick={() => handlePageChange(index + 1)}
+                >
+                  {index + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationNext
+                href="#"
+                onClick={() =>
+                  handlePageChange(currentPage < totalPages ? currentPage + 1 : totalPages)
+                }
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </>
   )
 }
