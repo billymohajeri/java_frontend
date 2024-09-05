@@ -217,7 +217,7 @@ const PaymentDetails = () => {
                       value={amount}
                       type="number"
                       min={0}
-                      onChange={(e) => setAmount(parseFloat(e.target.value))}
+                      onChange={(e) => setAmount(parseFloat(e.target.value)||0)}
                       className="col-span-3"
                     />
                   </div>

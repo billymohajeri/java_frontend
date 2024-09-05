@@ -1,14 +1,12 @@
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { useQuery } from "@tanstack/react-query"
-import api from "@/api"
-import { Order, Payment, User } from "@/types"
 import { useContext } from "react"
+import { useNavigate } from "react-router-dom"
+import { useQuery } from "@tanstack/react-query"
+import { Order, Payment, User } from "@/types"
+import api from "@/api"
 import { UserContext } from "@/providers/user-provider"
 import { ShoppingBag, User2Icon, UserCheck, Users2Icon } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useNavigate } from "react-router-dom"
-import { Can } from "@/components/Can"
-import NoAccess from "@/components/NoAccess"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
 const Dashboard = () => {
   const navigate = useNavigate()
