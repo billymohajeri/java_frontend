@@ -45,7 +45,7 @@ const OrderList = () => {
     Pending = "PENDING",
     Shipped = "SHIPPED",
     Delivered = "DELIVERED",
-    Cancelled = "CANCELLED"
+    Canceled = "CANCELED"
   }
   const [userId, setUserId] = useState("")
   // const [dateTime, setDateTime] = useState<number[]>([])
@@ -235,7 +235,7 @@ const OrderList = () => {
                     <SelectItem value={OrderStatus.Pending}>Pending</SelectItem>
                     <SelectItem value={OrderStatus.Shipped}>Shipped</SelectItem>
                     <SelectItem value={OrderStatus.Delivered}>Delivered</SelectItem>
-                    <SelectItem value={OrderStatus.Cancelled}>Cancelled</SelectItem>
+                    <SelectItem value={OrderStatus.Canceled}>Canceled</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>

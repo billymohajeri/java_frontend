@@ -15,19 +15,16 @@ export const userSchema = z
       .min(1, "Last Name cannot be empty")
       .max(50, "Last Name cannot exceed 50 characters"),
 
-    email: z.string()
-    .email("Invalid email address")
-    .min(1, "Email address cannot be empty"),
+    email: z.string().email("Invalid email address").min(1, "Email address cannot be empty"),
 
     role: z.string().min(1, "Role cannot be empty"),
 
-    phoneNumber: z.string()
-    .regex(PHONE_REGEX, {
-      message: "Phone number must start with a '+' and contain at least 5 digits"
-    })
-    .min(1, "Phone number cannot be empty")
-    ,
-
+    phoneNumber: z
+      .string()
+      .regex(PHONE_REGEX, {
+        message: "Phone number must start with a '+' and contain at least 5 digits"
+      })
+      .min(1, "Phone number cannot be empty"),
     birthDate: z.preprocess(
       (arg) => {
         if (typeof arg === "string") {

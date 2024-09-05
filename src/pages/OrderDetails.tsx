@@ -282,7 +282,7 @@ const OrderDetails = () => {
                   )}
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="status" className="text-right">
-                      Status
+                      Status *
                     </Label>
                     <Select
                       name="status"
@@ -308,7 +308,7 @@ const OrderDetails = () => {
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="address" className="text-right">
-                    Address
+                    Address *
                   </Label>
                   <Input
                     id="address"

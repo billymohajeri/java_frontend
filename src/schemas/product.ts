@@ -1,7 +1,8 @@
 import { z } from "zod"
 
 export const productSchema = z.object({
-  name: z.string().min(1, "Name cannot be empty"),
+  name: z.string().min(1, "Name cannot be empty")
+  .max(50, "Name cannot exceed 50 characters"),
 
   price: z
     .number({
@@ -10,7 +11,8 @@ export const productSchema = z.object({
     })
     .min(0.01, "Price must be greater than 0"),
 
-  color: z.string().min(1, "Color cannot be empty"),
+  color: z.string().min(1, "Color cannot be empty")
+  .max(50, "Color cannot exceed 50 characters"),
 
   rating: z
     .number({
