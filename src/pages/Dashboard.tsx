@@ -170,7 +170,7 @@ const Dashboard = () => {
                   <p>Loading...</p>
                 ) : (
                   <ul>
-                    {orders?.slice(0, 25).map((order) => (
+                    {orders?.slice(0, 7).map((order) => (
                       <li key={order.id} className="border-b py-2">
                       <Link to={`/orders/${order.id}`}>
                         <span>{order.address}</span> - <span>{`${order.comments}`}</span> - <span>{`${order.status}`}</span>
@@ -192,7 +192,7 @@ const Dashboard = () => {
                   <p>Loading...</p>
                 ) : (
                   <ul>
-                    {payments?.slice(0, 25).map((payment) => (
+                    {payments?.slice(0, 7).map((payment) => (
                       <li key={payment.id} className="border-b py-2">
                         <Link to={`/payments/${payment.id}`}>
                         <span>€ {payment.amount}</span> - <span>{`$${payment.status}`}</span>
