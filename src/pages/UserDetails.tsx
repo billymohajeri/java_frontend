@@ -26,7 +26,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { toast } from "@/components/ui/use-toast"
 import { EditUser } from "@/types"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
@@ -40,6 +40,8 @@ const UserDetails = () => {
   const [phoneNumber, setPhoneNumber] = useState("")
   const [birthDate, setBirthDate] = useState("")
   const [role, setRole] = useState("")
+  const [open, setOpen] = useState(false)
+  const queryClient = useQueryClient()
 
   const navigate = useNavigate()
   const context = useContext(UserContext)
@@ -89,7 +91,8 @@ const UserDetails = () => {
       className: "bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white",
       description: `User "${res.data.data.firstName}" edited successfully.`
     })
-    navigate("/users")
+    setOpen(false)
+    queryClient.invalidateQueries({ queryKey: ["user"] })
     return res.data.data
   }
 
@@ -183,7 +186,7 @@ const UserDetails = () => {
               <Link to="/users">Back to User List</Link>
             </Button>
 
-            <Dialog>
+            <Dialog  open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
                 <Button variant="secondary">Edit</Button>
               </DialogTrigger>

@@ -79,7 +79,7 @@ const UserList = () => {
             description: `User "${res.data.data.firstName}" added successfully.`
           })
           queryClient.invalidateQueries({ queryKey: ["users"] })
-
+          navigate(`/users/${res.data.data.id}`)
           setOpen(false)
           return res.data.data
         }
@@ -180,8 +180,10 @@ const UserList = () => {
         <h3 className="scroll-m-20 pb-2 text-2xl font-semibold tracking-tight first:mt-0 text-center mb-5">
           (Total: {users?.length} users)
         </h3>
-        <h4 className="text-center text-sm text-gray-400 mb-5">Click on each item to see details and more actions.</h4>
-        
+        <h4 className="text-center text-sm text-gray-400 mb-5">
+          Click on each item to see details and more actions.
+        </h4>
+
         <Dialog open={open} onOpenChange={setOpen}>
           <div className="grid items-center justify-center my-5">
             <DialogTrigger asChild>

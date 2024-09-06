@@ -1,10 +1,10 @@
 import { useContext } from "react"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import { Order, Payment, User } from "@/types"
 import api from "@/api"
 import { UserContext } from "@/providers/user-provider"
-import { ShoppingBag, User2Icon, UserCheck, Users2Icon } from "lucide-react"
+import { EuroIcon, ShoppingBag, ShoppingCart, User2Icon, UserCheck, Users2Icon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -48,10 +48,14 @@ const Dashboard = () => {
           Authorization: `Bearer ${token}`
         }
       })
+      
       return res.data.data
     },
     enabled: context?.user?.role === "ADMIN"
   })
+
+  orders?.sort((a, b) => b.address.length - a.address.length);
+
 
   const { data: payments, isLoading: isLoadingPayments } = useQuery<Payment[]>({
     queryKey: ["payments"],
@@ -88,7 +92,7 @@ const Dashboard = () => {
             </Button>
           </CardFooter>
         </Card>
-        <Card className="flex flex-col  h-full">
+        <Card className="flex flex-col h-full">
           <div className="flex  items-start">
             <CardHeader className="flex-1">
               <CardTitle>
@@ -128,6 +132,12 @@ const Dashboard = () => {
               {isLoadingOrders ? "Loading..." : orders?.length}
             </h4>
           </CardContent>
+          <CardFooter className="flex justify-start mt-auto">
+            <Button onClick={() => navigate("/orders")}>
+              <ShoppingCart className="mr-4" />
+              See All
+            </Button>
+          </CardFooter>
         </Card>
 
         <Card>
@@ -141,29 +151,60 @@ const Dashboard = () => {
                 : `$${payments?.reduce((total, payment) => total + payment.amount, 0).toFixed(2)}`}
             </h4>
           </CardContent>
+          <CardFooter className="flex justify-start mt-auto">
+            <Button onClick={() => navigate("/payments")}>
+              <EuroIcon className="mr-4" />
+              See All
+            </Button>
+          </CardFooter>
         </Card>
-
-        <div className="col-span-1 md:col-span-2 lg:col-span-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Recent Orders</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {isLoadingOrders ? (
-                <p>Loading...</p>
-              ) : (
-                <ul>
-                  {orders?.slice(0, 5).map((order) => (
-                    <li key={order.id} className="border-b py-2">
-                      <span>{order.address}</span> - <span>{`$${order.status}`}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </CardContent>
-          </Card>
-        </div>
       </div>
+        <div className="grid grid-cols-3 gap-6 p-6">
+          <div className="col-span-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>Recent Orders</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {isLoadingOrders ? (
+                  <p>Loading...</p>
+                ) : (
+                  <ul>
+                    {orders?.slice(0, 25).map((order) => (
+                      <li key={order.id} className="border-b py-2">
+                      <Link to={`/orders/${order.id}`}>
+                        <span>{order.address}</span> - <span>{`${order.comments}`}</span> - <span>{`${order.status}`}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+          <div className="">
+            <Card>
+              <CardHeader>
+                <CardTitle>Recent Payments</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {isLoadingOrders ? (
+                  <p>Loading...</p>
+                ) : (
+                  <ul>
+                    {payments?.slice(0, 25).map((payment) => (
+                      <li key={payment.id} className="border-b py-2">
+                        <Link to={`/payments/${payment.id}`}>
+                        <span>€ {payment.amount}</span> - <span>{`$${payment.status}`}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
     </>
   )
 }

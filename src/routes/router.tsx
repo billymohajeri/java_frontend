@@ -38,14 +38,7 @@ const router = createBrowserRouter([
       },
       {
         path: Public.productDetails,
-        element: (
-          <Can
-            permission="PRODUCT:EDIT"
-            permissionType="actions"
-            yes={() => <ProductDetails />}
-            no={() => <NoAccess />}
-          />
-        )
+        element: <ProductDetails />
       },
       {
         path: Admin.dashboard,

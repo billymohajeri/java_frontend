@@ -108,7 +108,7 @@ const ProductList = () => {
             description: `Product "${res.data.data.name}" added successfully.`
           })
           queryClient.invalidateQueries({ queryKey: ["products"] })
-
+          navigate(`/products/${res.data.data.id}`)
           setOpen(false)
           return res.data.data
         }

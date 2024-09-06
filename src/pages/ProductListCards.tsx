@@ -37,7 +37,7 @@ import { UserContext } from "@/providers/user-provider"
 import { ApiErrorResponse, Cart, Product } from "@/types"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { ChangeEvent, useContext, useEffect, useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import axios, { AxiosError } from "axios"
 import {
   Dialog,
@@ -50,8 +50,10 @@ import {
   DialogTrigger
 } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
+import { ToastAction } from "@/components/ui/toast"
 
 const ProductListCards = () => {
+  const navigate = useNavigate()
   const [searchValue, setSearchValue] = useState("")
 
   const queryClient = useQueryClient()
@@ -99,7 +101,7 @@ const ProductListCards = () => {
   const [paymentMethod, setPaymentMethod] = useState("")
 
   const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 12
+  const itemsPerPage = 15
 
   const totalPages = Math.ceil((filteredProducts ? filteredProducts.length : 0) / itemsPerPage)
 
@@ -127,6 +129,10 @@ const ProductListCards = () => {
     if (availableOnly) {
       filtered = filtered?.filter((product) => product.stock > 0)
     }
+
+    filtered = filtered?.sort((a, b) => b.rating - a.rating);
+
+
 
     setFilteredProducts(filtered)
   }, [minPrice, maxPrice, availableOnly, products])
@@ -199,6 +205,20 @@ const ProductListCards = () => {
       quantity: quantity,
       userId: user?.id
     }
+    if (!context.user?.role) {
+      navigate("/login")
+      toast({
+        title: "❌ Failed to Add!",
+        className: "bg-red-100 text-black",
+        description: `To add products to your cart, you should log in first. If you don't have an account, sign up now.`,
+        action: (
+          <ToastAction altText="Sign Up" className="hover:bg-gray-100">
+            Ok
+          </ToastAction>
+        )
+      })
+      return
+    }
     try {
       const response = await api.post(`/carts`, payload)
       if (response.status === 200) {
@@ -217,7 +237,7 @@ const ProductListCards = () => {
       }
     } catch (error) {
       toast({
-        title: "❌ Login failed!",
+        title: "❌ Failed to Add!",
         className: "bg-red-100 text-black",
         description: `${error}`
       })
@@ -231,6 +251,7 @@ const ProductListCards = () => {
           Authorization: `Bearer ${token}`
         }
       })
+
       if (response.status === 200) {
         toast({
           title: "✅ Removed successfully!",
@@ -515,6 +536,10 @@ const ProductListCards = () => {
         <h3 className="scroll-m-20 pb-2 text-2xl font-semibold tracking-tight text-center mb-5">
           (Total: {filteredProducts?.length} items)
         </h3>
+        
+        
+        <div className="relative">
+        <div className="">
         <div className="flex mb-5">
           <Input
             type="text"
@@ -594,7 +619,8 @@ const ProductListCards = () => {
             </div>
           </RadioGroup>
         </div>
-
+        </div>
+        </div>
         <div className="grid grid-cols-3 gap-10">
           {isLoading && (
             <div className="col-span-3 flex justify-center items-center">
