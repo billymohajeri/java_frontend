@@ -31,6 +31,8 @@ import { Link, useNavigate, useParams } from "react-router-dom"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { UserContext } from "@/providers/user-provider"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+
 
 const UserDetails = () => {
   const [firstName, setFirstName] = useState("")
@@ -267,6 +269,26 @@ const UserDetails = () => {
                     onChange={(e) => setBirthDate(e.target.value)}
                     className="col-span-3"
                   />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="role" className="text-right">
+                    Role *
+                  </Label>
+                  <Select
+                      name="role"
+                      onValueChange={(value) => setRole(value)}
+                      defaultValue={user.role}
+                    >
+                  <SelectTrigger className="col-span-3">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="ADMIN">Admin</SelectItem>
+                          <SelectItem value="USER">User</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
                 </div>
 
                 <DialogFooter>
