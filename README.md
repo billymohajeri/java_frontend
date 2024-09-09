@@ -18,14 +18,10 @@
   - [Setup](#setup)
   - [Install](#install)
   - [Usage](#usage)
-  - [Deployment](#deployment)
 - [👥 Authors](#authors)
 - [🔭 Future Features](#future-features)
 - [🤝 Contributing](#contributing)
 - [⭐️ Show your support](#support)
-- [🙏 Acknowledgements](#acknowledgements)
-- [❓ FAQ (OPTIONAL)](#faq)
-- [📝 License](#license)
 
 # 📖 Billy's Socks Shop <a name="about-project"></a>
 
@@ -140,8 +136,6 @@ To run the project in development mode, execute the following command:
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## 🔭 Future Features <a name="future-features"></a>
-
-> Describe 1 - 3 features you will add to the project.
 
 - [ ] **User Reviews and Ratings**
 - [ ] **Wishlist Functionality**
