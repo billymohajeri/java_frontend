@@ -4,7 +4,7 @@ const isDevelopment = import.meta.env.MODE === "development"
 let baseURL = "http://localhost:8080/api/v1"
 
 if (!isDevelopment) {
-  baseURL = "http://localhost:8080/api/v1"
+  baseURL = "https://fs18-java-backend-k478.onrender.com/api/v1"
 }
 
 const api = axios.create({
