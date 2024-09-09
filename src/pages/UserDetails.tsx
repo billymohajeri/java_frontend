@@ -31,8 +31,14 @@ import { Link, useNavigate, useParams } from "react-router-dom"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { UserContext } from "@/providers/user-provider"
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select"
 
 const UserDetails = () => {
   const [firstName, setFirstName] = useState("")
@@ -174,10 +180,11 @@ const UserDetails = () => {
                     <strong>Role:</strong> {user.role}
                   </p>
                   <p>
-                    <small>User ID:</small>
-                  </p>
-                  <p className="text-gray-500 text-sm">
-                    <small>{user.id}</small>
+                    <strong className="text-gray-700">User ID:</strong>
+                    <span className="text-gray-700 text-sm"> {user.id}</span>
+                    <Button variant="link" onClick={() => navigator.clipboard.writeText(user.id)}>
+                      Copy ID
+                    </Button>
                   </p>
                 </div>
               </div>
@@ -188,7 +195,7 @@ const UserDetails = () => {
               <Link to="/users">Back to User List</Link>
             </Button>
 
-            <Dialog  open={open} onOpenChange={setOpen}>
+            <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
                 <Button variant="secondary">Edit</Button>
               </DialogTrigger>
@@ -275,20 +282,20 @@ const UserDetails = () => {
                     Role *
                   </Label>
                   <Select
-                      name="role"
-                      onValueChange={(value) => setRole(value)}
-                      defaultValue={user.role}
-                    >
-                  <SelectTrigger className="col-span-3">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectItem value="ADMIN">Admin</SelectItem>
-                          <SelectItem value="USER">User</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
+                    name="role"
+                    onValueChange={(value) => setRole(value)}
+                    defaultValue={user.role}
+                  >
+                    <SelectTrigger className="col-span-3">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="ADMIN">Admin</SelectItem>
+                        <SelectItem value="USER">User</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <DialogFooter>
