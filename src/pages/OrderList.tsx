@@ -160,9 +160,11 @@ const OrderList = () => {
         List of all Orders
       </h2>
       <h3 className="scroll-m-20 pb-2 text-2xl font-semibold tracking-tight first:mt-0 text-center mb-5">
-          (Total: {orders?.length} orders)
-        </h3>
-        <h4 className="text-center text-sm text-gray-400 mb-5">Click on each item to see details and more actions.</h4>
+        (Total: {orders?.length || 0} orders)
+      </h3>
+      <h4 className="text-center text-sm text-gray-400 mb-5">
+        Click on each item to see details and more actions.
+      </h4>
       <Dialog open={open} onOpenChange={setOpen}>
         <div className="grid items-center justify-center my-5">
           <DialogTrigger asChild>

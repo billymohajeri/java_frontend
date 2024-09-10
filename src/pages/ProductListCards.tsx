@@ -13,7 +13,6 @@ import {
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -87,10 +86,6 @@ const ProductListCards = () => {
     setCurrentPage(1)
   }
 
-  const handleCurrentPageChange = (page: number) => {
-    setCurrentPage(page)
-  }
-
   const [minPrice, setMinPrice] = useState(0)
   const [maxPrice, setMaxPrice] = useState(100)
   const [maxPriceFixed, setMaxPriceFixed] = useState(100)
@@ -130,9 +125,7 @@ const ProductListCards = () => {
       filtered = filtered?.filter((product) => product.stock > 0)
     }
 
-    filtered = filtered?.sort((a, b) => b.rating - a.rating);
-
-
+    filtered = filtered?.sort((a, b) => b.rating - a.rating)
 
     setFilteredProducts(filtered)
   }, [minPrice, maxPrice, availableOnly, products])
@@ -534,92 +527,91 @@ const ProductListCards = () => {
           List of all Products
         </h2>
         <h3 className="scroll-m-20 pb-2 text-2xl font-semibold tracking-tight text-center mb-5">
-          (Total: {filteredProducts?.length} items)
+          (Total: {filteredProducts?.length || 0} items)
         </h3>
-        
-        
+
         <div className="relative">
-        <div className="">
-        <div className="flex mb-5">
-          <Input
-            type="text"
-            name="searchInput"
-            value={searchValue}
-            onChange={handleSearchValueChange}
-            className="mb-3 text-lg basis-11/12"
-            placeholder="Search for products..."
-          />
-          <Button
-            variant="link"
-            className="basis-1/12 ml-3"
-            onClick={() => {
-              setSearchValue("")
-            }}
-          >
-            Reset
-          </Button>
-        </div>
-        <div className="flex mb-5">
-          <p className="text-lg basis-3/12 mt-1 ml-2">
-            Price Range: € {minPrice} - € {maxPrice}
-          </p>
-          <Input
-            type="number"
-            name="min"
-            value={minPrice}
-            min={0}
-            max={maxPrice - 1}
-            onChange={handleMinPriceChange}
-            className="mb-3 text-lg basis-4/12"
-            placeholder="Min"
-          />
-          <p className="m-2"> to </p>
-          <Input
-            type="number"
-            name="max"
-            max={maxPriceFixed}
-            min={minPrice + 1}
-            value={maxPrice}
-            onChange={handleMaxPriceChange}
-            className="mb-3 text-lg basis-4/12"
-            placeholder="Max"
-          />
-          <Button
-            variant="link"
-            className="ml-3 basis-1/12"
-            onClick={() => {
-              setMinPrice(0)
-              setMaxPrice(maxPriceFixed)
-            }}
-          >
-            Reset
-          </Button>
-        </div>
-        <div className="flex mb-5">
-          <RadioGroup defaultValue="showAllItems" className="flex mb-5">
-            <div className="flex items-center space-x-2 mr-2">
-              <RadioGroupItem
-                value="showAllItems"
-                id="r1"
-                onClick={() => {
-                  setAvailableOnly(false)
-                }}
+          <div className="">
+            <div className="flex mb-5">
+              <Input
+                type="text"
+                name="searchInput"
+                value={searchValue}
+                onChange={handleSearchValueChange}
+                className="mb-3 text-lg basis-11/12"
+                placeholder="Search for products..."
               />
-              <Label htmlFor="r1">Show All Items</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem
-                value="availableItemsOnly"
-                id="r2"
+              <Button
+                variant="link"
+                className="basis-1/12 ml-3"
                 onClick={() => {
-                  setAvailableOnly(true)
+                  setSearchValue("")
                 }}
-              />
-              <Label htmlFor="r2">Available Items Only</Label>
+              >
+                Reset
+              </Button>
             </div>
-          </RadioGroup>
-        </div>
-        </div>
+            <div className="flex mb-5">
+              <p className="text-lg basis-3/12 mt-1 ml-2">
+                Price Range: € {minPrice} - € {maxPrice}
+              </p>
+              <Input
+                type="number"
+                name="min"
+                value={minPrice}
+                min={0}
+                max={maxPrice - 1}
+                onChange={handleMinPriceChange}
+                className="mb-3 text-lg basis-4/12"
+                placeholder="Min"
+              />
+              <p className="m-2"> to </p>
+              <Input
+                type="number"
+                name="max"
+                max={maxPriceFixed}
+                min={minPrice + 1}
+                value={maxPrice}
+                onChange={handleMaxPriceChange}
+                className="mb-3 text-lg basis-4/12"
+                placeholder="Max"
+              />
+              <Button
+                variant="link"
+                className="ml-3 basis-1/12"
+                onClick={() => {
+                  setMinPrice(0)
+                  setMaxPrice(maxPriceFixed)
+                }}
+              >
+                Reset
+              </Button>
+            </div>
+            <div className="flex mb-5">
+              <RadioGroup defaultValue="showAllItems" className="flex mb-5">
+                <div className="flex items-center space-x-2 mr-2">
+                  <RadioGroupItem
+                    value="showAllItems"
+                    id="r1"
+                    onClick={() => {
+                      setAvailableOnly(false)
+                    }}
+                  />
+                  <Label htmlFor="r1">Show All Items</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem
+                    value="availableItemsOnly"
+                    id="r2"
+                    onClick={() => {
+                      setAvailableOnly(true)
+                    }}
+                  />
+                  <Label htmlFor="r2">Available Items Only</Label>
+                </div>
+              </RadioGroup>
+            </div>
+          </div>
         </div>
         <div className="grid grid-cols-3 gap-10">
           {isLoading && (

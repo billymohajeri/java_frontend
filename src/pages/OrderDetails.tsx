@@ -229,7 +229,7 @@ const OrderDetails = () => {
                   <p className="text-gray-700 mb-2">
                     <strong>Order ID:</strong> {order.id}
                   </p>
-                  <p className="mb-2">
+                  <p className="text-gray-700 mb-2">
                     <strong>User ID:</strong> {order.userId}
                   </p>
                   <p className="text-gray-700 mb-2">
