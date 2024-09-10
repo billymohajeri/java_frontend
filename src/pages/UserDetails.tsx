@@ -25,7 +25,7 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { toast } from "@/components/ui/use-toast"
-import { EditUser } from "@/types"
+import { ApiErrorResponse, EditUser } from "@/types"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { Label } from "@/components/ui/label"
@@ -39,6 +39,10 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select"
+import { ZodIssue } from "zod"
+import { editUserSchema } from "@/schemas/user"
+import axios, { AxiosError } from "axios"
+import { format, parse } from "date-fns"
 
 const UserDetails = () => {
   const [firstName, setFirstName] = useState("")
@@ -50,6 +54,7 @@ const UserDetails = () => {
   const [role, setRole] = useState("")
   const [open, setOpen] = useState(false)
   const queryClient = useQueryClient()
+  const [validationErrors, setValidationErrors] = useState<ZodIssue[]>([])
 
   const navigate = useNavigate()
   const context = useContext(UserContext)
@@ -76,32 +81,53 @@ const UserDetails = () => {
   }
 
   const handleEditUser = async (editedUser: EditUser) => {
-    const payload = {
-      id: id,
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      address: address,
-      phoneNumber: phoneNumber,
-      birthDate: birthDate,
-      role: role
-    }
-    const res = await api.put(`/users`, payload, {
-      headers: {
-        Authorization: `Bearer ${token}`
+    const result = editUserSchema.safeParse(editedUser)
+
+    if (!result.success) {
+      setValidationErrors(result.error.errors)
+    } else {
+      setValidationErrors([])
+
+      try {
+        const res = await api.put(`/users`, editedUser, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+
+        if (res.status == 200) {
+          toast({
+            title: "✅ Edited!",
+            className: "bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white",
+            description: `User "${res.data.data.firstName}" edited successfully.`
+          })
+          queryClient.invalidateQueries({ queryKey: ["user"] })
+          setOpen(false)
+          return res.data.data
+        }
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          const axiosError = error as AxiosError<ApiErrorResponse>
+          if (axiosError.response) {
+            toast({
+              title: "❌ Editing user failed!",
+              className: "bg-red-100 text-black",
+              description: `${axiosError.response.data.error.message}`
+            })
+          } else {
+            toast({
+              title: "❌ Editing user failed!",
+              className: "bg-red-100 text-black",
+              description: error.message || "An unknown error occurred."
+            })
+          }
+        } else {
+          toast({
+            title: "❌ Editing user failed!",
+            className: "bg-red-100 text-black",
+            description: "An unknown error occurred."
+          })
+        }
       }
-    })
-    if (res.status !== 200) {
-      throw new Error("Something went wrong!")
     }
-    toast({
-      title: "✅ Edited!",
-      className: "bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white",
-      description: `User "${res.data.data.firstName}" edited successfully.`
-    })
-    setOpen(false)
-    queryClient.invalidateQueries({ queryKey: ["user"] })
-    return res.data.data
   }
 
   const handleFetchUser = async () => {
@@ -133,7 +159,7 @@ const UserDetails = () => {
       setLastName(user.lastName)
       setEmail(user.email)
       setAddress(user.address)
-      setPhoneNumber(user.phoneNumber.toString())
+      setPhoneNumber(user.phoneNumber)
       setBirthDate(user.birthDate)
       setRole(user.role)
     }
@@ -147,6 +173,22 @@ const UserDetails = () => {
         </p>
       </div>
     )
+  }
+
+  const errorsAsObject = validationErrors.reduce((validationErrors, validationError) => {
+    return {
+      ...validationErrors,
+      [validationError.path[0]]: validationError.message
+    }
+  }, {} as { [key: string]: string })
+
+  const [formattedDate, setFormattedDate] = useState<string>("")
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const dateValue = e.target.value
+    const parsedDate = parse(dateValue, "yyyy-MM-dd", new Date())
+    const formatted = format(parsedDate, "dd-MM-yyyy")
+    setFormattedDate(formatted)
+    setBirthDate(formatted)
   }
 
   return (
@@ -209,7 +251,7 @@ const UserDetails = () => {
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="firstName" className="text-right">
-                      First Name
+                      First Name *
                     </Label>
                     <Input
                       id="firstName"
@@ -218,9 +260,12 @@ const UserDetails = () => {
                       className="col-span-3"
                     />
                   </div>
+                  {errorsAsObject["firstName"] && (
+                    <p className="text-red-400">{errorsAsObject["firstName"]}</p>
+                  )}
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="lastName" className="text-right">
-                      Last Name
+                      Last Name *
                     </Label>
                     <Input
                       id="lastName"
@@ -229,9 +274,12 @@ const UserDetails = () => {
                       className="col-span-3"
                     />
                   </div>
+                  {errorsAsObject["lastName"] && (
+                    <p className="text-red-400">{errorsAsObject["lastName"]}</p>
+                  )}
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="email" className="text-right">
-                      Email
+                      Email *
                     </Label>
                     <Input
                       id="email"
@@ -240,6 +288,9 @@ const UserDetails = () => {
                       className="col-span-3"
                     />
                   </div>
+                  {errorsAsObject["email"] && (
+                    <p className="text-red-400">{errorsAsObject["email"]}</p>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-4 items-center gap-4">
@@ -256,25 +307,34 @@ const UserDetails = () => {
 
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="phoneNumber" className="text-right">
-                    Phone Number
+                    Phone Number *
                   </Label>
                   <Input
                     id="phoneNumber"
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     className="col-span-3"
+                    type="tel"
                   />
                 </div>
-
+                {errorsAsObject["phoneNumber"] && (
+                  <p className="text-red-400">{errorsAsObject["phoneNumber"]}</p>
+                )}
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="birthDate" className="text-right">
-                    Birth Date
+                    Birth Date *
                   </Label>
                   <Input
                     id="birthDate"
-                    value={birthDate}
-                    onChange={(e) => setBirthDate(e.target.value)}
-                    className="col-span-3"
+                    name="birthDate"
+                    value={
+                      formattedDate
+                        ? format(parse(formattedDate, "dd-MM-yyyy", new Date()), "yyyy-MM-dd")
+                        : ""
+                    }
+                    onChange={handleDateChange}
+                    className="col-span-3 ui-date-picker"
+                    type="date"
                   />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
@@ -313,7 +373,7 @@ const UserDetails = () => {
                           lastName,
                           email,
                           address,
-                          phoneNumber: parseInt(phoneNumber),
+                          phoneNumber,
                           birthDate,
                           role
                         })

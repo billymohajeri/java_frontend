@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/table"
 import { toast } from "@/components/ui/use-toast"
 import { UserContext } from "@/providers/user-provider"
-import { userSchema } from "@/schemas/user"
+import { addUserSchema } from "@/schemas/user"
 import { User, AddUser } from "@/types"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import axios, { AxiosError } from "axios"
@@ -63,7 +63,7 @@ const UserList = () => {
   }
 
   const handleAddUser = async (addUser: AddUser) => {
-    const result = userSchema.safeParse(addUser)
+    const result = addUserSchema.safeParse(addUser)
 
     if (!result.success) {
       setValidationErrors(result.error.errors)
@@ -89,17 +89,23 @@ const UserList = () => {
           if (axiosError.response) {
             toast({
               title: "❌ Adding user failed!",
+              className: "bg-red-100 text-black",
+
               description: `${axiosError.response.data.error.message}`
             })
           } else {
             toast({
               title: "❌ Adding user failed!",
+              className: "bg-red-100 text-black",
+
               description: error.message || "An unknown error occurred."
             })
           }
         } else {
           toast({
             title: "❌ Adding user failed!",
+            className: "bg-red-100 text-black",
+
             description: "An unknown error occurred."
           })
         }
@@ -152,8 +158,6 @@ const UserList = () => {
     const dateValue = e.target.value
     const parsedDate = parse(dateValue, "yyyy-MM-dd", new Date())
     const formatted = format(parsedDate, "dd-MM-yyyy")
-    console.log("first", typeof formatted)
-    console.log("first", formatted)
     setFormattedDate(formatted)
     setBirthDate(formatted)
   }

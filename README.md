@@ -41,6 +41,7 @@ This is a project consisting of two repositories: this is the front-end reposito
     <li><a href="https://www.typescriptlang.org/">TypeScript</a></li>
     <li><a href="https://ui.shadcn.com/">shadcn/ui</a></li>
     <li><a href="https://tanstack.com/">TanStack</a></li>
+    <li><a href="https://tailwindui.com/">Tailwind CSS</a></li>
 </ul>
 
 <summary>Server:</summary>

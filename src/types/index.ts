@@ -42,7 +42,7 @@ export type EditUser = {
   lastName: string
   address: string
   email: string
-  phoneNumber: number
+  phoneNumber: string
   birthDate: string
   role: string
 }
