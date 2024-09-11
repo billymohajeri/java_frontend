@@ -356,15 +356,6 @@ const ProductListCards = () => {
     }
   }
 
-
-  const [values, setValues] = useState([20, 80]); // Example default values [min, max]
-
-  // Handle changes in slider values
-  const handleChange = (newValues: number[]) => {
-    setValues(newValues);
-  };
-
-
   return (
     <>
       <Sheet>

@@ -157,197 +157,191 @@ const ProductList = () => {
   }
 
   return (
-    <>
-      <div className="grid items-center justify-center p-10">
-        <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight text-center mt-24">
-          List of all Products
-        </h2>
-        <h3 className="scroll-m-20 pb-2 text-2xl font-semibold tracking-tight first:mt-0 text-center mb-5">
-          (Total: {products?.length || 0} products)
-        </h3>
-        <h4 className="text-center text-sm text-gray-400 mb-5">
-          Click on each item to see details and more actions.
-        </h4>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <div className="grid items-center justify-center my-5">
-            <DialogTrigger asChild>
-              <Button onClick={handleReset}>
-                <Plus className="mr-4" />
-                Add Product
-              </Button>
-            </DialogTrigger>
-          </div>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Add product</DialogTitle>
-              <DialogDescription>
-                Enter the new product&apos;s information here. Click Add when you&apos;re done.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right">
-                  Name *
-                </Label>
-                <Input
-                  id="name"
-                  name="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="col-span-3"
-                />
-              </div>
-              {errorsAsObject["name"] && <p className="text-red-400">{errorsAsObject["name"]}</p>}
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="price" className="text-right">
-                  Price *
-                </Label>
-                <Input
-                  id="price"
-                  name="price"
-                  value={price}
-                  onChange={(e) => setPrice(parseFloat(e.target.value))}
-                  className="col-span-3"
-                  type="number"
-                  min="0"
-                />
-              </div>
-              {errorsAsObject["price"] && <p className="text-red-400">{errorsAsObject["price"]}</p>}
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="description" className="text-right">
-                  Description
-                </Label>
-                <Input
-                  id="description"
-                  name="description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  className="col-span-3"
-                />
-              </div>
-
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="images" className="text-right">
-                  Images
-                </Label>
-                <Input
-                  id="images"
-                  name="images"
-                  value={images}
-                  onChange={(e) => setImages(e.target.value !== "" ? [e.target.value] : [])}
-                  className="col-span-3"
-                  type="url"
-                />
-              </div>
-              {errorsAsObject["images"] && (
-                <p className="text-red-400">{errorsAsObject["images"]}</p>
-              )}
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="color" className="text-right">
-                  Color *
-                </Label>
-                <Input
-                  id="color"
-                  name="color"
-                  value={color}
-                  onChange={(e) => setColor(e.target.value)}
-                  className="col-span-3"
-                />
-              </div>
-              {errorsAsObject["color"] && <p className="text-red-400">{errorsAsObject["color"]}</p>}
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="rating" className="text-right">
-                  Rating
-                </Label>
-                <Input
-                  id="rating"
-                  name="rating"
-                  value={rating}
-                  onChange={(e) => setRating(parseFloat(e.target.value))}
-                  className="col-span-3"
-                  type="number"
-                  min="0"
-                />
-              </div>
-              {errorsAsObject["rating"] && (
-                <p className="text-red-400">{errorsAsObject["rating"]}</p>
-              )}
-
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="stock" className="text-right">
-                  Stock *
-                </Label>
-                <Input
-                  id="stock"
-                  name="stock"
-                  value={stock}
-                  onChange={(e) => setStock(parseInt(e.target.value))}
-                  className="col-span-3"
-                  type="number"
-                  min="0"
-                />
-              </div>
-              {errorsAsObject["stock"] && <p className="text-red-400">{errorsAsObject["stock"]}</p>}
+    <div className="grid items-center justify-center p-10">
+      <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight text-center mt-24">
+        List of all Products
+      </h2>
+      <h3 className="scroll-m-20 pb-2 text-2xl font-semibold tracking-tight first:mt-0 text-center mb-5">
+        (Total: {products?.length || 0} products)
+      </h3>
+      <h4 className="text-center text-sm text-gray-400 mb-5">
+        Click on each item to see details and more actions.
+      </h4>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <div className="grid items-center justify-center my-5">
+          <DialogTrigger asChild>
+            <Button onClick={handleReset}>
+              <Plus className="mr-4" />
+              Add Product
+            </Button>
+          </DialogTrigger>
+        </div>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Add product</DialogTitle>
+            <DialogDescription>
+              Enter the new product&apos;s information here. Click Add when you&apos;re done.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="text-right">
+                Name *
+              </Label>
+              <Input
+                id="name"
+                name="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="col-span-3"
+              />
+            </div>
+            {errorsAsObject["name"] && <p className="text-red-400">{errorsAsObject["name"]}</p>}
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="price" className="text-right">
+                Price *
+              </Label>
+              <Input
+                id="price"
+                name="price"
+                value={price}
+                onChange={(e) => setPrice(parseFloat(e.target.value))}
+                className="col-span-3"
+                type="number"
+                min="0"
+              />
+            </div>
+            {errorsAsObject["price"] && <p className="text-red-400">{errorsAsObject["price"]}</p>}
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="description" className="text-right">
+                Description
+              </Label>
+              <Input
+                id="description"
+                name="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="col-span-3"
+              />
             </div>
 
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button type="button" variant="secondary">
-                  Cancel
-                </Button>
-              </DialogClose>
-              <Button
-                onClick={() => {
-                  handleAddProduct({
-                    name,
-                    price,
-                    description,
-                    images,
-                    color,
-                    rating,
-                    stock
-                  })
-                }}
-              >
-                Save changes
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="images" className="text-right">
+                Images
+              </Label>
+              <Input
+                id="images"
+                name="images"
+                value={images}
+                onChange={(e) => setImages(e.target.value !== "" ? [e.target.value] : [])}
+                className="col-span-3"
+                type="url"
+              />
+            </div>
+            {errorsAsObject["images"] && <p className="text-red-400">{errorsAsObject["images"]}</p>}
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="color" className="text-right">
+                Color *
+              </Label>
+              <Input
+                id="color"
+                name="color"
+                value={color}
+                onChange={(e) => setColor(e.target.value)}
+                className="col-span-3"
+              />
+            </div>
+            {errorsAsObject["color"] && <p className="text-red-400">{errorsAsObject["color"]}</p>}
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="rating" className="text-right">
+                Rating
+              </Label>
+              <Input
+                id="rating"
+                name="rating"
+                value={rating}
+                onChange={(e) => setRating(parseFloat(e.target.value))}
+                className="col-span-3"
+                type="number"
+                min="0"
+              />
+            </div>
+            {errorsAsObject["rating"] && <p className="text-red-400">{errorsAsObject["rating"]}</p>}
 
-        {isLoading && <Loading item="products" />}
-        <Table className="">
-          <TableHeader>
-            <TableRow>
-              <TableHead>No.</TableHead>
-              <TableHead>ID</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Stock</TableHead>
-              <TableHead>Color</TableHead>
-              <TableHead>Rating</TableHead>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="stock" className="text-right">
+                Stock *
+              </Label>
+              <Input
+                id="stock"
+                name="stock"
+                value={stock}
+                onChange={(e) => setStock(parseInt(e.target.value))}
+                className="col-span-3"
+                type="number"
+                min="0"
+              />
+            </div>
+            {errorsAsObject["stock"] && <p className="text-red-400">{errorsAsObject["stock"]}</p>}
+          </div>
+
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type="button" variant="secondary">
+                Cancel
+              </Button>
+            </DialogClose>
+            <Button
+              onClick={() => {
+                handleAddProduct({
+                  name,
+                  price,
+                  description,
+                  images,
+                  color,
+                  rating,
+                  stock
+                })
+              }}
+            >
+              Save changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {isLoading && <Loading item="products" />}
+      <Table className="">
+        <TableHeader>
+          <TableRow>
+            <TableHead>No.</TableHead>
+            <TableHead>ID</TableHead>
+            <TableHead>Name</TableHead>
+            <TableHead>Price</TableHead>
+            <TableHead>Stock</TableHead>
+            <TableHead>Color</TableHead>
+            <TableHead>Rating</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {products?.map((product, index) => (
+            <TableRow
+              key={product.id}
+              onClick={() => navigate(`/products/${product.id}`)}
+              className="cursor-pointer"
+            >
+              <TableCell>{index + 1}</TableCell>
+              <TableCell>{product.id}</TableCell>
+              <TableCell>{product.name}</TableCell>
+              <TableCell>{product.price}</TableCell>
+              <TableCell>{product.stock}</TableCell>
+              <TableCell>{product.color}</TableCell>
+              <TableCell>{product.rating}</TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {products?.map((product, index) => (
-              <TableRow
-                key={product.id}
-                onClick={() => navigate(`/products/${product.id}`)}
-                className="cursor-pointer"
-              >
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>{product.id}</TableCell>
-                <TableCell>{product.name}</TableCell>
-                <TableCell>{product.price}</TableCell>
-                <TableCell>{product.stock}</TableCell>
-                <TableCell>{product.color}</TableCell>
-                <TableCell>{product.rating}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-    </>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   )
 }
 
