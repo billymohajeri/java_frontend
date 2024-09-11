@@ -26,7 +26,7 @@ import {
   DialogTrigger
 } from "@/components/ui/dialog"
 import { toast } from "@/components/ui/use-toast"
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { UserContext } from "@/providers/user-provider"
@@ -148,18 +148,6 @@ const ProductDetails = () => {
     }
   }
 
-  useEffect(() => {
-    if (product) {
-      setName(product.name)
-      setPrice(product.price)
-      setDescription(product.description)
-      setImages(product.images)
-      setColor(product.color)
-      setRating(product.rating)
-      setStock(product.stock)
-    }
-  }, [product])
-
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -252,186 +240,177 @@ const ProductDetails = () => {
             </Button>
 
             <Can
-                  permission="PRODUCT:EDIT"
-                  permissionType="actions"
-                  yes={() => (
-                    
-                    <Dialog open={open} onOpenChange={setOpen}>
-                    <DialogTrigger asChild>
-                      <Button variant="secondary" onClick={handleReset}>
-                        Edit
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px]">
-                      <DialogHeader>
-                        <DialogTitle>Edit product</DialogTitle>
-                        <DialogDescription>
-                          Make changes to this product here. Click save when you&apos;re done.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="name" className="text-right">
-                            Name *
-                          </Label>
-                          <Input
-                            id="Name"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            className="col-span-3"
-                          />
-                        </div>
-                        {errorsAsObject["name"] && (
-                          <p className="text-red-400">{errorsAsObject["name"]}</p>
-                        )}
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="price" className="text-right">
-                            Price *
-                          </Label>
-                          <Input
-                            id="price"
-                            value={price}
-                            onChange={(e) => setPrice(parseFloat(e.target.value) || 0)}
-                            className="col-span-3"
-                            type="number"
-                            min="0"
-                          />
-                        </div>
-                        {errorsAsObject["price"] && (
-                          <p className="text-red-400">{errorsAsObject["price"]}</p>
-                        )}
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="description" className="text-right">
-                            Description
-                          </Label>
-                          <Input
-                            id="description"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            className="col-span-3"
-                          />
-                        </div>
-                      </div>
-      
+              permission="PRODUCT:EDIT"
+              permissionType="actions"
+              yes={() => (
+                <Dialog open={open} onOpenChange={setOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant="secondary" onClick={handleReset}>
+                      Edit
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Edit product</DialogTitle>
+                      <DialogDescription>
+                        Make changes to this product here. Click save when you&apos;re done.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
                       <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="images" className="text-right">
-                          Images
+                        <Label htmlFor="name" className="text-right">
+                          Name *
                         </Label>
                         <Input
-                          id="images"
-                          value={images.join(",")}
-                          onChange={(e) => setImages(e.target.value !== "" ? [e.target.value] : [])}
-                          className="col-span-3"
-                          type="url"
-                        />
-                      </div>
-                      {errorsAsObject["images"] && (
-                        <p className="text-red-400">{errorsAsObject["images"]}</p>
-                      )}
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="color" className="text-right">
-                          Color *
-                        </Label>
-                        <Input
-                          id="color"
-                          value={color}
-                          onChange={(e) => setColor(e.target.value)}
+                          id="Name"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
                           className="col-span-3"
                         />
                       </div>
-                      {errorsAsObject["color"] && (
-                        <p className="text-red-400">{errorsAsObject["color"]}</p>
+                      {errorsAsObject["name"] && (
+                        <p className="text-red-400">{errorsAsObject["name"]}</p>
                       )}
                       <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="rating" className="text-right">
-                          Rating
+                        <Label htmlFor="price" className="text-right">
+                          Price *
                         </Label>
                         <Input
-                          id="rating"
-                          value={rating}
-                          onChange={(e) => setRating(parseFloat(e.target.value))}
+                          id="price"
+                          value={price}
+                          onChange={(e) => setPrice(parseFloat(e.target.value) || 0)}
                           className="col-span-3"
                           type="number"
                           min="0"
                         />
                       </div>
-                      {errorsAsObject["rating"] && (
-                        <p className="text-red-400">{errorsAsObject["rating"]}</p>
+                      {errorsAsObject["price"] && (
+                        <p className="text-red-400">{errorsAsObject["price"]}</p>
                       )}
                       <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="stock" className="text-right">
-                          Stock *
+                        <Label htmlFor="description" className="text-right">
+                          Description
                         </Label>
                         <Input
-                          id="stock"
-                          value={stock}
-                          onChange={(e) => setStock(parseInt(e.target.value) || 0)}
+                          id="description"
+                          value={description}
+                          onChange={(e) => setDescription(e.target.value)}
                           className="col-span-3"
-                          type="number"
-                          min="0"
                         />
                       </div>
-                      {errorsAsObject["stock"] && (
-                        <p className="text-red-400">{errorsAsObject["stock"]}</p>
-                      )}
-                      <DialogFooter>
-                        <DialogClose asChild>
-                          <Button type="button" variant="secondary">
-                            Cancel
-                          </Button>
-                        </DialogClose>
-                        <Button
-                          onClick={handleEditProduct}
-                          disabled={
-                            name === product.name &&
-                            price === product.price &&
-                            description === product.description &&
-                            images === product.images &&
-                            color === product.color &&
-                            rating === product.rating &&
-                            stock === product.stock
-                          }
-                        >
-                          Save changes
+                    </div>
+
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="images" className="text-right">
+                        Images
+                      </Label>
+                      <Input
+                        id="images"
+                        value={images.join(",")}
+                        onChange={(e) => setImages(e.target.value !== "" ? [e.target.value] : [])}
+                        className="col-span-3"
+                        type="url"
+                      />
+                    </div>
+                    {errorsAsObject["images"] && (
+                      <p className="text-red-400">{errorsAsObject["images"]}</p>
+                    )}
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="color" className="text-right">
+                        Color *
+                      </Label>
+                      <Input
+                        id="color"
+                        value={color}
+                        onChange={(e) => setColor(e.target.value)}
+                        className="col-span-3"
+                      />
+                    </div>
+                    {errorsAsObject["color"] && (
+                      <p className="text-red-400">{errorsAsObject["color"]}</p>
+                    )}
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="rating" className="text-right">
+                        Rating
+                      </Label>
+                      <Input
+                        id="rating"
+                        value={rating}
+                        onChange={(e) => setRating(parseFloat(e.target.value))}
+                        className="col-span-3"
+                        type="number"
+                        min="0"
+                      />
+                    </div>
+                    {errorsAsObject["rating"] && (
+                      <p className="text-red-400">{errorsAsObject["rating"]}</p>
+                    )}
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="stock" className="text-right">
+                        Stock *
+                      </Label>
+                      <Input
+                        id="stock"
+                        value={stock}
+                        onChange={(e) => setStock(parseInt(e.target.value) || 0)}
+                        className="col-span-3"
+                        type="number"
+                        min="0"
+                      />
+                    </div>
+                    {errorsAsObject["stock"] && (
+                      <p className="text-red-400">{errorsAsObject["stock"]}</p>
+                    )}
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button type="button" variant="secondary">
+                          Cancel
                         </Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-              
-                    
-                  )}
-                />
+                      </DialogClose>
+                      <Button
+                        onClick={handleEditProduct}
+                        disabled={
+                          name === product.name &&
+                          price === product.price &&
+                          description === product.description &&
+                          images === product.images &&
+                          color === product.color &&
+                          rating === product.rating &&
+                          stock === product.stock
+                        }
+                      >
+                        Save changes
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              )}
+            />
 
-<Can
-                  permission="PRODUCT:REMOVE"
-                  permissionType="actions"
-                  yes={() => (
-                    
-                    <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button>Delete</Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This action cannot be undone. This will permanently delete the selected product
-                          and remove its data from our servers.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDeleteProduct}>Continue</AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                        
-                    
-                  )}
-                ></Can>  
-
-            
-          
+            <Can
+              permission="PRODUCT:REMOVE"
+              permissionType="actions"
+              yes={() => (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button>Delete</Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently delete the selected
+                        product and remove its data from our servers.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDeleteProduct}>Continue</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
+            ></Can>
           </div>
         </div>
       )}
