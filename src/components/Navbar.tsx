@@ -42,9 +42,9 @@ const Navbar = () => {
 
   const [prevUser, setPrevUser] = useState(user)
   if (user !== prevUser && user) {
-    setBadge({ name: user.firstName, role: user.role })
     setFirstName(user.firstName)
     setLastName(user.lastName)
+    setBadge({ name: user.firstName, role: user.role })
     setPrevUser(user)
   }
 
