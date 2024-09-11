@@ -153,7 +153,7 @@ const UserDetails = () => {
     enabled: context?.user?.role === "ADMIN"
   })
 
-  const [prevUser, setPrevUser] = useState(user)
+  
 
   const [formattedDate, setFormattedDate] = useState<string>("")
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -164,6 +164,7 @@ const UserDetails = () => {
     setBirthDate(formatted)
   }
 
+  const [prevUser, setPrevUser] = useState(user)
   if (user !== prevUser && user) {
     setFirstName(user.firstName)
     setLastName(user.lastName)

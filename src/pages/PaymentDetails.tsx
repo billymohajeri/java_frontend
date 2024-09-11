@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 import api from "@/api"
 
 import Loading from "@/components/Loading"
@@ -121,14 +121,6 @@ const PaymentDetails = () => {
     queryFn: handleFetchPayment,
     enabled: context?.user?.role === "ADMIN"
   })
-
-  useEffect(() => {
-    if (payment) {
-      setAmount(payment.amount)
-      setStatus(payment.status)
-      setMethod(payment.method)
-    }
-  }, [payment])
 
   if (isError) {
     return (
