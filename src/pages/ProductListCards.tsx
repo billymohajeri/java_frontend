@@ -50,6 +50,8 @@ import {
 } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 import { ToastAction } from "@/components/ui/toast"
+import { Slider } from "@/components/ui/slider"
+import { cn } from "@/lib/utils"
 
 const ProductListCards = () => {
   const navigate = useNavigate()
@@ -354,6 +356,15 @@ const ProductListCards = () => {
     }
   }
 
+
+  const [values, setValues] = useState([20, 80]); // Example default values [min, max]
+
+  // Handle changes in slider values
+  const handleChange = (newValues: number[]) => {
+    setValues(newValues);
+  };
+
+
   return (
     <>
       <Sheet>
@@ -394,7 +405,7 @@ const ProductListCards = () => {
                   <img
                     src={item.product.images[0] || "https://placehold.co/68x68"}
                     alt={item.product.name}
-                    className="w-15 h-15 object-cover"
+                    className="w-15 h-15 object-cover rounded"
                   />
                 </div>
                 <div className="col-span-3">
@@ -551,6 +562,9 @@ const ProductListCards = () => {
                 Reset
               </Button>
             </div>
+            <div>
+      
+    </div>
             <div className="flex mb-5">
               <p className="text-lg basis-3/12 mt-1 ml-2">
                 Price Range: € {minPrice} - € {maxPrice}
@@ -641,7 +655,7 @@ const ProductListCards = () => {
                   <img
                     src={product.images[0]}
                     alt={product.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover rounded"
                   />
                   <p>Rating: {product.rating}</p>
                 </CardContent>

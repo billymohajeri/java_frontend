@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 import api from "@/api"
 import Loading from "@/components/Loading"
 import {
@@ -42,7 +42,7 @@ import {
 import { ZodIssue } from "zod"
 import { editUserSchema } from "@/schemas/user"
 import axios, { AxiosError } from "axios"
-import { format, parse } from "date-fns"
+import { format, isValid, parse } from "date-fns"
 
 const UserDetails = () => {
   const [firstName, setFirstName] = useState("")
@@ -153,17 +153,32 @@ const UserDetails = () => {
     enabled: context?.user?.role === "ADMIN"
   })
 
-  useEffect(() => {
-    if (user) {
-      setFirstName(user.firstName)
-      setLastName(user.lastName)
-      setEmail(user.email)
-      setAddress(user.address)
-      setPhoneNumber(user.phoneNumber)
-      setBirthDate(user.birthDate)
-      setRole(user.role)
+  const [prevUser, setPrevUser] = useState(user)
+
+  const [formattedDate, setFormattedDate] = useState<string>("")
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const dateValue = e.target.value
+    const parsedDate = parse(dateValue, "yyyy-MM-dd", new Date())
+    const formatted = format(parsedDate, "dd-MM-yyyy")
+    setFormattedDate(formatted)
+    setBirthDate(formatted)
+  }
+
+  if (user !== prevUser && user) {
+    setFirstName(user.firstName)
+    setLastName(user.lastName)
+    setEmail(user.email)
+    setAddress(user.address)
+    setPhoneNumber(user.phoneNumber)
+    setBirthDate(user.birthDate)
+    setRole(user.role)
+    setPrevUser(user)
+    const parsedDate = parse(user.birthDate, "dd-MM-yyyy", new Date())
+    if (isValid(parsedDate)) {
+      const formatted = format(parsedDate, "yyyy-MM-dd")
+      setFormattedDate(formatted)
     }
-  }, [user])
+  }
 
   if (isError) {
     return (
@@ -181,15 +196,6 @@ const UserDetails = () => {
       [validationError.path[0]]: validationError.message
     }
   }, {} as { [key: string]: string })
-
-  const [formattedDate, setFormattedDate] = useState<string>("")
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const dateValue = e.target.value
-    const parsedDate = parse(dateValue, "yyyy-MM-dd", new Date())
-    const formatted = format(parsedDate, "dd-MM-yyyy")
-    setFormattedDate(formatted)
-    setBirthDate(formatted)
-  }
 
   return (
     <>
@@ -329,7 +335,7 @@ const UserDetails = () => {
                     name="birthDate"
                     value={
                       formattedDate
-                        ? format(parse(formattedDate, "dd-MM-yyyy", new Date()), "yyyy-MM-dd")
+                        ? format(parse(birthDate, "dd-MM-yyyy", new Date()), "yyyy-MM-dd")
                         : ""
                     }
                     onChange={handleDateChange}
