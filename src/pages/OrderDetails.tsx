@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 import api from "@/api"
 
 import Loading from "@/components/Loading"
@@ -176,15 +176,7 @@ const OrderDetails = () => {
     enabled: context?.user?.role === "ADMIN"
   })
 
-  useEffect(() => {
-    if (order) {
-      setComments(order.comments)
-      setStatus(order.status)
-      setAddress(order.address)
-    }
-  }, [order])
-
-  if (isError) {
+    if (isError) {
     return (
       <>
         <div>{error.message.includes("404") && <NotFound />}</div>
