@@ -31,13 +31,11 @@ const Dashboard = () => {
       const res = await api.get("/products")
       return res.data.data
     },
-    enabled: context?.user?.role === "ADMIN"
   })
 
   const { data: users, isLoading: isLoadingUsers } = useQuery<User[]>({
     queryKey: ["users"],
     queryFn: handleFetchUsers,
-    enabled: context?.user?.role === "ADMIN"
   })
 
   const { data: orders, isLoading: isLoadingOrders } = useQuery<Order[]>({
@@ -51,7 +49,6 @@ const Dashboard = () => {
       
       return res.data.data
     },
-    enabled: context?.user?.role === "ADMIN"
   })
 
   orders?.sort((a, b) => b.address.length - a.address.length);
@@ -67,7 +64,6 @@ const Dashboard = () => {
       })
       return res.data.data
     },
-    enabled: context?.user?.role === "ADMIN"
   })
 
   const adminCount = users?.filter((user) => user.role === "ADMIN").length || 0
