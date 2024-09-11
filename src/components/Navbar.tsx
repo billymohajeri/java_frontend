@@ -4,7 +4,7 @@ import { ThemeProvider } from "./ui/theme-provider"
 import { Can } from "./Can"
 import { LogIn, LogOut } from "lucide-react"
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "./ui/navigation-menu"
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 import { Badge } from "./ui/badge"
 import { UserContext } from "../providers/user-provider"
 import {
@@ -40,13 +40,13 @@ const Navbar = () => {
   }
   const { user, logout, token } = context
 
-  useEffect(() => {
-    if (user) {
-      setBadge({ name: user.firstName, role: user.role })
-      setFirstName(user.firstName)
-      setLastName(user.lastName)
-    }
-  }, [user, token])
+  const [prevUser, setPrevUser] = useState(user)
+  if (user !== prevUser && user) {
+    setBadge({ name: user.firstName, role: user.role })
+    setFirstName(user.firstName)
+    setLastName(user.lastName)
+    setPrevUser(user)
+  }
 
   const handleLogout = () => {
     logout()
