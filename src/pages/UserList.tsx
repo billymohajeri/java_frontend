@@ -61,7 +61,7 @@ const UserList = () => {
     }
   }
 
-  const handleAddUser = async (addUser: AddUser) => {
+  const handleAddUser = async (addUser: Omit<User,"id">) => {
     const result = addUserSchema.safeParse(addUser)
 
     if (!result.success) {
