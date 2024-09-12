@@ -24,7 +24,6 @@ import {
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -33,7 +32,7 @@ import {
 import { toast } from "@/components/ui/use-toast"
 import { UserContext } from "@/providers/user-provider"
 import { addUserSchema } from "@/schemas/user"
-import { User, AddUser } from "@/types"
+import { User } from "@/types"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import axios, { AxiosError } from "axios"
 import { format, parse } from "date-fns"

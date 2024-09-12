@@ -633,7 +633,7 @@ const ProductListCards = () => {
         </div>
       </div>
 
-      {currentProducts.length > 0 ? (
+      {currentProducts.length > 0 &&
         <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-10 p-10">
           {currentProducts.map((product) => (
             <Card key={product.id}>
@@ -682,9 +682,7 @@ const ProductListCards = () => {
             </Card>
           ))}
         </div>
-      ) : (
-        <p>No products available.</p>
-      )}
+      }
 
       {totalPages > 1 && (
         <Pagination>
