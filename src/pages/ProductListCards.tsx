@@ -52,6 +52,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ToastAction } from "@/components/ui/toast"
 import { Slider } from "@/components/ui/slider"
 import { cn } from "@/lib/utils"
+import { Switch } from "@/components/ui/switch"
 
 const ProductListCards = () => {
   const navigate = useNavigate()
@@ -553,9 +554,7 @@ const ProductListCards = () => {
                 Reset
               </Button>
             </div>
-            <div>
-      
-    </div>
+            <div></div>
             <div className="flex mb-5">
               <p className="text-lg basis-3/12 mt-1 ml-2">
                 Price Range: € {minPrice} - € {maxPrice}
@@ -593,28 +592,14 @@ const ProductListCards = () => {
               </Button>
             </div>
             <div className="flex mb-5">
-              <RadioGroup defaultValue="showAllItems" className="flex mb-5">
-                <div className="flex items-center space-x-2 mr-2">
-                  <RadioGroupItem
-                    value="showAllItems"
-                    id="r1"
-                    onClick={() => {
-                      setAvailableOnly(false)
-                    }}
-                  />
-                  <Label htmlFor="r1">Show All Items</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem
-                    value="availableItemsOnly"
-                    id="r2"
-                    onClick={() => {
-                      setAvailableOnly(true)
-                    }}
-                  />
-                  <Label htmlFor="r2">Available Items Only</Label>
-                </div>
-              </RadioGroup>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="available-items-only"
+                  checked={availableOnly}
+                  onCheckedChange={() => setAvailableOnly(!availableOnly)}
+                />
+                <Label htmlFor="available-items-only">Available Items Only</Label>
+              </div>
             </div>
           </div>
         </div>
@@ -633,7 +618,7 @@ const ProductListCards = () => {
         </div>
       </div>
 
-      {currentProducts.length > 0 &&
+      {currentProducts.length > 0 && (
         <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-10 p-10">
           {currentProducts.map((product) => (
             <Card key={product.id}>
@@ -682,7 +667,7 @@ const ProductListCards = () => {
             </Card>
           ))}
         </div>
-      }
+      )}
 
       {totalPages > 1 && (
         <Pagination>
