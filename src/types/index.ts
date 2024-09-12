@@ -10,12 +10,6 @@ export type Product = {
   stock: number
 }
 
-export type PaginationProps = {
-  totalPages: number
-  currentPage: number
-  handleCurrentPageChange: (page: number) => void
-}
-
 export type User = {
   id: string
   firstName: string
@@ -52,14 +46,6 @@ export type AddUser = {
 export type Order = {
   id: string
   userId: string
-  dateTime: number[]
-  comments: string
-  status: string
-  address: string
-}
-
-export type AddOrder = {
-  userId: string
   dateTime: string
   comments: string
   status: string
@@ -90,7 +76,7 @@ export type UserContextType = {
   user: User | null
   token: string | null
   logout: () => void
-  login: (newToken: string) => void;
+  login: (newToken: string) => void
 }
 
 export type DecodedUser = {
@@ -109,13 +95,19 @@ export type ApiErrorResponse = {
   }
 }
 
-export type CartItem ={
-  product: Product;
-  quantity: number;
+export type CartItem = {
+  product: Product
+  quantity: number
 }
 
-export type Cart ={
-  cartId: string;
-  user: User;
-  products: CartItem[];
+export type Cart = {
+  cartId: string
+  user: User
+  products: CartItem[]
+}
+
+export type PaginationProps = {
+  totalPages: number
+  currentPage: number
+  handleCurrentPageChange: (page: number) => void
 }

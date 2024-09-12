@@ -32,7 +32,7 @@ import {
 import { toast } from "@/components/ui/use-toast"
 import { UserContext } from "@/providers/user-provider"
 import { orderSchema } from "@/schemas/order"
-import { AddOrder, ApiErrorResponse, Order, Product } from "@/types"
+import { ApiErrorResponse, Order, Product } from "@/types"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import axios, { AxiosError } from "axios"
 import { Plus } from "lucide-react"
@@ -58,7 +58,7 @@ const OrderList = () => {
   const [open, setOpen] = useState(false)
   const queryClient = useQueryClient()
 
-  const handleAddOrder = async (addOrder: AddOrder) => {
+  const handleAddOrder = async (addOrder: Omit<Order,"id">) => {
     const result = orderSchema.safeParse(addOrder)
     if (!result.success) {
       setValidationErrors(result.error.errors)
