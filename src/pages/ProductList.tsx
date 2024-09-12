@@ -35,13 +35,15 @@ import { useNavigate } from "react-router-dom"
 import { ZodIssue } from "zod"
 
 const ProductList = () => {
-  const [name, setName] = useState("")
-  const [price, setPrice] = useState(0)
-  const [description, setDescription] = useState("")
-  const [images, setImages] = useState<string[]>([])
-  const [color, setColor] = useState("")
-  const [rating, setRating] = useState(0)
-  const [stock, setStock] = useState(0)
+  const [product, setProduct] = useState({
+    name: "",
+    price: 0,
+    description: "",
+    images: [] as string[],
+    color: "",
+    rating: 0,
+    stock: 0
+  })
 
   const [validationErrors, setValidationErrors] = useState<ZodIssue[]>([])
   const [open, setOpen] = useState(false)
@@ -76,27 +78,27 @@ const ProductList = () => {
     error
   } = useQuery<Product[]>({
     queryKey: ["products"],
-    queryFn: handleFetchProducts,
-    enabled: context?.user?.role === "ADMIN"
+    queryFn: handleFetchProducts
   })
 
-  {
-    isError && (
-      <div className="col-span-3 text-center text-red-500 font-semibold">
-        <p>Error: {error instanceof Error ? error.message : "An error occurred"}</p>
-      </div>
-    )
-  }
+  // {
+  //   isError &&
 
-  const handleAddProduct = async (addProduct: Omit<Product,"id"|"meta">) => {
-    const result = productSchema.safeParse(addProduct)
+  //     <div className="col-span-3 text-center text-red-500 font-semibold">
+  //       <p>Error: {error instanceof Error ? error.message : "An error occurred"}</p>
+  //     </div>
+
+  // }
+
+  const handleAddProduct = async (product: Omit<Product, "id" | "meta">) => {
+    const result = productSchema.safeParse(product)
 
     if (!result.success) {
       setValidationErrors(result.error.errors)
     } else {
       setValidationErrors([])
       try {
-        const res = await api.post(`/products`, addProduct, {
+        const res = await api.post(`/products`, product, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -147,16 +149,22 @@ const ProductList = () => {
   }, {} as { [key: string]: string })
 
   const handleReset = () => {
-    setName("")
-    setPrice(0)
-    setDescription("")
-    setImages([])
-    setColor("")
-    setRating(0)
-    setStock(0)
+    setProduct({
+      name: "",
+      price: 0,
+      description: "",
+      images: [],
+      color: "",
+      rating: 0,
+      stock: 0
+    })
   }
 
-  return (
+  return isError ? (
+    <div className="col-span-3 flex justify-center items-center h-screen text-center text-red-500 font-semibold">
+      <p>Error: {error instanceof Error ? error.message : "An error occurred"}</p>
+    </div>
+  ) : (
     <div className="grid items-center justify-center p-10">
       <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight text-center mt-24">
         List of all Products
@@ -183,6 +191,7 @@ const ProductList = () => {
               Enter the new product&apos;s information here. Click Add when you&apos;re done.
             </DialogDescription>
           </DialogHeader>
+
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="name" className="text-right">
@@ -191,12 +200,18 @@ const ProductList = () => {
               <Input
                 id="name"
                 name="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={product.name}
+                onChange={(e) =>
+                  setProduct((prevProduct) => ({
+                    ...prevProduct,
+                    name: e.target.value
+                  }))
+                }
                 className="col-span-3"
               />
             </div>
             {errorsAsObject["name"] && <p className="text-red-400">{errorsAsObject["name"]}</p>}
+
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="price" className="text-right">
                 Price *
@@ -204,14 +219,20 @@ const ProductList = () => {
               <Input
                 id="price"
                 name="price"
-                value={price}
-                onChange={(e) => setPrice(parseFloat(e.target.value))}
+                value={product.price}
+                onChange={(e) =>
+                  setProduct((prevProduct) => ({
+                    ...prevProduct,
+                    price: parseFloat(e.target.value)
+                  }))
+                }
                 className="col-span-3"
                 type="number"
                 min="0"
               />
             </div>
             {errorsAsObject["price"] && <p className="text-red-400">{errorsAsObject["price"]}</p>}
+
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="description" className="text-right">
                 Description
@@ -219,8 +240,13 @@ const ProductList = () => {
               <Input
                 id="description"
                 name="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                value={product.description}
+                onChange={(e) =>
+                  setProduct((prevProduct) => ({
+                    ...prevProduct,
+                    description: e.target.value
+                  }))
+                }
                 className="col-span-3"
               />
             </div>
@@ -232,13 +258,19 @@ const ProductList = () => {
               <Input
                 id="images"
                 name="images"
-                value={images}
-                onChange={(e) => setImages(e.target.value !== "" ? [e.target.value] : [])}
+                value={product.images}
+                onChange={(e) =>
+                  setProduct((prevProduct) => ({
+                    ...prevProduct,
+                    images: e.target.value !== "" ? [e.target.value] : []
+                  }))
+                }
                 className="col-span-3"
                 type="url"
               />
             </div>
             {errorsAsObject["images"] && <p className="text-red-400">{errorsAsObject["images"]}</p>}
+
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="color" className="text-right">
                 Color *
@@ -246,12 +278,18 @@ const ProductList = () => {
               <Input
                 id="color"
                 name="color"
-                value={color}
-                onChange={(e) => setColor(e.target.value)}
+                value={product.color}
+                onChange={(e) =>
+                  setProduct((prevProduct) => ({
+                    ...prevProduct,
+                    color: e.target.value
+                  }))
+                }
                 className="col-span-3"
               />
             </div>
             {errorsAsObject["color"] && <p className="text-red-400">{errorsAsObject["color"]}</p>}
+
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="rating" className="text-right">
                 Rating
@@ -259,8 +297,13 @@ const ProductList = () => {
               <Input
                 id="rating"
                 name="rating"
-                value={rating}
-                onChange={(e) => setRating(parseFloat(e.target.value))}
+                value={product.rating}
+                onChange={(e) =>
+                  setProduct((prevProduct) => ({
+                    ...prevProduct,
+                    rating: parseFloat(e.target.value)
+                  }))
+                }
                 className="col-span-3"
                 type="number"
                 min="0"
@@ -275,8 +318,13 @@ const ProductList = () => {
               <Input
                 id="stock"
                 name="stock"
-                value={stock}
-                onChange={(e) => setStock(parseInt(e.target.value))}
+                value={product.stock}
+                onChange={(e) =>
+                  setProduct((prevProduct) => ({
+                    ...prevProduct,
+                    stock: parseInt(e.target.value)
+                  }))
+                }
                 className="col-span-3"
                 type="number"
                 min="0"
@@ -293,15 +341,7 @@ const ProductList = () => {
             </DialogClose>
             <Button
               onClick={() => {
-                handleAddProduct({
-                  name,
-                  price,
-                  description,
-                  images,
-                  color,
-                  rating,
-                  stock
-                })
+                handleAddProduct(product)
               }}
             >
               Save changes
@@ -311,6 +351,7 @@ const ProductList = () => {
       </Dialog>
 
       {isLoading && <Loading item="products" />}
+
       <Table className="">
         <TableHeader>
           <TableRow>

@@ -80,7 +80,7 @@ const UserDetails = () => {
     return res.data.data
   }
 
-  const handleEditUser = async (editedUser: Omit<User, "password" | "confirmPassword">) => {
+  const handleEditUser = async (editedUser: Omit<User, "password"| "confirmPassword">) => {
     const result = editUserSchema.safeParse(editedUser)
 
     if (!result.success) {
@@ -152,6 +152,8 @@ const UserDetails = () => {
     queryFn: handleFetchUser,
     enabled: context?.user?.role === "ADMIN"
   })
+
+  
 
   const [formattedDate, setFormattedDate] = useState<string>("")
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
