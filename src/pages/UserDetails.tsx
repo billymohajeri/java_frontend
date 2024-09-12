@@ -25,7 +25,7 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { toast } from "@/components/ui/use-toast"
-import { ApiErrorResponse, EditUser } from "@/types"
+import { ApiErrorResponse, User } from "@/types"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { Label } from "@/components/ui/label"
@@ -80,7 +80,7 @@ const UserDetails = () => {
     return res.data.data
   }
 
-  const handleEditUser = async (editedUser: EditUser) => {
+  const handleEditUser = async (editedUser: User) => {
     const result = editUserSchema.safeParse(editedUser)
 
     if (!result.success) {
@@ -147,7 +147,7 @@ const UserDetails = () => {
     isLoading,
     isError,
     error
-  } = useQuery<EditUser>({
+  } = useQuery<User>({
     queryKey: ["user", id],
     queryFn: handleFetchUser,
     enabled: context?.user?.role === "ADMIN"

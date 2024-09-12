@@ -16,16 +16,6 @@ export type User = {
   lastName: string
   address: string
   email: string
-  phoneNumber: number
-  birthDate: string
-  role: string
-}
-export type EditUser = {
-  id: string
-  firstName: string
-  lastName: string
-  address: string
-  email: string
   phoneNumber: string
   birthDate: string
   role: string
