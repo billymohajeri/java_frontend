@@ -10,16 +10,6 @@ export type Product = {
   stock: number
 }
 
-export type AddProduct = {
-  color: string
-  name: string
-  images: string[]
-  description: string
-  price: number
-  rating: number | null
-  stock: number
-}
-
 export type PaginationProps = {
   totalPages: number
   currentPage: number

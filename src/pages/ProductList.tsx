@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/table"
 import { toast } from "@/components/ui/use-toast"
 import { UserContext } from "@/providers/user-provider"
-import { AddProduct, Product } from "@/types"
+import { Product } from "@/types"
 
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import axios, { AxiosError } from "axios"
@@ -88,7 +88,7 @@ const ProductList = () => {
     )
   }
 
-  const handleAddProduct = async (addProduct: AddProduct) => {
+  const handleAddProduct = async (addProduct: Omit<Product,"id"|"meta">) => {
     const result = productSchema.safeParse(addProduct)
 
     if (!result.success) {
