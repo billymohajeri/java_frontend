@@ -19,16 +19,6 @@ export type User = {
   phoneNumber: string
   birthDate: string
   role: string
-}
-
-export type AddUser = {
-  firstName: string
-  lastName: string
-  address: string
-  email: string
-  phoneNumber: string
-  birthDate: string
-  role: string
   password: string
   confirmPassword: string
 }
