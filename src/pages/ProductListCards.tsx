@@ -1,6 +1,14 @@
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { ShoppingCart, X } from "lucide-react"
+import { ChangeEvent, useContext, useEffect, useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
+
 import api from "@/api"
+import { UserContext } from "@/providers/user-provider"
+import { ApiErrorResponse, Cart, Product } from "@/types"
+
+import axios, { AxiosError } from "axios"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -32,12 +40,6 @@ import {
   SheetTrigger
 } from "@/components/ui/sheet"
 import { toast } from "@/components/ui/use-toast"
-import { UserContext } from "@/providers/user-provider"
-import { ApiErrorResponse, Cart, Product } from "@/types"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { ChangeEvent, useContext, useEffect, useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import axios, { AxiosError } from "axios"
 import {
   Dialog,
   DialogClose,
@@ -48,11 +50,11 @@ import {
   DialogTitle,
   DialogTrigger
 } from "@/components/ui/dialog"
+import { Slider } from "@/components/ui/slider"
+import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { ToastAction } from "@/components/ui/toast"
-import { Slider } from "@/components/ui/slider"
-import { cn } from "@/lib/utils"
-import { Switch } from "@/components/ui/switch"
+import { ShoppingCart, X } from "lucide-react"
 
 const ProductListCards = () => {
   const navigate = useNavigate()
@@ -133,12 +135,9 @@ const ProductListCards = () => {
     setFilteredProducts(filtered)
   }, [minPrice, maxPrice, availableOnly, products])
 
-  const handleMinPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setMinPrice(Number(e.target.value))
-  }
-
-  const handleMaxPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setMaxPrice(Number(e.target.value))
+  const handlePriceChange = (val: number[]) => {
+    setMinPrice(Number(val[0]))
+    setMaxPrice(Number(val[1]))
   }
 
   const [quantities, setQuantities] = useState<{ [key: string]: number }>({})
@@ -534,73 +533,57 @@ const ProductListCards = () => {
         </h3>
 
         <div className="relative">
-          <div className="">
-            <div className="flex mb-5">
-              <Input
-                type="text"
-                name="searchInput"
-                value={searchValue}
-                onChange={handleSearchValueChange}
-                className="mb-3 text-lg basis-11/12"
-                placeholder="Search for products..."
+          <div className="flex mb-5">
+            <div className="flex items-center space-x-2  basis-2/12">
+              <Switch
+                id="available-items-only"
+                checked={availableOnly}
+                onCheckedChange={() => setAvailableOnly(!availableOnly)}
               />
-              <Button
-                variant="link"
-                className="basis-1/12 ml-3"
-                onClick={() => {
-                  setSearchValue("")
-                }}
-              >
-                Reset
-              </Button>
+              <Label htmlFor="available-items-only">Available Items Only</Label>
             </div>
-            <div></div>
-            <div className="flex mb-5">
-              <p className="text-lg basis-3/12 mt-1 ml-2">
-                Price Range: € {minPrice} - € {maxPrice}
-              </p>
-              <Input
-                type="number"
-                name="min"
-                value={minPrice}
-                min={0}
-                max={maxPrice - 1}
-                onChange={handleMinPriceChange}
-                className="mb-3 text-lg basis-4/12"
-                placeholder="Min"
-              />
-              <p className="m-2"> to </p>
-              <Input
-                type="number"
-                name="max"
-                max={maxPriceFixed}
-                min={minPrice + 1}
-                value={maxPrice}
-                onChange={handleMaxPriceChange}
-                className="mb-3 text-lg basis-4/12"
-                placeholder="Max"
-              />
-              <Button
-                variant="link"
-                className="ml-3 basis-1/12"
-                onClick={() => {
-                  setMinPrice(0)
-                  setMaxPrice(maxPriceFixed)
-                }}
-              >
-                Reset
-              </Button>
-            </div>
-            <div className="flex mb-5">
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="available-items-only"
-                  checked={availableOnly}
-                  onCheckedChange={() => setAvailableOnly(!availableOnly)}
-                />
-                <Label htmlFor="available-items-only">Available Items Only</Label>
-              </div>
-            </div>
+
+            <Input
+              type="text"
+              name="searchInput"
+              value={searchValue}
+              onChange={handleSearchValueChange}
+              className="mb-3 text-lg basis-9/12"
+              placeholder="Search for products..."
+            />
+            <Button
+              variant="link"
+              className="basis-1/12 ml-3"
+              onClick={() => {
+                setSearchValue("")
+              }}
+            >
+              Reset
+            </Button>
+          </div>
+          <div className="mb-5 flex flex-row">
+            <p className="text-lg basis-2/12 mt-1 ml-2 ">
+              Price Range: € {minPrice} - € {maxPrice}
+            </p>
+
+            <Slider
+              className="basis-9/12"
+              value={[minPrice, maxPrice]}
+              max={maxPriceFixed}
+              step={1}
+              onValueChange={handlePriceChange}
+              minStepsBetweenThumbs={1}
+            />
+            <Button
+              variant="link"
+              className="ml-3 basis-1/12"
+              onClick={() => {
+                setMinPrice(0)
+                setMaxPrice(maxPriceFixed)
+              }}
+            >
+              Reset
+            </Button>
           </div>
         </div>
         <div className="grid grid-cols-3 gap-10">

@@ -25,7 +25,7 @@
 
 # 📖 Billy's Socks Shop <a name="about-project"></a>
 
-**Billy's Socks Shop** is an e-commerce platform where visitors can browse, filter, and purchase a variety of socks, while administrators can manage products, users, orders, and categories through a dedicated dashboard.
+**Billy's Socks Shop** is an e-commerce platform where visitors can browse, filter, and purchase a variety of socks, while administrators can manage products, users and orders through a dedicated dashboard.
 
 This is a project consisting of two repositories: this is the front-end repository. Here is the [back-end repository](https://github.com/billymohajeri/java-ecommerce-backend_2).
 
