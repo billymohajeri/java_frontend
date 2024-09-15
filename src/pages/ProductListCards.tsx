@@ -525,12 +525,12 @@ const ProductListCards = () => {
         </SheetContent>
       </Sheet>
       <div className="p-10">
-        <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight text-center">
+        {/* <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight text-center">
           List of all Products
-        </h2>
-        <h3 className="scroll-m-20 pb-2 text-2xl font-semibold tracking-tight text-center mb-5">
+        </h2> */}
+        {/* <h3 className="scroll-m-20 pb-2 text-2xl font-semibold tracking-tight text-center mb-5">
           (Total: {filteredProducts?.length || 0} items)
-        </h3>
+        </h3> */}
 
         <div className="relative">
           <div className="flex mb-5">
@@ -563,8 +563,10 @@ const ProductListCards = () => {
           </div>
           <div className="mb-5 flex flex-row">
             <p className="text-lg basis-2/12 mt-1 ml-2 ">
-              Price Range: € {minPrice} - € {maxPrice}
+              Price Range:<br/>€ {minPrice} - € {maxPrice}
             </p>
+
+
 
             <Slider
               className="basis-9/12"
@@ -584,7 +586,11 @@ const ProductListCards = () => {
             >
               Reset
             </Button>
+            
           </div>
+          <p className="font-semibold ">
+          Total: {filteredProducts?.length || 0} items
+        </p>
         </div>
         <div className="grid grid-cols-3 gap-10">
           {isLoading && (

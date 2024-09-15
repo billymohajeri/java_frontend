@@ -1,6 +1,24 @@
+import { useContext, useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+
 import api from "@/api"
+import { User } from "@/types"
 import Loading from "@/components/Loading"
+
+
+import { ZodIssue } from "zod"
+import { format, parse } from "date-fns"
+import axios, { AxiosError } from "axios"
+import { UserPlusIcon } from "lucide-react"
+
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { addUserSchema } from "@/schemas/user"
 import { Button } from "@/components/ui/button"
+import { toast } from "@/components/ui/use-toast"
+import { UserContext } from "@/providers/user-provider"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {
   Dialog,
   DialogClose,
@@ -11,16 +29,6 @@ import {
   DialogTitle,
   DialogTrigger
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "@/components/ui/select"
 import {
   Table,
   TableBody,
@@ -29,17 +37,6 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table"
-import { toast } from "@/components/ui/use-toast"
-import { UserContext } from "@/providers/user-provider"
-import { addUserSchema } from "@/schemas/user"
-import { User } from "@/types"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
-import axios, { AxiosError } from "axios"
-import { format, parse } from "date-fns"
-import { UserPlusIcon } from "lucide-react"
-import { useContext, useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { ZodIssue } from "zod"
 
 const UserList = () => {
   const [firstName, setFirstName] = useState("")
