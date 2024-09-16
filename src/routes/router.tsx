@@ -18,6 +18,7 @@ import NoAccess from "@/components/NoAccess"
 import { Can } from "@/components/Can"
 
 const { Public, User, Order, Payment, Admin } = routeNames
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -84,17 +85,7 @@ const router = createBrowserRouter([
           />
         )
       },
-      {
-        path: Order.details,
-        element: (
-          <Can
-            permission="ORDER:EDIT"
-            permissionType="actions"
-            yes={() => <OrderDetails />}
-            no={() => <NoAccess />}
-          />
-        )
-      },
+      { path: Order.details, element: <OrderDetails /> },
       {
         path: Payment.parent,
         element: (

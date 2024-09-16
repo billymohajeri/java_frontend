@@ -44,6 +44,9 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons"
+import NoAccess from "@/components/NoAccess"
 
 const OrderDetails = () => {
   const [comments, setComments] = useState("")
@@ -58,6 +61,8 @@ const OrderDetails = () => {
   const { id } = useParams<{ id: string }>()
   const context = useContext(UserContext)
   const token = context?.token
+  const role = context?.user?.role
+
   const handleDeleteOrder = async () => {
     try {
       const res = await api.delete(`/orders/${id}`, {
@@ -176,7 +181,7 @@ const OrderDetails = () => {
     enabled: context?.user?.role === "ADMIN"
   })
 
-    if (isError) {
+  if (isError) {
     return (
       <>
         <div>{error.message.includes("404") && <NotFound />}</div>
@@ -208,6 +213,8 @@ const OrderDetails = () => {
   return (
     <>
       {isLoading && <Loading item="order" />}
+
+      {(!token || role === "USER") && <NoAccess />}
 
       {order && (
         <div className="container mx-auto mt-5">
