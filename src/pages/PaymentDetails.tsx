@@ -33,6 +33,7 @@ import { ZodIssue } from "zod"
 import { paymentSchema } from "@/schemas/payment"
 import axios, { AxiosError } from "axios"
 import NotFound from "./NotFound"
+import NoAccess from "@/components/NoAccess"
 
 const PaymentDetails = () => {
   const [amount, setAmount] = useState(0)
@@ -45,6 +46,7 @@ const PaymentDetails = () => {
   const { id } = useParams<{ id: string }>()
   const context = useContext(UserContext)
   const token = context?.token
+  const role = context?.user?.role
 
   const handleEditPayment = async () => {
     const payload = {
@@ -157,6 +159,8 @@ const PaymentDetails = () => {
   return (
     <>
       {isLoading && <Loading item="payment" />}
+
+      {(!token || role === "USER") && <NoAccess />}
 
       {payment && (
         <div className="container mx-auto mt-5">
