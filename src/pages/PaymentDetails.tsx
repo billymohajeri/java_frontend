@@ -1,8 +1,17 @@
 import { useContext, useState } from "react"
+import { Link, useParams } from "react-router-dom"
+
 import api from "@/api"
-
+import NotFound from "./NotFound"
 import Loading from "@/components/Loading"
+import NoAccess from "@/components/NoAccess"
+import { paymentSchema } from "@/schemas/payment"
+import { ApiErrorResponse, Payment } from "@/types"
+import { UserContext } from "@/providers/user-provider"
 
+import { ZodIssue } from "zod"
+import axios, { AxiosError } from "axios"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   Dialog,
   DialogClose,
@@ -13,12 +22,8 @@ import {
   DialogTitle,
   DialogTrigger
 } from "@/components/ui/dialog"
-
 import { Button } from "@/components/ui/button"
 import { toast } from "@/components/ui/use-toast"
-import { ApiErrorResponse, Payment } from "@/types"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { Link, useParams } from "react-router-dom"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import {
@@ -28,12 +33,6 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select"
-import { UserContext } from "@/providers/user-provider"
-import { ZodIssue } from "zod"
-import { paymentSchema } from "@/schemas/payment"
-import axios, { AxiosError } from "axios"
-import NotFound from "./NotFound"
-import NoAccess from "@/components/NoAccess"
 
 const PaymentDetails = () => {
   const [amount, setAmount] = useState(0)
@@ -165,7 +164,7 @@ const PaymentDetails = () => {
       {payment && (
         <div className="container mx-auto mt-5">
           <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight text-center mb-5 mt-24">
-            Payment details
+            Payment Details
           </h2>
           <div className="bg-white shadow-md rounded-lg p-5">
             <div className="flex flex-col md:flex-row">

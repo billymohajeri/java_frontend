@@ -43,6 +43,7 @@ import { ZodIssue } from "zod"
 import { editUserSchema } from "@/schemas/user"
 import axios, { AxiosError } from "axios"
 import { format, isValid, parse } from "date-fns"
+import NoAccess from "@/components/NoAccess"
 
 const UserDetails = () => {
   const [firstName, setFirstName] = useState("")
@@ -59,6 +60,7 @@ const UserDetails = () => {
   const navigate = useNavigate()
   const context = useContext(UserContext)
   const token = context?.token
+  const userRole = context?.user?.role
 
   const { id } = useParams<{ id: string }>()
 
@@ -80,7 +82,7 @@ const UserDetails = () => {
     return res.data.data
   }
 
-  const handleEditUser = async (editedUser: Omit<User, "password"| "confirmPassword">) => {
+  const handleEditUser = async (editedUser: Omit<User, "password" | "confirmPassword">) => {
     const result = editUserSchema.safeParse(editedUser)
 
     if (!result.success) {
@@ -153,8 +155,6 @@ const UserDetails = () => {
     enabled: context?.user?.role === "ADMIN"
   })
 
-  
-
   const [formattedDate, setFormattedDate] = useState<string>("")
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const dateValue = e.target.value
@@ -201,6 +201,9 @@ const UserDetails = () => {
   return (
     <>
       {isLoading && <Loading item="user" />}
+
+      {(!token || userRole === "USER") && <NoAccess />}
+
       {user && (
         <div className="container mx-auto mt-5">
           <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight text-center mb-5 mt-24">
