@@ -76,17 +76,7 @@ const router = createBrowserRouter([
         )
       },
       { path: Order.details, element: <OrderDetails /> },
-      {
-        path: Payment.parent,
-        element: (
-          <Can
-            permission="PAYMENT:EDIT"
-            permissionType="actions"
-            yes={() => <PaymentList />}
-            no={() => <NoAccess />}
-          />
-        )
-      },
+      { path: Payment.parent, element: <PaymentList /> },
       { path: Payment.details, element: <PaymentDetails /> },
       { path: Public.login, element: <Login /> }
     ]
