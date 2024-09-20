@@ -63,7 +63,7 @@ const PaymentList = () => {
 
   return (
     <>
-      {isLoading && <Loading item="payments" />}
+      {isLoading && <Loading item="Payments" />}
 
       {(!token || role === "USER") && <NoAccess />}
 
