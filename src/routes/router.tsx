@@ -52,17 +52,7 @@ const router = createBrowserRouter([
           />
         )
       },
-      {
-        path: User.parent,
-        element: (
-          <Can
-            permission="USER:EDIT"
-            permissionType="actions"
-            yes={() => <UserList />}
-            no={() => <NoAccess />}
-          />
-        )
-      },
+      { path: User.parent, element: <UserList /> },
       { path: User.details, element: <UserDetails /> },
       { path: Order.parent, element: <OrderList /> },
       { path: Order.details, element: <OrderDetails /> },
