@@ -180,7 +180,7 @@ const UserList = () => {
 
   return (
     <>
-      {isLoading && <Loading item="Orders" />}
+      {isLoading && <Loading item="Users" />}
 
       {(!token || role === "USER") && <NoAccess />}
 

@@ -26,17 +26,7 @@ const router = createBrowserRouter([
     element: <Navbar />,
     children: [
       { path: "/", element: <ProductListCards /> },
-      {
-        path: Public.productParent,
-        element: (
-          <Can
-            permission="PRODUCT:EDIT"
-            permissionType="actions"
-            yes={() => <ProductList />}
-            no={() => <NoAccess />}
-          />
-        )
-      },
+      { path: Public.productParent, element: <ProductList /> },
       {
         path: Public.productDetails,
         element: <ProductDetails />
