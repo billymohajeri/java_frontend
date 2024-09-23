@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 import api from "@/api"
 import { User } from "@/types"
+import NotFound from "./NotFound"
 import Loading from "@/components/Loading"
 import NoAccess from "@/components/NoAccess"
 
@@ -119,7 +120,7 @@ const UserList = () => {
   const context = useContext(UserContext)
   const token = context?.token
   const handleFetchUsers = async () => {
-    const res = await api.get("/users", {
+    const res = await api.get("/user", {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -140,14 +141,6 @@ const UserList = () => {
     queryFn: handleFetchUsers,
     enabled: context?.user?.role === "ADMIN"
   })
-
-  {
-    isError && (
-      <div className="col-span-3 text-center text-red-500 font-semibold">
-        <p>Error: {error instanceof Error ? error.message : "An error occurred"}</p>
-      </div>
-    )
-  }
 
   const errorsAsObject = validationErrors.reduce((validationErrors, validationError) => {
     return {
@@ -183,6 +176,17 @@ const UserList = () => {
       {isLoading && <Loading item="Users" />}
 
       {(!token || role === "USER") && <NoAccess />}
+
+      {isError && (
+        <>
+          <div>{error.message.includes("404") && <NotFound />}</div>
+          <div className="flex justify-center items-center mt-12">
+            <p className="text-red-500 font-semibold">
+              Error: {error?.message || "Unable to fetch order details"}
+            </p>
+          </div>
+        </>
+      )}
 
       {users?.length && (
         <div className="grid items-center justify-center p-10">
