@@ -128,11 +128,11 @@ To run the project in development mode, execute the following command:
 
 👤 **Syed Faizan Ahmed**
 
-- GitHub: [@BillyMohajeri](https://github.com/Faizan-ah)
+- GitHub: [@Faizan-ah](https://github.com/Faizan-ah)
 
 👤 **Hai Nguyen**
 
-- GitHub: [@BillyMohajeri](https://github.com/HarryNg)
+- GitHub: [@HarryNg](https://github.com/HarryNg)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
