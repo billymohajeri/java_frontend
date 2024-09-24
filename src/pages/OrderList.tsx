@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 import api from "@/api"
+import NotFound from "./NotFound"
 import Loading from "@/components/Loading"
 import NoAccess from "@/components/NoAccess"
 import { orderSchema } from "@/schemas/order"
@@ -162,6 +163,17 @@ const OrderList = () => {
   return (
     <>
       {isLoading && <Loading item="Orders" />}
+
+      {isError && (
+        <>
+          <div>{error.message.includes("404") && <NotFound />}</div>
+          <div className="flex justify-center items-center mt-12">
+            <p className="text-red-500 font-semibold">
+              Error: {error?.message || "Unable to fetch order details"}
+            </p>
+          </div>
+        </>
+      )}
 
       {(!token || role === "USER") && <NoAccess />}
 

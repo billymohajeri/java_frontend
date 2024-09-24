@@ -120,7 +120,7 @@ const UserList = () => {
   const context = useContext(UserContext)
   const token = context?.token
   const handleFetchUsers = async () => {
-    const res = await api.get("/user", {
+    const res = await api.get("/users", {
       headers: {
         Authorization: `Bearer ${token}`
       }
