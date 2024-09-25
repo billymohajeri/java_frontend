@@ -48,22 +48,20 @@ const PaymentList = () => {
     enabled: context?.user?.role === "ADMIN"
   })
 
-  if (isError) {
-    return (
-      <>
-        <div>{error.message.includes("404") && <NotFound />}</div>
-        <div className="flex justify-center items-center mt-12">
-          <p className="text-red-500 font-semibold">
-            Error: {error?.message || "Unable to fetch order details"}
-          </p>
-        </div>
-      </>
-    )
-  }
-
   return (
     <>
       {isLoading && <Loading item="Payments" />}
+
+      {isError && (
+        <>
+          <div>{error.message.includes("404") && <NotFound />}</div>
+          <div className="flex justify-center items-center mt-12">
+            <p className="text-red-500 font-semibold">
+              Error: {error?.message || "Unable to fetch order details"}
+            </p>
+          </div>
+        </>
+      )}
 
       {(!token || role === "USER") && <NoAccess />}
 
