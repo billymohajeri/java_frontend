@@ -1,6 +1,23 @@
 import { useContext, useState } from "react"
+import { Link, useNavigate, useParams } from "react-router-dom"
+
 import api from "@/api"
+import NotFound from "./NotFound"
 import Loading from "@/components/Loading"
+import NoAccess from "@/components/NoAccess"
+import { editUserSchema } from "@/schemas/user"
+import { ApiErrorResponse, User } from "@/types"
+import { UserContext } from "@/providers/user-provider"
+
+import { ZodIssue } from "zod"
+import axios, { AxiosError } from "axios"
+import { format, isValid, parse } from "date-fns"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
+import { toast } from "@/components/ui/use-toast"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,15 +39,6 @@ import {
   DialogTitle,
   DialogTrigger
 } from "@/components/ui/dialog"
-
-import { Button } from "@/components/ui/button"
-import { toast } from "@/components/ui/use-toast"
-import { ApiErrorResponse, User } from "@/types"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { Link, useNavigate, useParams } from "react-router-dom"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { UserContext } from "@/providers/user-provider"
 import {
   Select,
   SelectContent,
@@ -39,11 +47,6 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select"
-import { ZodIssue } from "zod"
-import { editUserSchema } from "@/schemas/user"
-import axios, { AxiosError } from "axios"
-import { format, isValid, parse } from "date-fns"
-import NoAccess from "@/components/NoAccess"
 
 const UserDetails = () => {
   const [firstName, setFirstName] = useState("")
@@ -181,16 +184,6 @@ const UserDetails = () => {
     }
   }
 
-  if (isError) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-red-500 font-semibold">
-          Error: {error?.message || "Unable to fetch product details"}
-        </p>
-      </div>
-    )
-  }
-
   const errorsAsObject = validationErrors.reduce((validationErrors, validationError) => {
     return {
       ...validationErrors,
@@ -200,7 +193,21 @@ const UserDetails = () => {
 
   return (
     <>
-      {isLoading && <Loading item="user" />}
+      {isLoading && <Loading item="User" />}
+
+      {isError && (
+        <>
+          <div>{error.message.includes("404") && <NotFound />}</div>
+          <div className="flex flex-col justify-center items-center h-screen">
+            <p className="text-red-500 font-semibold">
+              Error: {error?.message || "Unable to fetch user details"}
+            </p>
+            <div className="mt-4">
+              <Button onClick={() => window.location.reload()}>Retry</Button>
+            </div>
+          </div>
+        </>
+      )}
 
       {(!token || userRole === "USER") && <NoAccess />}
 
