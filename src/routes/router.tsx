@@ -31,17 +31,7 @@ const router = createBrowserRouter([
         path: Public.productDetails,
         element: <ProductDetails />
       },
-      {
-        path: Admin.dashboard,
-        element: (
-          <Can
-            permission="DASHBOARD:VIEW"
-            permissionType="views"
-            yes={() => <Dashboard />}
-            no={() => <NoAccess />}
-          />
-        )
-      },
+      { path: Admin.dashboard, element: <Dashboard /> },
       { path: User.parent, element: <UserList /> },
       { path: User.details, element: <UserDetails /> },
       { path: Order.parent, element: <OrderList /> },
