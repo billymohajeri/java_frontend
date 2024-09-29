@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query"
 
 import api from "@/api"
 import { Payment } from "@/types"
-import NotFound from "./NotFound"
 import Loading from "@/components/Loading"
 import NoAccess from "@/components/NoAccess"
 import { UserContext } from "@/providers/user-provider"
@@ -27,7 +26,7 @@ const PaymentList = () => {
 
   const handleFetchPayments = async () => {
     const token = context?.token
-    const res = await api.get("/payment", {
+    const res = await api.get("/payments", {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -53,18 +52,7 @@ const PaymentList = () => {
     <>
       {isLoading && <Loading item="Payments" />}
 
-      {isError && (
-        <>
-          <div>{error.message.includes("404") && <NotFound />}</div>
-          <div className="flex justify-center items-center mt-12">
-            <p className="text-red-500 font-semibold">
-              Error: {error?.message || "Unable to fetch order details"}
-            </p>
-          </div>
-        </>
-      )}
-
-      {isError && <ShowError />}
+      {isError && <ShowError resourceName="Payments List" errorMessage={error.message} />}
 
       {(!token || role === "USER") && <NoAccess />}
 
