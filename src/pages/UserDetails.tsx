@@ -47,6 +47,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select"
+import ShowError from "@/components/ShowError"
 
 const UserDetails = () => {
   const [firstName, setFirstName] = useState("")
@@ -195,19 +196,7 @@ const UserDetails = () => {
     <>
       {isLoading && <Loading item="User" />}
 
-      {isError && (
-        <>
-          <div>{error.message.includes("404") && <NotFound />}</div>
-          <div className="flex flex-col justify-center items-center h-screen">
-            <p className="text-red-500 font-semibold">
-              Error: {error?.message || "Unable to fetch user details"}
-            </p>
-            <div className="mt-4">
-              <Button onClick={() => window.location.reload()}>Retry</Button>
-            </div>
-          </div>
-        </>
-      )}
+      {isError && <ShowError resourceName="User Details" errorMessage={error.message}/>}
 
       {(!token || userRole === "USER") && <NoAccess />}
 

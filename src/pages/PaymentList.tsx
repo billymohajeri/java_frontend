@@ -17,6 +17,7 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table"
+import ShowError from "@/components/ShowError"
 
 const PaymentList = () => {
   const navigate = useNavigate()
@@ -26,7 +27,7 @@ const PaymentList = () => {
 
   const handleFetchPayments = async () => {
     const token = context?.token
-    const res = await api.get("/payments", {
+    const res = await api.get("/payment", {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -62,6 +63,8 @@ const PaymentList = () => {
           </div>
         </>
       )}
+
+      {isError && <ShowError />}
 
       {(!token || role === "USER") && <NoAccess />}
 
