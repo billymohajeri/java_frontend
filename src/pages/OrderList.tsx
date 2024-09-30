@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 import api from "@/api"
-import NotFound from "./NotFound"
 import Loading from "@/components/Loading"
 import NoAccess from "@/components/NoAccess"
 import { orderSchema } from "@/schemas/order"
+import ShowError from "@/components/ShowError"
 import { UserContext } from "@/providers/user-provider"
 import { ApiErrorResponse, Order, Product } from "@/types"
 
@@ -113,7 +113,7 @@ const OrderList = () => {
   const role = context?.user?.role
 
   const handleFetchOrders = async () => {
-    const res = await api.get("/orders", {
+    const res = await api.get("/order", {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -164,16 +164,7 @@ const OrderList = () => {
     <>
       {isLoading && <Loading item="Orders" />}
 
-      {isError && (
-        <>
-          <div>{error.message.includes("404") && <NotFound />}</div>
-          <div className="flex justify-center items-center mt-12">
-            <p className="text-red-500 font-semibold">
-              Error: {error?.message || "Unable to fetch order details"}
-            </p>
-          </div>
-        </>
-      )}
+      {isError && <ShowError resourceName="Orders List" errorMessage={error.message} />}
 
       {(!token || role === "USER") && <NoAccess />}
 

@@ -50,7 +50,9 @@ const PaymentList = () => {
 
   return (
     <>
+    
       {isLoading && <Loading item="Payments" />}
+      
 
       {isError && <ShowError resourceName="Payments List" errorMessage={error.message} />}
 

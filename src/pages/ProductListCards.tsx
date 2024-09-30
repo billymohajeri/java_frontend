@@ -563,10 +563,9 @@ const ProductListCards = () => {
           </div>
           <div className="mb-5 flex flex-row">
             <p className="text-lg basis-2/12 mt-1 ml-2 ">
-              Price Range:<br/>€ {minPrice} - € {maxPrice}
+              Price Range:
+              <br />€ {minPrice} - € {maxPrice}
             </p>
-
-
 
             <Slider
               className="basis-9/12"
@@ -586,27 +585,19 @@ const ProductListCards = () => {
             >
               Reset
             </Button>
-            
           </div>
-          <p className="font-semibold ">
-          Total: {filteredProducts?.length || 0} items
-        </p>
+          <p className="font-semibold ">Total: {filteredProducts?.length || 0} items</p>
         </div>
-        <div className="grid grid-cols-3 gap-10">
-          {isLoading && (
-            <div className="col-span-3 flex justify-center items-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-500"></div>
-              <p className="ml-4 text-blue-500 font-semibold">Loading products...</p>
-            </div>
-          )}
-          {isError && (
-            <div className="col-span-3 text-center text-red-500 font-semibold">
-              <p>Error: {error instanceof Error ? error.message : "An error occurred"}</p>
-            </div>
-          )}
-        </div>
-      </div>
 
+        {/* <div className="grid grid-cols-3 gap-10"> */}
+
+        {isError && (
+          <div className="col-span-3 text-center text-red-500 font-semibold">
+            <p>Error: {error instanceof Error ? error.message : "An error occurred"}</p>
+          </div>
+        )}
+      </div>
+      {/* </div> */}
       {currentProducts.length > 0 && (
         <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-10 p-10">
           {currentProducts.map((product) => (
@@ -655,6 +646,13 @@ const ProductListCards = () => {
               </CardFooter>
             </Card>
           ))}
+        </div>
+      )}
+      
+      {isLoading && (
+        <div className="flex justify-center items-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-red-500"></div>
+          <p className="ml-4 text-red-500 font-semibold">Loading Products...</p>
         </div>
       )}
 
