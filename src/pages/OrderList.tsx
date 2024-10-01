@@ -113,7 +113,7 @@ const OrderList = () => {
   const role = context?.user?.role
 
   const handleFetchOrders = async () => {
-    const res = await api.get("/order", {
+    const res = await api.get("/orders", {
       headers: {
         Authorization: `Bearer ${token}`
       }
