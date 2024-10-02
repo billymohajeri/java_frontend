@@ -4,9 +4,9 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 import api from "@/api"
 import { User } from "@/types"
-import NotFound from "./NotFound"
 import Loading from "@/components/Loading"
 import NoAccess from "@/components/NoAccess"
+import ShowError from "@/components/ShowError"
 
 import { ZodIssue } from "zod"
 import { format, parse } from "date-fns"
@@ -177,16 +177,7 @@ const UserList = () => {
 
       {(!token || role === "USER") && <NoAccess />}
 
-      {isError && (
-        <>
-          <div>{error.message.includes("404") && <NotFound />}</div>
-          <div className="flex justify-center items-center mt-12">
-            <p className="text-red-500 font-semibold">
-              Error: {error?.message || "Unable to fetch order details"}
-            </p>
-          </div>
-        </>
-      )}
+      {isError && <ShowError resourceName="Users List" errorMessage={error.message} />}
 
       {users?.length && (
         <div className="grid items-center justify-center p-10">

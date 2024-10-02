@@ -135,13 +135,13 @@ const OrderList = () => {
     enabled: context?.user?.role === "ADMIN"
   })
 
-  {
-    isError && (
-      <div className="col-span-3 text-center text-red-500 font-semibold">
-        <p>Error: {error instanceof Error ? error.message : "An error occurred"}</p>
-      </div>
-    )
-  }
+  // {
+  //   isError && (
+  //     <div className="col-span-3 text-center text-red-500 font-semibold">
+  //       <p>Error: {error instanceof Error ? error.message : "An error occurred"}</p>
+  //     </div>
+  //   )
+  // }
 
   const errorsAsObject = validationErrors.reduce((validationErrors, validationError) => {
     return {
@@ -332,7 +332,6 @@ const OrderList = () => {
               </DialogFooter>
             </DialogContent>
           </Dialog>
-          {isLoading && <Loading item="orders" />}
 
           <Table className="">
             <TableHeader>
