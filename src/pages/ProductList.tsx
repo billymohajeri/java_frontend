@@ -3,17 +3,16 @@ import { useNavigate } from "react-router-dom"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 import api from "@/api"
-import { ZodIssue } from "zod"
 import { Product } from "@/types"
-import NotFound from "./NotFound"
-import { Plus } from "lucide-react"
-import axios, { AxiosError } from "axios"
 import Loading from "@/components/Loading"
 import NoAccess from "@/components/NoAccess"
+import ShowError from "@/components/ShowError"
 import { productSchema } from "@/schemas/product"
 import { UserContext } from "@/providers/user-provider"
 
-
+import { ZodIssue } from "zod"
+import { Plus } from "lucide-react"
+import axios, { AxiosError } from "axios"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -161,16 +160,7 @@ const ProductList = () => {
     <>
       {isLoading && <Loading item="Products" />}
 
-      {isError && (
-        <>
-          <div>{error.message.includes("404") && <NotFound />}</div>
-          <div className="flex justify-center items-center mt-12">
-            <p className="text-red-500 font-semibold">
-              Error: {error?.message || "Unable to fetch order details"}
-            </p>
-          </div>
-        </>
-      )}
+      {isError && <ShowError resourceName="Products List" errorMessage={error.message} />}
 
       {(!token || role === "USER") && <NoAccess />}
 
