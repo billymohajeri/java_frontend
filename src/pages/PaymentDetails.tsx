@@ -2,9 +2,9 @@ import { useContext, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 
 import api from "@/api"
-import NotFound from "./NotFound"
 import Loading from "@/components/Loading"
 import NoAccess from "@/components/NoAccess"
+import ShowError from "@/components/ShowError"
 import { paymentSchema } from "@/schemas/payment"
 import { ApiErrorResponse, Payment } from "@/types"
 import { UserContext } from "@/providers/user-provider"
@@ -123,19 +123,6 @@ const PaymentDetails = () => {
     enabled: context?.user?.role === "ADMIN"
   })
 
-  if (isError) {
-    return (
-      <>
-        <div>{error.message.includes("404") && <NotFound />}</div>
-        <div className="flex justify-center items-center mt-12">
-          <p className="text-red-500 font-semibold">
-            Error: {error?.message || "Unable to fetch payment details"}
-          </p>
-        </div>
-      </>
-    )
-  }
-
   const errorsAsObject = validationErrors.reduce((validationErrors, validationError) => {
     return {
       ...validationErrors,
@@ -157,7 +144,9 @@ const PaymentDetails = () => {
 
   return (
     <>
-      {isLoading && <Loading item="payment" />}
+      {isError && <ShowError resourceName="Payment" errorMessage={error.message} />}
+
+      {isLoading && <Loading item="Payment" />}
 
       {(!token || role === "USER") && <NoAccess />}
 
