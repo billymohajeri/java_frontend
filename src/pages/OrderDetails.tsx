@@ -3,7 +3,6 @@ import { Link, useNavigate, useParams } from "react-router-dom"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 import api from "@/api"
-import NotFound from "./NotFound"
 import Loading from "@/components/Loading"
 import NoAccess from "@/components/NoAccess"
 import { ApiErrorResponse, Order } from "@/types"
@@ -12,6 +11,7 @@ import { UserContext } from "@/providers/user-provider"
 import { ZodIssue } from "zod"
 import axios, { AxiosError } from "axios"
 import { orderSchema } from "@/schemas/order"
+import ShowError from "@/components/ShowError"
 
 import {
   AlertDialog,
@@ -180,19 +180,6 @@ const OrderDetails = () => {
     enabled: context?.user?.role === "ADMIN"
   })
 
-  if (isError) {
-    return (
-      <>
-        <div>{error.message.includes("404") && <NotFound />}</div>
-        <div className="flex justify-center items-center mt-12">
-          <p className="text-red-500 font-semibold">
-            Error: {error?.message || "Unable to fetch order details"}
-          </p>
-        </div>
-      </>
-    )
-  }
-
   const errorsAsObject = validationErrors.reduce((validationErrors, validationError) => {
     return {
       ...validationErrors,
@@ -211,7 +198,9 @@ const OrderDetails = () => {
 
   return (
     <>
-      {isLoading && <Loading item="order" />}
+      {isLoading && <Loading item="Order" />}
+
+      {isError && <ShowError resourceName="Order" errorMessage={error.message} />}
 
       {(!token || role === "USER") && <NoAccess />}
 
