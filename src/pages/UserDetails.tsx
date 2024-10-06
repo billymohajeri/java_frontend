@@ -2,7 +2,6 @@ import { useContext, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
 
 import api from "@/api"
-import NotFound from "./NotFound"
 import Loading from "@/components/Loading"
 import NoAccess from "@/components/NoAccess"
 import { editUserSchema } from "@/schemas/user"
@@ -196,7 +195,7 @@ const UserDetails = () => {
     <>
       {isLoading && <Loading item="User" />}
 
-      {isError && <ShowError resourceName="User Details" errorMessage={error.message}/>}
+      {isError && <ShowError resourceName="User" errorMessage={error.message} />}
 
       {(!token || userRole === "USER") && <NoAccess />}
 

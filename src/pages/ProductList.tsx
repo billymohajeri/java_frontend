@@ -158,7 +158,9 @@ const ProductList = () => {
 
   return (
     <>
-      {isLoading && <Loading item="Products" />}
+      {/* {isLoading && <Loading item="Products" />} */}
+
+      {/* {isLoading && <Loading item="Products" />} */}
 
       {isError && <ShowError resourceName="Products List" errorMessage={error.message} />}
 
@@ -360,7 +362,7 @@ const ProductList = () => {
             </DialogContent>
           </Dialog>
 
-          {isLoading && <Loading item="products" />}
+          {/* {isLoading && <Loading item="products" />} */}
 
           <Table className="">
             <TableHeader>

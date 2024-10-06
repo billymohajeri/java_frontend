@@ -1,9 +1,21 @@
-import api from "@/api"
-import { ZodIssue } from "zod"
-import { Button } from "@/components/ui/button"
-import { ApiErrorResponse, Product } from "@/types"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useContext, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+
+import api from "@/api"
+import { Can } from "@/components/Can"
+import Loading from "@/components/Loading"
+import ShowError from "@/components/ShowError"
+import { productSchema } from "@/schemas/product"
+import { ApiErrorResponse, Product } from "@/types"
+import { UserContext } from "@/providers/user-provider"
+
+import { ZodIssue } from "zod"
+import axios, { AxiosError } from "axios"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { toast } from "@/components/ui/use-toast"
+import { Button } from "@/components/ui/button"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,15 +37,6 @@ import {
   DialogTitle,
   DialogTrigger
 } from "@/components/ui/dialog"
-import { toast } from "@/components/ui/use-toast"
-import { useContext, useState } from "react"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { UserContext } from "@/providers/user-provider"
-import axios, { AxiosError } from "axios"
-import NotFound from "./NotFound"
-import { productSchema } from "@/schemas/product"
-import { Can } from "@/components/Can"
 
 const ProductDetails = () => {
   const [name, setName] = useState("")
@@ -148,28 +151,6 @@ const ProductDetails = () => {
     }
   }
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-500"></div>
-        <p className="ml-4 text-blue-500 font-semibold">Loading product...</p>
-      </div>
-    )
-  }
-
-  if (isError) {
-    return (
-      <>
-        <div>{error.message.includes("404") && <NotFound />}</div>
-        <div className="flex justify-center items-center mt-12">
-          <p className="text-red-500 font-semibold">
-            Error: {error?.message || "Unable to fetch product details"}
-          </p>
-        </div>
-      </>
-    )
-  }
-
   const errorsAsObject = validationErrors.reduce((validationErrors, validationError) => {
     return {
       ...validationErrors,
@@ -192,6 +173,10 @@ const ProductDetails = () => {
 
   return (
     <>
+      {isLoading && <Loading item="Product" />}
+
+      {isError && <ShowError resourceName="Product" errorMessage={error.message} />}
+
       {product && (
         <div className="container mx-auto mt-5">
           <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight text-center mb-5 mt-24">
