@@ -2,7 +2,7 @@ import { useContext, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 
 import api from "@/api"
-import Loading from "@/components/Loading"
+import {Loading} from "@/components/Loading"
 import NoAccess from "@/components/NoAccess"
 import ShowError from "@/components/ShowError"
 import { paymentSchema } from "@/schemas/payment"

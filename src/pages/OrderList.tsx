@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 import api from "@/api"
-import Loading from "@/components/Loading"
+import {Loading} from "@/components/Loading"
 import NoAccess from "@/components/NoAccess"
 import { orderSchema } from "@/schemas/order"
 import ShowError from "@/components/ShowError"
@@ -134,14 +134,6 @@ const OrderList = () => {
     queryFn: handleFetchOrders,
     enabled: context?.user?.role === "ADMIN"
   })
-
-  // {
-  //   isError && (
-  //     <div className="col-span-3 text-center text-red-500 font-semibold">
-  //       <p>Error: {error instanceof Error ? error.message : "An error occurred"}</p>
-  //     </div>
-  //   )
-  // }
 
   const errorsAsObject = validationErrors.reduce((validationErrors, validationError) => {
     return {

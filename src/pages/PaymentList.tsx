@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query"
 
 import api from "@/api"
 import { Payment } from "@/types"
-import Loading from "@/components/Loading"
+import {Loading} from "@/components/Loading"
 import NoAccess from "@/components/NoAccess"
 import { UserContext } from "@/providers/user-provider"
 
@@ -50,9 +50,7 @@ const PaymentList = () => {
 
   return (
     <>
-    
       {isLoading && <Loading item="Payments" />}
-      
 
       {isError && <ShowError resourceName="Payments List" errorMessage={error.message} />}
 

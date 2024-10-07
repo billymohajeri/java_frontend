@@ -5,6 +5,7 @@ import api from "@/api"
 import NoAccess from "@/components/NoAccess"
 import { Order, Payment, User } from "@/types"
 import { UserContext } from "@/providers/user-provider"
+import { SmallLoading } from "@/components/Loading"
 
 import { useQuery } from "@tanstack/react-query"
 import { EuroIcon, ShoppingBag, ShoppingCart, User2Icon, UserCheck, Users2Icon } from "lucide-react"
@@ -77,7 +78,6 @@ const Dashboard = () => {
 
   return (
     <>
-      {/* {isLoading && <Loading item="Products" />} */}
       {/* 
 {isError && (
   <>
@@ -165,11 +165,11 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent>
                 <h4 className="text-2xl font-bold">
-                  {isLoadingPayments
-                    ? "Loading..."
-                    : `$${payments
-                        ?.reduce((total, payment) => total + payment.amount, 0)
-                        .toFixed(2)}`}
+                  {isLoadingPayments ? (
+                    <SmallLoading />
+                  ) : (
+                    `$${payments?.reduce((total, payment) => total + payment.amount, 0).toFixed(2)}`
+                  )}
                 </h4>
               </CardContent>
               <CardFooter className="flex justify-start mt-auto">

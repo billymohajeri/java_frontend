@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 import api from "@/api"
 import { Product } from "@/types"
-import Loading from "@/components/Loading"
+import {Loading} from "@/components/Loading"
 import NoAccess from "@/components/NoAccess"
 import ShowError from "@/components/ShowError"
 import { productSchema } from "@/schemas/product"
@@ -158,9 +158,7 @@ const ProductList = () => {
 
   return (
     <>
-      {/* {isLoading && <Loading item="Products" />} */}
-
-      {/* {isLoading && <Loading item="Products" />} */}
+      {isLoading && <Loading item="Products" />}
 
       {isError && <ShowError resourceName="Products List" errorMessage={error.message} />}
 

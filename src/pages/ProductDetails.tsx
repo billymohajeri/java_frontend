@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 import api from "@/api"
 import { Can } from "@/components/Can"
-import Loading from "@/components/Loading"
+import {Loading} from "@/components/Loading"
 import ShowError from "@/components/ShowError"
 import { productSchema } from "@/schemas/product"
 import { ApiErrorResponse, Product } from "@/types"

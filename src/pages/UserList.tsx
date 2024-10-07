@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 import api from "@/api"
 import { User } from "@/types"
-import Loading from "@/components/Loading"
+import {Loading} from "@/components/Loading"
 import NoAccess from "@/components/NoAccess"
 import ShowError from "@/components/ShowError"
 
@@ -174,10 +174,10 @@ const UserList = () => {
   return (
     <>
       {isLoading && <Loading item="Users" />}
+      
+      {isError && <ShowError resourceName="Users List" errorMessage={error.message} />}
 
       {(!token || role === "USER") && <NoAccess />}
-
-      {isError && <ShowError resourceName="Users List" errorMessage={error.message} />}
 
       {users?.length && (
         <div className="grid items-center justify-center p-10">
