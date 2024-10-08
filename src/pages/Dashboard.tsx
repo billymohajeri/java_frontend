@@ -164,13 +164,15 @@ const Dashboard = () => {
                 <CardTitle>Total Sales</CardTitle>
               </CardHeader>
               <CardContent>
-                <h4 className="text-2xl font-bold">
-                  {isLoadingPayments ? (
-                    <SmallLoading />
-                  ) : (
-                    `$${payments?.reduce((total, payment) => total + payment.amount, 0).toFixed(2)}`
-                  )}
-                </h4>
+                {isLoadingPayments ? (
+                  <SmallLoading />
+                ) : payments ? (
+                  <h4 className="text-2xl font-bold">
+                    ${payments.reduce((total, payment) => total + payment.amount, 0).toFixed(2)}
+                  </h4>
+                ) : (
+                  <p>No sales to show</p>
+                )}
               </CardContent>
               <CardFooter className="flex justify-start mt-auto">
                 <Button onClick={() => navigate("/payments")}>
@@ -188,10 +190,10 @@ const Dashboard = () => {
                 </CardHeader>
                 <CardContent>
                   {isLoadingOrders ? (
-                    <p>Loading...</p>
-                  ) : (
+                    <SmallLoading />
+                  ) : orders ? (
                     <ul>
-                      {orders?.slice(0, 7).map((order) => (
+                      {orders.slice(0, 7).map((order) => (
                         <li key={order.id} className="border-b py-2">
                           <Link to={`/orders/${order.id}`}>
                             <span>{order.address}</span> - <span>{`${order.comments}`}</span> -{" "}
@@ -200,6 +202,8 @@ const Dashboard = () => {
                         </li>
                       ))}
                     </ul>
+                  ) : (
+                    <p>No orders to show</p>
                   )}
                 </CardContent>
               </Card>
@@ -211,10 +215,10 @@ const Dashboard = () => {
                 </CardHeader>
                 <CardContent>
                   {isLoadingOrders ? (
-                    <p>Loading...</p>
-                  ) : (
+                    <SmallLoading />
+                  ) : payments ? (
                     <ul>
-                      {payments?.slice(0, 7).map((payment) => (
+                      {payments.slice(0, 7).map((payment) => (
                         <li key={payment.id} className="border-b py-2">
                           <Link to={`/payments/${payment.id}`}>
                             <span>€ {payment.amount}</span> - <span>{`$${payment.status}`}</span>
@@ -222,6 +226,8 @@ const Dashboard = () => {
                         </li>
                       ))}
                     </ul>
+                  ) : (
+                    <p>No payments to show</p>
                   )}
                 </CardContent>
               </Card>
