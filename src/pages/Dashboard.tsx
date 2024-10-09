@@ -78,18 +78,6 @@ const Dashboard = () => {
 
   return (
     <>
-      {/* 
-{isError && (
-  <>
-    <div>{error.message.includes("404") && <NotFound />}</div>
-    <div className="flex justify-center items-center mt-12">
-      <p className="text-red-500 font-semibold">
-        Error: {error?.message || "Unable to fetch order details"}
-      </p>
-    </div>
-  </>
-)} */}
-
       {(!token || role === "USER") && <NoAccess />}
 
       {users?.length && (
@@ -147,16 +135,23 @@ const Dashboard = () => {
                 <CardTitle>Total Orders</CardTitle>
               </CardHeader>
               <CardContent>
-                <h4 className="text-2xl font-bold">
-                  {isLoadingOrders ? "Loading..." : orders?.length}
-                </h4>
+                {isLoadingOrders ? (
+                  <SmallLoading />
+                ) : orders ? (
+                  <h4 className="text-2xl font-bold">${orders.length}</h4>
+                ) : (
+                  <p>No orders to show</p>
+                )}
               </CardContent>
-              <CardFooter className="flex justify-start mt-auto">
-                <Button onClick={() => navigate("/orders")}>
-                  <ShoppingCart className="mr-4" />
-                  See All
-                </Button>
-              </CardFooter>
+
+              {orders && (
+                <CardFooter className="flex justify-start mt-auto">
+                  <Button onClick={() => navigate("/orders")}>
+                    <ShoppingCart className="mr-4" />
+                    See All
+                  </Button>
+                </CardFooter>
+              )}
             </Card>
 
             <Card>
@@ -174,12 +169,14 @@ const Dashboard = () => {
                   <p>No sales to show</p>
                 )}
               </CardContent>
-              <CardFooter className="flex justify-start mt-auto">
-                <Button onClick={() => navigate("/payments")}>
-                  <EuroIcon className="mr-4" />
-                  See All
-                </Button>
-              </CardFooter>
+              {payments && (
+                <CardFooter className="flex justify-start mt-auto">
+                  <Button onClick={() => navigate("/payments")}>
+                    <EuroIcon className="mr-4" />
+                    See All
+                  </Button>
+                </CardFooter>
+              )}
             </Card>
           </div>
           <div className="grid grid-cols-3 gap-6 p-6">
@@ -214,7 +211,7 @@ const Dashboard = () => {
                   <CardTitle>Recent Payments</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {isLoadingOrders ? (
+                  {isLoadingPayments ? (
                     <SmallLoading />
                   ) : payments ? (
                     <ul>
