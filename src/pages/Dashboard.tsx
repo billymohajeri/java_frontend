@@ -19,7 +19,7 @@ const Dashboard = () => {
   const role = context?.user?.role
 
   const handleFetchUsers = async () => {
-    const res = await api.get("/user", {
+    const res = await api.get("/users", {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -33,7 +33,7 @@ const Dashboard = () => {
   const { data: products, isLoading: isLoadingProducts } = useQuery({
     queryKey: ["products"],
     queryFn: async () => {
-      const res = await api.get("/product")
+      const res = await api.get("/products")
       return res.data.data
     },
     enabled: role === "ADMIN"
@@ -48,7 +48,7 @@ const Dashboard = () => {
   const { data: orders, isLoading: isLoadingOrders } = useQuery<Order[]>({
     queryKey: ["orders"],
     queryFn: async () => {
-      const res = await api.get("/order", {
+      const res = await api.get("/orders", {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -63,7 +63,7 @@ const Dashboard = () => {
   const { data: payments, isLoading: isLoadingPayments } = useQuery<Payment[]>({
     queryKey: ["payments"],
     queryFn: async () => {
-      const res = await api.get("/payment", {
+      const res = await api.get("/payments", {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -104,7 +104,7 @@ const Dashboard = () => {
                 <CardTitle>
                   <div>
                     Total Users:
-                    {isLoadingOrders ? (
+                    {isLoadingUsers ? (
                       <SmallLoading />
                     ) : users ? (
                       <h4 className="text-2xl font-bold">{users.length}</h4>
