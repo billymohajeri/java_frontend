@@ -30,7 +30,11 @@ const Dashboard = () => {
     return res.data.data
   }
 
-  const { data: products, isLoading: isLoadingProducts } = useQuery({
+  const {
+    data: products,
+    isLoading: isLoadingProducts,
+    isError: isErrorProducts
+  } = useQuery({
     queryKey: ["products"],
     queryFn: async () => {
       const res = await api.get("/products")
@@ -39,7 +43,11 @@ const Dashboard = () => {
     enabled: role === "ADMIN"
   })
 
-  const { data: users, isLoading: isLoadingUsers } = useQuery<User[]>({
+  const {
+    data: users,
+    isLoading: isLoadingUsers,
+    isError: isErrorUsers
+  } = useQuery<User[]>({
     queryKey: ["users"],
     queryFn: handleFetchUsers,
     enabled: role === "ADMIN"
@@ -88,15 +96,18 @@ const Dashboard = () => {
             </CardHeader>
             <CardContent>
               <h4 className="text-2xl font-bold">
-                {isLoadingProducts ? "Loading..." : products?.length}
+                {isLoadingProducts ? <SmallLoading /> : products?.length}
               </h4>
+              {isErrorProducts && <p>No orders to show</p>}
             </CardContent>
-            <CardFooter className="flex justify-start mt-auto">
-              <Button onClick={() => navigate("/products")}>
-                <ShoppingBag className="mr-4" />
-                See All
-              </Button>
-            </CardFooter>
+            {products && (
+              <CardFooter className="flex justify-start mt-auto">
+                <Button onClick={() => navigate("/products")}>
+                  <ShoppingBag className="mr-4" />
+                  See All
+                </Button>
+              </CardFooter>
+            )}
           </Card>
           <Card className="flex flex-col h-full">
             <div className="flex items-start">
@@ -106,10 +117,8 @@ const Dashboard = () => {
                     Total Users:
                     {isLoadingUsers ? (
                       <SmallLoading />
-                    ) : users ? (
-                      <h4 className="text-2xl font-bold">{users.length}</h4>
                     ) : (
-                      <p className="text-lg font-normal mt-4">No users to show</p>
+                      users && <h4 className="text-2xl font-bold">{users.length}</h4>
                     )}
                   </div>
                 </CardTitle>
@@ -125,6 +134,7 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
+            <CardContent>{isErrorUsers && <p className="mt-4">No users to show</p>}</CardContent>
             {users && (
               <CardFooter className="flex justify-start mt-auto">
                 <Button onClick={() => navigate("/users")}>
