@@ -1,40 +1,14 @@
-import { useContext, useState } from "react"
+import { useContext } from "react"
 import { useNavigate } from "react-router-dom"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 
 import api from "@/api"
 import { Loading } from "@/components/Loading"
 import NoAccess from "@/components/NoAccess"
-import { orderSchema } from "@/schemas/order"
 import ShowError from "@/components/ShowError"
 import { UserContext } from "@/providers/user-provider"
-import { ApiErrorResponse, Order, Product } from "@/types"
+import { Order } from "@/types"
 
-import { ZodIssue } from "zod"
-import { Plus } from "lucide-react"
-import axios, { AxiosError } from "axios"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import { toast } from "@/components/ui/use-toast"
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from "@/components/ui/dialog"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "@/components/ui/select"
 import {
   Table,
   TableBody,
@@ -45,68 +19,6 @@ import {
 } from "@/components/ui/table"
 
 const OrderList = () => {
-  enum OrderStatus {
-    Pending = "PENDING",
-    Shipped = "SHIPPED",
-    Delivered = "DELIVERED",
-    Canceled = "CANCELED"
-  }
-  // const [userId, setUserId] = useState("")
-  // const [dateTime, setDateTime] = useState<number[]>([])
-  // const [dateTime, setDateTime] = useState("")
-  // const [comments, setComments] = useState("")
-  // const [status, setStatus] = useState("")
-  // const [address, setAddress] = useState("")
-  // const [products, setProducts] = useState<Product[]>([])
-  // const [validationErrors, setValidationErrors] = useState<ZodIssue[]>([])
-  // const [open, setOpen] = useState(false)
-  // const queryClient = useQueryClient()
-
-  // const handleAddOrder = async (addOrder: Omit<Order, "id">) => {
-  //   const result = orderSchema.safeParse(addOrder)
-  //   if (!result.success) {
-  //     setValidationErrors(result.error.errors)
-  //   } else {
-  //     setValidationErrors([])
-  //     try {
-  //       const res = await api.post(`/orders`, addOrder)
-  //       if (res.status == 201) {
-  //         toast({
-  //           title: "✅ Added!",
-  //           className: "bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white",
-  //           description: `Order added successfully.`
-  //         })
-  //         queryClient.invalidateQueries({ queryKey: ["orders"] })
-  //         setOpen(false)
-  //         return res.data.data
-  //       }
-  //     } catch (error: unknown) {
-  //       if (axios.isAxiosError(error)) {
-  //         const axiosError = error as AxiosError<ApiErrorResponse>
-  //         if (axiosError.response) {
-  //           toast({
-  //             title: "❌ Adding order failed!",
-  //             className: "bg-red-100 text-black",
-  //             description: `${axiosError.response.data.error.message}`
-  //           })
-  //         } else {
-  //           toast({
-  //             title: "❌ Adding order failed!",
-  //             className: "bg-red-100 text-black",
-  //             description: error.message || "An unknown error occurred."
-  //           })
-  //         }
-  //       } else {
-  //         toast({
-  //           title: "❌ Adding order failed!",
-  //           className: "bg-red-100 text-black",
-  //           description: "An unknown error occurred."
-  //         })
-  //       }
-  //     }
-  //   }
-  // }
-
   const navigate = useNavigate()
   const context = useContext(UserContext)
   const token = context?.token
@@ -134,23 +46,6 @@ const OrderList = () => {
     queryFn: handleFetchOrders,
     enabled: context?.user?.role === "ADMIN"
   })
-
-  // const errorsAsObject = validationErrors.reduce((validationErrors, validationError) => {
-  //   return {
-  //     ...validationErrors,
-  //     [validationError.path[0]]: validationError.message
-  //   }
-  // }, {} as { [key: string]: string })
-
-  // const handleReset = () => {
-  //   setUserId("")
-  //   setDateTime("")
-  //   setComments("")
-  //   setStatus("")
-  //   setAddress("")
-  //   setProducts([])
-  //   setValidationErrors([])
-  // }
 
   return (
     <>
