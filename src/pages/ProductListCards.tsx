@@ -96,6 +96,7 @@ const ProductListCards = () => {
   const [maxPriceFixed, setMaxPriceFixed] = useState(100)
   const [filteredProducts, setFilteredProducts] = useState(products)
   const [availableOnly, setAvailableOnly] = useState(false)
+  const [hasPhotoOnly, setHasPhotoOnly] = useState(false)
   const [newAddress, setNewAddress] = useState("")
   const [comments, setComments] = useState("")
   const [paymentMethod, setPaymentMethod] = useState("")
@@ -130,10 +131,14 @@ const ProductListCards = () => {
       filtered = filtered?.filter((product) => product.stock > 0)
     }
 
+    if (hasPhotoOnly) {
+      filtered = filtered?.filter((product) => product.images.length > 0)
+    }
+
     filtered = filtered?.sort((a, b) => b.rating - a.rating)
 
     setFilteredProducts(filtered)
-  }, [minPrice, maxPrice, availableOnly, products])
+  }, [minPrice, maxPrice, availableOnly, hasPhotoOnly, products])
 
   const handlePriceChange = (val: number[]) => {
     setMinPrice(Number(val[0]))
@@ -542,6 +547,14 @@ const ProductListCards = () => {
               />
               <Label htmlFor="available-items-only">Available Items Only</Label>
             </div>
+            <div className="flex items-center space-x-2  basis-2/12">
+              <Switch
+                id="products-with-photos"
+                checked={hasPhotoOnly}
+                onCheckedChange={() => setHasPhotoOnly(!hasPhotoOnly)}
+              />
+              <Label htmlFor="products-with-photos">Products with Photos</Label>
+            </div>
 
             <Input
               type="text"
@@ -648,7 +661,7 @@ const ProductListCards = () => {
           ))}
         </div>
       )}
-      
+
       {isLoading && (
         <div className="flex justify-center items-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-red-500"></div>
