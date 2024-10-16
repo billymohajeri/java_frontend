@@ -55,6 +55,13 @@ import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { ToastAction } from "@/components/ui/toast"
 import { ShoppingCart, X } from "lucide-react"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select"
 
 const ProductListCards = () => {
   const navigate = useNavigate()
@@ -97,6 +104,7 @@ const ProductListCards = () => {
   const [filteredProducts, setFilteredProducts] = useState(products)
   const [availableOnly, setAvailableOnly] = useState(false)
   const [hasPhotoOnly, setHasPhotoOnly] = useState(false)
+  const [sort, setSort] = useState("none")
   const [newAddress, setNewAddress] = useState("")
   const [comments, setComments] = useState("")
   const [paymentMethod, setPaymentMethod] = useState("")
@@ -135,10 +143,23 @@ const ProductListCards = () => {
       filtered = filtered?.filter((product) => product.images.length > 0)
     }
 
-    filtered = filtered?.sort((a, b) => b.rating - a.rating)
+    if (sort !== "none") {
+      switch (sort) {
+        case "price-asc":
+          filtered = filtered?.sort((a, b) => a.price - b.price)
+          break
+        case "price-desc":
+          filtered = filtered?.sort((a, b) => b.price - a.price)
+          break
+        default:
+          break
+      }
+    }
+
+    // filtered = filtered?.sort((a, b) => b.rating - a.rating)
 
     setFilteredProducts(filtered)
-  }, [minPrice, maxPrice, availableOnly, hasPhotoOnly, products])
+  }, [minPrice, maxPrice, availableOnly, hasPhotoOnly, products, sort])
 
   const handlePriceChange = (val: number[]) => {
     setMinPrice(Number(val[0]))
@@ -561,7 +582,7 @@ const ProductListCards = () => {
               name="searchInput"
               value={searchValue}
               onChange={handleSearchValueChange}
-              className="mb-3 text-lg basis-9/12"
+              className="mb-3 text-lg basis-7/12"
               placeholder="Search for products..."
             />
             <Button
@@ -575,13 +596,24 @@ const ProductListCards = () => {
             </Button>
           </div>
           <div className="mb-5 flex flex-row">
-            <p className="text-lg basis-2/12 mt-1 ml-2 ">
+            <div className="text-lg basis-2/12 mt-1 ml-2">
+              <Select  onValueChange={(value) => setSort(value)} >
+                <SelectTrigger className="w-[220px]">
+                  <SelectValue placeholder="Sort" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="price-asc">Sort by: Price: Low to High</SelectItem>
+                  <SelectItem value="price-desc">Sort by: Price: High to Low</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <p className="text-lg basis-2/12 mt-1 ml-2">
               Price Range:
               <br />€ {minPrice} - € {maxPrice}
             </p>
 
             <Slider
-              className="basis-9/12"
+              className="basis-7/12"
               value={[minPrice, maxPrice]}
               max={maxPriceFixed}
               step={1}
